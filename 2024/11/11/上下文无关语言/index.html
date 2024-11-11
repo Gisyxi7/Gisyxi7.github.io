@@ -28,7 +28,7 @@
 <meta property="og:description" content="上下文无关语言的泵引理回忆一下正则语言的泵引理(Pumping Lemma)： 如果这个正则语言被有限自动机识别，因为自动机的状态数是有限的，当字符串长度大于状态数时，必然有某些状态被循环重复。 正则语言的泵引理对于每一个正则语言$ L$ 来说，存在一个整数$ n $，使得对于$ L $中的每一个长度$ \ge n $的字符串$ w $，我们可以写作$ w&#x3D;xyz $，满足：  $|xy|\leq">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-11-11T05:00:34.000Z">
-<meta property="article:modified_time" content="2024-11-11T07:56:32.064Z">
+<meta property="article:modified_time" content="2024-11-11T11:55:38.173Z">
 <meta property="article:author" content="5271">
 <meta property="article:tag" content="形式语言与自动机">
 <meta name="twitter:card" content="summary">
@@ -179,7 +179,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2024-11-11 13:00:34 / Modified: 15:56:32" itemprop="dateCreated datePublished" datetime="2024-11-11T13:00:34+08:00">2024-11-11</time>
+              <time title="Created: 2024-11-11 13:00:34 / Modified: 19:55:38" itemprop="dateCreated datePublished" datetime="2024-11-11T13:00:34+08:00">2024-11-11</time>
             </span>
 
           
@@ -237,6 +237,7 @@
 <p>$B\in X_{ik}$</p>
 <p>$C\in X_{k+1,j}$</p>
 <p>最后只需要判断$S\in X_{1,n}$</p>
+<p>附上我自己写的<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">一个简单的CYK算法的C++实现</a></p>
 <h2 id="判断是否无穷"><a href="#判断是否无穷" class="headerlink" title="判断是否无穷"></a>判断是否无穷</h2><p>使用泵引理常数$n$，如果该语言存在一个长度在$n$到$2n−1$之间的字符串，那么这个语言就是无穷的，否则就是有穷的。</p>
 <hr>
 <h1 id="上下文无关语言的闭包性质"><a href="#上下文无关语言的闭包性质" class="headerlink" title="上下文无关语言的闭包性质"></a>上下文无关语言的闭包性质</h1><h2 id="并集下的闭包"><a href="#并集下的闭包" class="headerlink" title="并集下的闭包"></a>并集下的闭包</h2><p>令$L$和$M$是上下文无关文法G和H的上下文无关语言，只需要假设没有共同变量，如有则重命名。</p>
