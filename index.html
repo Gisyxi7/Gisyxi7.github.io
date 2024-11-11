@@ -174,7 +174,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2024-11-11 13:00:34 / Modified: 15:12:53" itemprop="dateCreated datePublished" datetime="2024-11-11T13:00:34+08:00">2024-11-11</time>
+              <time title="Created: 2024-11-11 13:00:34 / Modified: 15:56:32" itemprop="dateCreated datePublished" datetime="2024-11-11T13:00:34+08:00">2024-11-11</time>
             </span>
 
           
@@ -225,6 +225,13 @@
 <p>情况一：$\omega=\epsilon$</p>
 <p>只需要简单判断起始符号是否可以为空。</p>
 <p>情况二：$\omega \not =\epsilon$<br>使用<strong>CYK</strong>算法，可以在时间复杂度$O(|\omega|^{3})$内判断。</p>
+<h3 id="CYK算法"><a href="#CYK算法" class="headerlink" title="CYK算法"></a>CYK算法</h3><p>令$\omega=a_1a_2\cdots a_n$，我们将构造一个$n\times n$的三角形变量矩阵</p>
+<p>其中，$X_{ij}=\left\{A|A\Rightarrow a_i\cdots a_j\right\}$</p>
+<p>进行归纳构造。<br>基础情况：$X_{ij}=\left\{A|A\rightarrow a_i\in P\right\}$</p>
+<p>归纳：$X_{ij}=\left\{A|A\rightarrow BC \in P\right\}$</p>
+<p>$B\in X_{ik}$</p>
+<p>$C\in X_{k+1,j}$</p>
+<p>最后只需要判断$S\in X_{1,n}$</p>
 <h2 id="判断是否无穷"><a href="#判断是否无穷" class="headerlink" title="判断是否无穷"></a>判断是否无穷</h2><p>使用泵引理常数$n$，如果该语言存在一个长度在$n$到$2n−1$之间的字符串，那么这个语言就是无穷的，否则就是有穷的。</p>
 <hr>
 <h1 id="上下文无关语言的闭包性质"><a href="#上下文无关语言的闭包性质" class="headerlink" title="上下文无关语言的闭包性质"></a>上下文无关语言的闭包性质</h1><h2 id="并集下的闭包"><a href="#并集下的闭包" class="headerlink" title="并集下的闭包"></a>并集下的闭包</h2><p>令$L$和$M$是上下文无关文法G和H的上下文无关语言，只需要假设没有共同变量，如有则重命名。</p>
@@ -242,7 +249,8 @@
 <h3 id="证明差集操作和交集操作的等价性"><a href="#证明差集操作和交集操作的等价性" class="headerlink" title="证明差集操作和交集操作的等价性"></a>证明差集操作和交集操作的等价性</h3><p>$L\cap M=L-(L-M)$<br>所以任何在差集下封闭的语言，在交集下也封闭。</p>
 <h3 id="上下文无关语言和正则语言的交集是一个上下文无关语言"><a href="#上下文无关语言和正则语言的交集是一个上下文无关语言" class="headerlink" title="上下文无关语言和正则语言的交集是一个上下文无关语言"></a>上下文无关语言和正则语言的交集是一个上下文无关语言</h3><p>这个性质的证明过程包含了将一个DFA和一个PDA同时运行，它们组合起来依旧是PDA。这里PDA是根据终止状态接收的。</p>
 <p>构造过程与乘积自动机类似但是多了一个栈。</p>
-<h3 id="逆同态下的闭包性质"><a href="#逆同态下的闭包性质" class="headerlink" title="逆同态下的闭包性质"></a>逆同态下的闭包性质</h3><hr>
+<h3 id="逆同态下的闭包性质"><a href="#逆同态下的闭包性质" class="headerlink" title="逆同态下的闭包性质"></a>逆同态下的闭包性质</h3><p>可以通过构造新的PDA的方式来证明这个性质。</p>
+<hr>
 
       
     </div>
