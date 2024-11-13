@@ -162,6 +162,159 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/" class="post-title-link" itemprop="url">Mitsuba0.6编译指南</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-13 13:50:55 / 修改时间：14:56:59" itemprop="dateCreated datePublished" datetime="2024-11-13T13:50:55+08:00">2024-11-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="关于Mitsuba"><a href="#关于Mitsuba" class="headerlink" title="关于Mitsuba"></a>关于Mitsuba</h1><p><a target="_blank" rel="noopener" href="https://www.mitsuba-renderer.org/">Mitsuba</a>是一个学术界应用很广的渲染系统，基于C++编写。</p>
+<p>这里介绍Mitsuba0.6 的编译操作指南。注意，因为官方版本长期不维护，这里的来源是一个<a target="_blank" rel="noopener" href="https://github.com/VicentChen/mitsuba">第三方维护版本</a>。</p>
+<h1 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h1><p>这里我不准备编译图形化界面，所以不会涉及到QT有关内容。</p>
+<p>我将自己使用的文件直接上传到我的GitHub仓库，有需要的可以自己下载，理论上从我仓库下载按照说明进行安装就不会出现问题。如果遇到新问题欢迎在我的GitHub上提issue。</p>
+<p>请确保你的电脑已经安装好了</p>
+<ol>
+<li>Visual Studio</li>
+<li>Cmake</li>
+<li>Python 3.9</li>
+</ol>
+<h1 id="详细步骤"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤</h1><h2 id="下载mitsuba"><a href="#下载mitsuba" class="headerlink" title="下载mitsuba"></a>下载mitsuba</h2><p>从我仓库下载mitsuba源码，解压。<br>//TODO </p>
+<h2 id="下载依赖文件"><a href="#下载依赖文件" class="headerlink" title="下载依赖文件"></a>下载依赖文件</h2><p>从<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/mitsuba0.6-dep-py3.9.12">这里</a>下载。</p>
+<p>解压后将文件夹dependencies放在mts目录下。</p>
+<h2 id="设置python目录"><a href="#设置python目录" class="headerlink" title="设置python目录"></a>设置python目录</h2><p>在mts<strong>主目录</strong>下找到CmakeLists.txt。</p>
+<p>修改其中设置：</p>
+<h3 id="添加Python路径"><a href="#添加Python路径" class="headerlink" title="添加Python路径"></a>添加Python路径</h3><p>找到<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (NOT Python_ROOT_DIR)</span><br><span class="line">	set(Python_ROOT_DIR &quot;C:/ProgramData/Anaconda3&quot; CACHE STRING &quot;Python installtion path&quot; FORCE)</span><br><span class="line">	message(&quot;No Python_ROOT_DIR specified. Python_ROOT_DIR is set to default value &#x27;C:/ProgramData/Anaconda3&#x27;&quot;)</span><br><span class="line">endif(NOT Python_ROOT_DIR)</span><br><span class="line">find_package(Python COMPONENTS Interpreter Development REQUIRED)</span><br><span class="line">set(PYTHON_VERSION_WITHOUT_DOT &quot;python$&#123;Python_VERSION_MAJOR&#125;$&#123;Python_VERSION_MINOR&#125;&quot;)</span><br><span class="line">message(&quot;Found python version: $&#123;PYTHON_VERSION_WITHOUT_DOT&#125;&quot;)</span><br></pre></td></tr></table></figure><br>这里是在设置python路径，自行在上方添加自己的python路径<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set(Python_ROOT_DIR &quot;Your Path&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>注意，这里我使用的python版本为<a target="_blank" rel="noopener" href="https://www.python.org/downloads/release/python-3912/">3.9.12</a>，其他版本（anaconda）我本人遇到过报错。</p>
+<h2 id="新建cbuild"><a href="#新建cbuild" class="headerlink" title="新建cbuild"></a>新建cbuild</h2><p>在mts主目录下新建文件夹cbuild。</p>
+<h2 id="生成VS项目"><a href="#生成VS项目" class="headerlink" title="生成VS项目"></a>生成VS项目</h2><p>打开终端，切换到<strong>VS Command</strong>。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/1.png?raw=true" alt="image-1"><br>在VS终端打开刚才创建的cbuild文件夹<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;.../.../cbuild&quot;</span><br></pre></td></tr></table></figure><br>执行<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake ..</span><br></pre></td></tr></table></figure></p>
+<p>会有一些Warnings，忽略即可。</p>
+<h2 id="编译项目"><a href="#编译项目" class="headerlink" title="编译项目"></a>编译项目</h2><p>打开刚才生成好的Mitsuba.sln（在cbuild文件夹下）。</p>
+<p>一定一定一定切换到<strong>Release</strong>模式下进行编译。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/2.png?raw=true" alt="image-2"></p>
+<p>耐心等待即可。</p>
+<p>如果出现问题，请先自己浏览报错信息。并检查自己有没有擅自更改过子目录下的CmakeList.txt!!!</p>
+<p>顺利编译成功。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/3.png?raw=true" alt="image-3"></p>
+<p>这里我的电脑配置还行，编译比较快。</p>
+<p>然后我们就可以开启愉快的Mitsuba之旅啦！</p>
+<p>（我没有编译QT，所以通过命令行运行程序）</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0%E8%BF%9B%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/13/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0%E8%BF%9B%E5%BA%A6/" class="post-title-link" itemprop="url">每日学习进度</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-13 12:08:12 / 修改时间：13:45:32" itemprop="dateCreated datePublished" datetime="2024-11-13T12:08:12+08:00">2024-11-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          Here's something encrypted, password is required to continue reading.
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/11/13/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0%E8%BF%9B%E5%BA%A6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -568,14 +721,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
