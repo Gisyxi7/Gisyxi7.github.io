@@ -162,6 +162,130 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">CYK算法的C++实现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-11 21:19:57 / 修改时间：21:51:46" itemprop="dateCreated datePublished" datetime="2024-11-11T21:19:57+08:00">2024-11-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="什么是CYK算法"><a href="#什么是CYK算法" class="headerlink" title="什么是CYK算法"></a>什么是CYK算法</h1><p>CYK算法（英语：Cocke–Younger–Kasami algorithm，缩写为CYK algorithm）是由约翰·科克，Younger和嵩忠雄共同研究出来大约发表于1965年的一个算法，它是一个用来判定任意给定的字符串$\omega\in\sum^*$是否属于一个上下文无关文法的算法。</p>
+<p>该算法采用动态规划的思想，将复杂度降低至多项式时间$O(n^3)$，其中$n$是字符串的长度。</p>
+<p>注意，使用该算法要先将文法转换为乔姆斯基范式。</p>
+<h1 id="CYK算法思路"><a href="#CYK算法思路" class="headerlink" title="CYK算法思路"></a>CYK算法思路</h1><p>详见<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/#CYK%E7%AE%97%E6%B3%95">传送门</a></p>
+<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>判断$\omega=ababa$是否属于$S\rightarrow AB,A\rightarrow BC|a,B\rightarrow AC|b,C\rightarrow a|b$文法定义的语言。</p>
+<p>下表中列为i，行为j。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>1</strong></th>
+<th><strong>2</strong></th>
+<th><strong>3</strong></th>
+<th><strong>4</strong></th>
+<th><strong>5</strong>  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <strong>1</strong></td>
+<td>{A, C}</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td> <strong>2</strong></td>
+<td>{B, S}</td>
+<td>{B, C}</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td> <strong>3</strong></td>
+<td>{A}</td>
+<td>{A}</td>
+<td>{A, C}</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td> <strong>4</strong></td>
+<td>{B, S}</td>
+<td>{B, S}</td>
+<td>{B, S}</td>
+<td>{B, C}</td>
+<td></td>
+</tr>
+<tr>
+<td> <strong>5</strong></td>
+<td>{A}</td>
+<td>{A}</td>
+<td>{A, C}</td>
+<td>{A}</td>
+<td>{A, C} </td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>使用<strong>unordered_map</strong>来存储产生式，原先没有使用过这个。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, vector&lt;string&gt;&gt; grammar;</span><br></pre></td></tr></table></figure></p>
+<p>DP过程先初始化基础情况，也就是$X_{ii}$。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">        string terminal(1, str[i]);</span><br><span class="line">        for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">            for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                if (rhs == terminal) &#123;</span><br><span class="line">                    X[i][i].insert(lhs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>再去归纳剩下的状态。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">for (int len = 2; len &lt;= n; len++) &#123;</span><br><span class="line">        for (int i = 0; i &lt;= n - len; i++) &#123;</span><br><span class="line">            int j = i + len - 1;</span><br><span class="line">            for (int k = i; k &lt; j; k++) &#123;</span><br><span class="line">                for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">                    for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                        if (rhs.size() == 2) &#123;</span><br><span class="line">                            string v1(1, rhs[0]);</span><br><span class="line">                            string v2(1, rhs[1]);</span><br><span class="line">                            if (contains(X[i][k], v1) &amp;&amp; contains(X[k + 1][j], v2)) &#123;</span><br><span class="line">                                X[i][j].insert(lhs);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">完整代码在这里</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -355,7 +479,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
