@@ -162,6 +162,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/" class="post-title-link" itemprop="url">Pumping lemma 和 Ogden's lemma</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-12 14:05:34 / 修改时间：20:05:54" itemprop="dateCreated datePublished" datetime="2024-11-12T14:05:34+08:00">2024-11-12</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。</p>
+<p>现在介绍一个判断上下文无关语言的更强的引理：<strong>Ogden’s lemma</strong>（中文翻译为鄂登引理）。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z=uvwxy$，总满足：</p>
+<ol>
+<li>$vwx$含有最多$n$个标记</li>
+<li>$vx$含有至少一个标记</li>
+<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
+</ol>
+<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>显而易见的，泵引理就是Ogden’s lemma标记字符串所有的位置时的情况，由此可见，Ogden’s lemma更加灵活，比泵引理更强，能再泵引理不足以判断的时候起到作用。下面会举个例子。</p>
+<p>关于我们用泵引理和鄂登引理到底来干什么，下面的说明会帮助产生一个清晰的认识。</p>
+<ol>
+<li>如果一个语言是上下文无关语言，那么属于这个语言的字符串<strong>一定</strong>满足泵引理</li>
+<li>如果一个语言不是上下文无关语言，那么属于这个语言的字符串仍然<strong>可能</strong>满足泵引理</li>
+<li>如果一个字符串满足泵引理，那么这个字符串代表的语言<strong>可能</strong>是上下文无关语言</li>
+<li>如果一个字符串不满足泵引理，那么这个字符串代表的语言<strong>一定不是</strong>上下文无关语言</li>
+</ol>
+<p>这说明我们一般使用泵引理来判断一个语言不是上下文无关语言（即证明里面该语言存在字符串不满足泵引理）。</p>
+<p>使用泵引理说明一个语言是上下文无关语言没有意义。</p>
+<h1 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h1><p>关于该引理的证明<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=_95IZWDRHNQ">请看这里</a><br>我觉得还是讲的很清楚的。</p>
+<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>该例子参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12613082/using-ogden-s-lemma-versus-regular-pumping-lemma-for-context-free-grammars">stackoverflow的一个问答</a></p>
+<p>考虑语言$L = \{a^ib^jc^kd^l | i=0 \text{ or }j=k=l\}$，证明其不是上下文无关语言。</p>
+<p>我们先考虑使用泵引理。</p>
+<p>令$z=uvwxy$，假设$z$包含a，我们可以令$v=a,x=\epsilon,y=\epsilon$；假设$z$不包含a，我们可以令$v=b,x=\epsilon,y=\epsilon$。都满足泵引理，因此无法通过泵引理来证明不是上下文无关语言。</p>
+<p>现在考虑用鄂登引理。</p>
+<p>令$z=ab^nc^nd^n$，标记所有的b，令$z=uvwxy$。</p>
+<p>假如v或x有超过一种（区分于一个）字符，则重复就会出现错误的顺序。</p>
+<p>所以v和x至少包含一个字符$b$，则出现以下五种情况：</p>
+<ol>
+<li>$v=\epsilon,x=b^i$</li>
+<li>$v=a,x=b^i$</li>
+<li>$v=b^i,x=c^j$</li>
+<li>$v=b^i,x=d^j$</li>
+<li>$v=b^i,x=\epsilon$<br>容易验证以上五种情况都不满足鄂登引理。因此，$L$不是上下文无关语言。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -479,7 +571,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

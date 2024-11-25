@@ -162,6 +162,122 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">哈希函数及其应用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-11-22 22:37:32" itemprop="dateCreated datePublished" datetime="2024-11-22T22:37:32+08:00">2024-11-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-25 16:46:03" itemprop="dateModified" datetime="2024-11-25T16:46:03+08:00">2024-11-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第六章Hash Functions and Applications</p>
+<p>我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>哈希函数是一类将任意长度的输入压缩为固定长度输出的函数。非加密哈希函数的经典用途是在数据结构中，它们可以用来构建哈希表，从而在存储一组元素时实现$O(1)$的查找。具体来说，如果哈希函数$H$的输出范围大小为$N$，那么元素x被存储在表格的第$H(x)$行。</p>
+<p>一个良好的哈希函数要尽可能的减少碰撞(collision)。抗碰撞(Collision-resistant)哈希函数的目标也是避免碰撞，但是在数据结构的应用中，较少碰撞只是优化的要求，但是在密码学背景下，避免碰撞是一个严格的要求，因为攻击者可能会故意构造发生碰撞的值来进行攻击。所以设计抗碰撞哈希函数的难度要高于设计一般的哈希函数。</p>
+<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥s和一个字符串x，输出$H_s(x)$。</p>
+<p>这里的密钥和我们过去考虑的密钥有所不同，在过去的密钥我们希望保密，但是这里哈希函数中攻击者可能知道密钥，在这个前提下，我们希望哈希函数还具有抗碰撞性。</p>
+<p><strong>DEFINITION 6.1</strong><br>一个哈希函数由一对概率多项式算法组成。</p>
+<ul>
+<li>Gen： 是一个概率算法，输出密钥s</li>
+<li>H： 是一个确定性算法，接受一个密钥s和一个字符串x，输出$H_s(x)$，长度为$l(n)$</li>
+</ul>
+<p>如果H只接受固定长度的字符串输入，我们称哈希函数为fixed-length，H为compression function。显然这里输出的长度必须小于输入长度。</p>
+<p>下面介绍攻击实验The collission-finding experiment $Hash-coll_{\mathcal{A},\mathcal{H}}(n)$:</p>
+<ol>
+<li>生成密钥s</li>
+<li>攻击者接受s，输出$x,x’$。</li>
+<li>如果这两个输出产生碰撞，则实验结果为1，反之为0</li>
+</ol>
+<p>$DEFINITON 6.2$<br>一个哈希函数是Collision Resistant当且仅当<br>$Pr[Hash-coll_{\mathcal{A},\mathcal{H}}(n) = 1]\leq negl(n)$</p>
+<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。<br>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
+<h2 id="弱一些的安全定义"><a href="#弱一些的安全定义" class="headerlink" title="弱一些的安全定义"></a>弱一些的安全定义</h2><ul>
+<li>Second-preimage resistance<br>对于一个哈希函数，如果给定s和x，找不到另一个能碰撞的字符串。</li>
+<li>Preimage resistance<br>对于一个哈希函数，如果给定s和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
+</ul>
+<p>coliision resistant $\Rightarrow$ second-preimage resistance $\Rightarrow$ preimage resistance</p>
+<h1 id="Merkle–Damgard变换"><a href="#Merkle–Damgard变换" class="headerlink" title="Merkle–Damgård变换"></a>Merkle–Damgård变换</h1><p>许多应用需要“完全成熟”的抗碰撞哈希函数，这种哈希函数能够处理非常长的输入，甚至是任意长度的输入。然而，构造固定长度的哈希函数（即压缩函数）更为容易——这些函数只接受“短”的输入。幸运的是，Merkle–Damgård变换使我们可以将后者转换为前者。这种哈希函数域扩展的方法在实践中被频繁使用，例如MD5和SHA系列哈希函数。</p>
+<p>假设已经存在压缩函数$(Gen,h)$，能接受长度大于2n的输入并输出长度为n的输出。那么我们可以通过下面的变换得到一个能处理任意长度输入的哈希函数<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/1.png?raw=true" alt="1"></p>
+<p><strong>THEOREM 6.4</strong><br>如果$(Gen,h)$抗碰撞，那么构造的$(Gen,H)$也抗碰撞</p>
+<p>证明如下：//TODO</p>
+<h1 id="应用哈希函数进行消息认证"><a href="#应用哈希函数进行消息认证" class="headerlink" title="应用哈希函数进行消息认证"></a>应用哈希函数进行消息认证</h1><p>我们之前已经讨论了几种针对任意长度消息的消息认证码（MAC）的构造。在本节中，我们将看到另一种方法，该方法依赖于抗碰撞哈希函数。随后，我们会介绍一种被标准化并广泛使用的方案，称为 HMAC（哈希消息认证码），它可以看作是这种方法的具体实现。</p>
+<h2 id="Hash-and-MAC"><a href="#Hash-and-MAC" class="headerlink" title="Hash-and-MAC"></a>Hash-and-MAC</h2><p>抗碰撞哈希函数可以自然地用于消息认证码（MAC）的域扩展。例如，假设我们有一个固定长度的 MAC，它可以处理长度为 l(n)-比特的消息，并且有一个输出长度为 l(n)-比特的抗碰撞哈希函数。那么我们可以通过对消息 m 进行哈希计算，然后使用 MAC 对哈希值进行认证，从而对任意长度的消息 m 进行认证。（参见构造 6.5。）</p>
+<p>直观上，这种方法是安全的，因为：</p>
+<ul>
+<li>MAC 的安全性 确保攻击者无法认证任何新的哈希值。</li>
+<li>抗碰撞性 确保攻击者无法找到与已使用哈希值相同的哈希的新消息。</li>
+</ul>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/2.png?raw=true" alt="2"></p>
+<p><strong>THEOREM 6.6</strong><br>如果$\prod$是一个secure的MAC，$\mathcal{H}$是一个抗碰撞的哈希函数，那么上述构造是一个secure MAC</p>
+<p>证明如下：//TODO</p>
+<h2 id="HMAC"><a href="#HMAC" class="headerlink" title="HMAC"></a>HMAC</h2><p>在原则上，可以通过将任意抗碰撞哈希函数与第4.5节中的固定长度消息认证码（MAC）相结合，来实现上一节提到的“哈希并认证”（hash-and-MAC）方法。然而，这种方法在实际中有至少两个缺点：</p>
+<ul>
+<li>需要实现两种密码学原语</li>
+<li>哈希函数输出长度与分组密码分组长度之间的不匹配</li>
+</ul>
+<p>HMAC 的设计克服了哈希函数和分组密码之间的不匹配问题，同时通过高效的构造支持任意长度的消息。具体地，HMAC 使用了两次调用哈希函数的过程，同时结合了内置的密钥与填充操作，以确保安全性。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/3.png?raw=true" alt="3"></p>
+<p><strong>THEOREM 6.8</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/4.png?raw=true" alt="4"></p>
+<p>证明如下：//TODO</p>
+<h1 id="对哈希函数的攻击"><a href="#对哈希函数的攻击" class="headerlink" title="对哈希函数的攻击"></a>对哈希函数的攻击</h1><h2 id="Birthday-Attacks"><a href="#Birthday-Attacks" class="headerlink" title="Birthday Attacks"></a>Birthday Attacks</h2><p>最简单的攻击是在输入空间内穷举，但是复杂度高达$2^{n}$。</p>
+<p>现在考虑一个问题，一个房间里有q个人，那么存在两个人生日相同的概率是多少。<br>我们不难发现，当$q\approx 2^{l/2}$时，碰撞的概率接近0.5。</p>
+<p>所以，攻击者只需要尝试$2^{l/2}$次，就能显著提高找到碰撞对的概率。</p>
+<p>所以，要达到相同的安全水平，哈希函数输出的长度应该是2n。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1027,98 +1143,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/" class="post-title-link" itemprop="url">Pumping lemma 和 Ogden's lemma</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-12 14:05:34 / 修改时间：20:05:54" itemprop="dateCreated datePublished" datetime="2024-11-12T14:05:34+08:00">2024-11-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。</p>
-<p>现在介绍一个判断上下文无关语言的更强的引理：<strong>Ogden’s lemma</strong>（中文翻译为鄂登引理）。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z=uvwxy$，总满足：</p>
-<ol>
-<li>$vwx$含有最多$n$个标记</li>
-<li>$vx$含有至少一个标记</li>
-<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
-</ol>
-<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>显而易见的，泵引理就是Ogden’s lemma标记字符串所有的位置时的情况，由此可见，Ogden’s lemma更加灵活，比泵引理更强，能再泵引理不足以判断的时候起到作用。下面会举个例子。</p>
-<p>关于我们用泵引理和鄂登引理到底来干什么，下面的说明会帮助产生一个清晰的认识。</p>
-<ol>
-<li>如果一个语言是上下文无关语言，那么属于这个语言的字符串<strong>一定</strong>满足泵引理</li>
-<li>如果一个语言不是上下文无关语言，那么属于这个语言的字符串仍然<strong>可能</strong>满足泵引理</li>
-<li>如果一个字符串满足泵引理，那么这个字符串代表的语言<strong>可能</strong>是上下文无关语言</li>
-<li>如果一个字符串不满足泵引理，那么这个字符串代表的语言<strong>一定不是</strong>上下文无关语言</li>
-</ol>
-<p>这说明我们一般使用泵引理来判断一个语言不是上下文无关语言（即证明里面该语言存在字符串不满足泵引理）。</p>
-<p>使用泵引理说明一个语言是上下文无关语言没有意义。</p>
-<h1 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h1><p>关于该引理的证明<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=_95IZWDRHNQ">请看这里</a><br>我觉得还是讲的很清楚的。</p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>该例子参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12613082/using-ogden-s-lemma-versus-regular-pumping-lemma-for-context-free-grammars">stackoverflow的一个问答</a></p>
-<p>考虑语言$L = \{a^ib^jc^kd^l | i=0 \text{ or }j=k=l\}$，证明其不是上下文无关语言。</p>
-<p>我们先考虑使用泵引理。</p>
-<p>令$z=uvwxy$，假设$z$包含a，我们可以令$v=a,x=\epsilon,y=\epsilon$；假设$z$不包含a，我们可以令$v=b,x=\epsilon,y=\epsilon$。都满足泵引理，因此无法通过泵引理来证明不是上下文无关语言。</p>
-<p>现在考虑用鄂登引理。</p>
-<p>令$z=ab^nc^nd^n$，标记所有的b，令$z=uvwxy$。</p>
-<p>假如v或x有超过一种（区分于一个）字符，则重复就会出现错误的顺序。</p>
-<p>所以v和x至少包含一个字符$b$，则出现以下五种情况：</p>
-<ol>
-<li>$v=\epsilon,x=b^i$</li>
-<li>$v=a,x=b^i$</li>
-<li>$v=b^i,x=c^j$</li>
-<li>$v=b^i,x=d^j$</li>
-<li>$v=b^i,x=\epsilon$<br>容易验证以上五种情况都不满足鄂登引理。因此，$L$不是上下文无关语言。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1188,7 +1212,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
