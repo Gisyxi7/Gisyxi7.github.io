@@ -162,6 +162,169 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="post-title-link" itemprop="url">判定性与复杂度</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-11-26 15:03:06" itemprop="dateCreated datePublished" datetime="2024-11-26T15:03:06+08:00">2024-11-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-29 15:43:43" itemprop="dateModified" datetime="2024-11-29T15:43:43+08:00">2024-11-29</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="判定性-Decidability"><a href="#判定性-Decidability" class="headerlink" title="判定性(Decidability)"></a>判定性(Decidability)</h1><p>到目前为止，我们已经学习了正则语言、上下文无关语言、递归语言（图灵可判定语言）、递归可枚举语言（图灵可识别语言）。</p>
+<p>我们已经知道正则语言是上下文无关语言的子集，上下文无关语言是图灵可判定语言的子集。</p>
+<p>事实上，我们学过的语言符合下图所示的关系。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/1.png?raw=true" alt="1"></p>
+<p>我们这一节的目标是证明<br>$\text{decidable} \varsubsetneqq \text{RE} \varsubsetneqq \text{all languages}$</p>
+<h2 id="可数与可数集"><a href="#可数与可数集" class="headerlink" title="可数与可数集"></a>可数与可数集</h2><p>首先回顾一下<strong>可数</strong>的概念。<br>我们称自然数集$\mathbb{N}=\{1,2,3,\dots\}$中的元素为<strong>可数</strong>。 （这里暂定自然数从1开始，但是没有本质的区别）<br>对于一个集合$S$，如果该集合是有限集，或者存在一个双射$f:N\rightarrow S$我们称$S$为<strong>可数</strong>。</p>
+<hr>
+<p><strong>定理</strong>： 实数集$\mathbb{R}$不可数。</p>
+<p>证明如下：</p>
+<p>假设$\mathbb{R}$是可数，那么存在一个双射$f:N\rightarrow \mathbb{R}$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/2.png?raw=true" alt="2"></p>
+<p>其中<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/3.png?raw=true" alt="3"><br>将有限小数和整数视为后面有无数个0的无限小数。</p>
+<p>令x=0.b1b2b3…，其中bi≠aii。</p>
+<p>所以x一定不在该表格的双射中。矛盾，所以$\mathbb{R}$不可数。</p>
+<hr>
+<h2 id="非递归可枚举语言"><a href="#非递归可枚举语言" class="headerlink" title="非递归可枚举语言"></a>非递归可枚举语言</h2><p>现在我们证明非递归可枚举语言(Non-RE Languages)的存在。</p>
+<p>所谓非递归可枚举语言，是指不能由图灵机接受并判定的语言。</p>
+<hr>
+<p><strong>定理</strong>：非递归可枚举语言存在。</p>
+<p>证明如下：</p>
+<p>所有图灵机的集合是可数的。<br>显然，我们可以由一个有限长度的字符串确定性的表示一个图灵机（将所有要素全部写下来），而对于有限的字母表$\Sigma$，$\Sigma^*$是可数的，因此图灵机是一个可数集的子集，也是可数的。</p>
+<p>所有语言的集合是不可数的。<br>用康托尔对角法很容易证明，仿照上面实数集不可数的证明思路。</p>
+<p>所以从图灵机的集合到语言的集合的函数时不可逆的。即给定一个语言，不一定有对应的图灵机。</p>
+<p>一个显然的事实是，给定一个图灵机，一定会有一个对应的语言；而上面的证明说明了给定一个语言，不一定会有一个能接收这个语言的图灵机，从而递归可枚举语言就是所有语言的真子集。从而得到非递归可枚举语言存在。</p>
+<hr>
+<p>到目前为止，我们从理论上将递归可枚举语言和所有语言区分开。</p>
+<h2 id="停机问题"><a href="#停机问题" class="headerlink" title="停机问题"></a>停机问题</h2><p>现在我们要寻找一个不可判定的语言，将递归语言和递归可枚举语言彻底区分开来。</p>
+<p><strong>定义</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/4.png?raw=true" alt="4"></p>
+<p>这里实际上HALT也可以看作一个语言，只不过这个语言接收一个二元组的字符表示作为它的输入字符串而已。</p>
+<hr>
+<p><strong>定理</strong><br>停机问题不可判定。</p>
+<p>证明如下：</p>
+<p>假设存在图灵机H能判定HALT问题。</p>
+<ul>
+<li>如果M对于输入x可以停机，那么H会接受$&lt; M, x&gt;$</li>
+<li>如果M对于输入x不会停机，那么H会拒绝$&lt; M, x&gt;$</li>
+</ul>
+<p>现在定义一个新图灵机H’，它接受输入$&lt; M&gt;$, 即图灵机的字符串表示</p>
+<ul>
+<li>如果H接受了$&lt; M, &lt; M&gt;&gt;$，则死循环</li>
+<li>如果H拒绝了$&lt; M, &lt; M&gt;&gt;$，则停机</li>
+</ul>
+<p>现在考虑给H’输入$&lt; H’&gt;$</p>
+<ul>
+<li>如果停机，那么H拒绝了输入，说明H不能停机</li>
+<li>如果死循环，那么H接受输入，说明H可以停机</li>
+</ul>
+<p>显然这是矛盾的，因此H和H’都不存在。</p>
+<hr>
+<p>到目前为止，我们已经找到了一种语言，停机问题，是不可判定的，将递归语言和递归可枚举语言彻底区分了开来。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/5.png?raw=true" alt="5"></p>
+<h2 id="图灵不可识别的语言"><a href="#图灵不可识别的语言" class="headerlink" title="图灵不可识别的语言"></a>图灵不可识别的语言</h2><p>下面给出一个具体的例子。<br><strong>定义</strong>：<br>定义一个递归可枚举(RE)语言的补集co-RE，则有如下关系：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/6.png?raw=true" alt="6"></p>
+<p>这里的补集指的是所有的具体语言关于$\Sigma^*$的补集所形成的新的语言的集合。</p>
+<hr>
+<p><strong>定理</strong>：<br>一个语言$L$可判定，当且仅当它既是RE，也是co-RE。</p>
+<p>充要性证明省略</p>
+<hr>
+<p>由此我们可以得出，HALT的补集不是递归可枚举的。</p>
+<p>到此，我们就彻底搞清了各种语言之间的包含关系了。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/7.png?raw=true" alt="7"></p>
+<h1 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>算法是什么：算法是一个必定会停止的图灵机，也就是一个递归语言/图灵可判定语言的图灵机。</p>
+<p>真实世界中，运行算法会占用<strong>时间空间</strong>资源。</p>
+<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><p>一个图灵机运行时间（步数），被称为<strong>时间复杂度</strong>。用一个函数表示：<br>$f:\mathbb{N}\rightarrow\mathbb{N}$<br>其中$f(n)$是$M$对于任意长度为$n$的输入停机所需要的最大步骤数（移动次数）。这里分析的是最坏情况。</p>
+<p><strong>渐进表示法</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/8.png?raw=true" alt="8"></p>
+<h2 id="时间复杂度类"><a href="#时间复杂度类" class="headerlink" title="时间复杂度类"></a>时间复杂度类</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/9.png?raw=true" alt="9"></p>
+<p>用多带图灵机来编程通常会比单带的图灵机更方便一些。</p>
+<ul>
+<li>在我们讨论可判定性的时候，它们是等价的；</li>
+<li>不过当我们讨论复杂度的时候，它们就不等价了。</li>
+</ul>
+<p>同时我们有以下定理<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/10.png?raw=true" alt="10"></p>
+<h1 id="P与NP"><a href="#P与NP" class="headerlink" title="P与NP"></a>P与NP</h1><p>我们认为多项式运行时间是高效的，认为指数运行时间是不高效的。</p>
+<h2 id="P"><a href="#P" class="headerlink" title="P"></a>P</h2><p><strong>定义</strong><br>定义 P 或者 多项式时间(polynomial-time) 是一类语言，它们在一个单带、确定性图灵机上是多项式时间可判定的。<br>$P=\cup_{k\ge 1} TIME(n^k)$</p>
+<p>我们关注P是因为计算模型对多项式是不敏感的，换而言之，在一个确定性计算模型上面多项式时间的算法在另一个确定性计算模型上依旧是多项式时间的。</p>
+<h2 id="NP"><a href="#NP" class="headerlink" title="NP"></a>NP</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/11.png?raw=true" alt="11"></p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/12.png?raw=true" alt="12"><br>意思就是，对于具体的解能在多项式时间能判定。</p>
+<h2 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h2><p>给定一个新问题，如果我们先买个要说明这个问题不可判定，我们通常有两种思路：</p>
+<ol>
+<li>从头开始论证</li>
+<li>将一个已知不可判定的问题转变为新问题，使新问题的解决办法也可以解决旧问题。</li>
+</ol>
+<p><strong>归约(reduction)</strong> 是一种将一个问题转化成另一个问题的方式，使得第二个问题的解决方案也可以用来解决第一个问题。</p>
+<p>首先我们定义什么是可计算的函数<br><strong>定义</strong>：<br>一个函数$f:\sum^<em> \rightarrow \sum^</em>$是<strong>可计算的(computable)</strong>，如果存在一个图灵机$M_f$，使得对于每一个输入$\omega$，$M_f$将$f(\omega)$写到纸带上并停机。</p>
+<p>然后我们来定义归约<br><strong>定义</strong>：<br>A可以被映射归约(mapping reducible)为B，写作$A\leq_m B$，如果存在一个可计算的函数$f$，使得对于所有$\omega$，都有<br>$\omega\in A\Leftrightarrow f(\omega)\in B$<br>等价的<br>$\omega\notin A\Leftrightarrow f(\omega)\notin B$<br>$f$被称为从A到B的一个归约。</p>
+<p>下图是语言$A$到$B$的归约的图示<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/13.png?raw=true" alt="13"></p>
+<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是可判定的，那么$A$也是可判定的。</p>
+<p>注意其逆否命题的方向<br>如果$A\leq_m B$且$A$是不可判定的，那么$B$也是不可判定的。</p>
+<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是RE，那么$A$也是RE。</p>
+<h2 id="Rice定理"><a href="#Rice定理" class="headerlink" title="Rice定理"></a>Rice定理</h2><p>我们发现图灵机的以下一些性质是不可判定的。</p>
+<ul>
+<li>接受字符$\omega$</li>
+<li>在输入字符串$\omega$时停机</li>
+<li>接受语言为空</li>
+</ul>
+<p><strong>定理</strong>：<br><strong>Rice定理</strong>： 图灵机的每一个<strong>非平凡</strong>的<strong>性质</strong>都是不可判定的。</p>
+<p><strong>定义</strong><br>一个图灵机的<strong>性质property</strong>指一个语言$P$，满足对于任意两个图灵机$M_1,M_2$，如果$L(M_1)=L(M_2)$，则<br>$&lt; M_1&gt;\in P\Leftrightarrow &lt; M_2&gt; \in P$</p>
+<p>如果存在一个图灵机$M_1$，使得$&lt; M_1&gt;\in P$且存在一个图灵机$M_2$，使得$&lt; M_2&gt;\notin P$，则称$P$是一个<strong>非平凡</strong>的性质。</p>
+<h1 id="NPC"><a href="#NPC" class="headerlink" title="NPC"></a>NPC</h1><h2 id="多项式时间归约"><a href="#多项式时间归约" class="headerlink" title="多项式时间归约"></a>多项式时间归约</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/14.png?raw=true" alt="14"><br><strong>定理</strong>：<br>如果$A\leq_P B$且$B\in P$，那么$A\in P$。</p>
+<h2 id="NP完全理论"><a href="#NP完全理论" class="headerlink" title="NP完全理论"></a>NP完全理论</h2><p><strong>定义</strong><br>我们称一个语言B是<strong>NP完全的</strong>，当且仅当满足以下条件：</p>
+<ol>
+<li>$B\in NP$</li>
+<li>$\forall A\in NP:A\leq_P B$<br>若只满足第二个条件，则称B是<strong>NP难的</strong>。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1056,93 +1219,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/" class="post-title-link" itemprop="url">Mitsuba0.6编译指南</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-13 13:50:55 / 修改时间：14:56:59" itemprop="dateCreated datePublished" datetime="2024-11-13T13:50:55+08:00">2024-11-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="关于Mitsuba"><a href="#关于Mitsuba" class="headerlink" title="关于Mitsuba"></a>关于Mitsuba</h1><p><a target="_blank" rel="noopener" href="https://www.mitsuba-renderer.org/">Mitsuba</a>是一个学术界应用很广的渲染系统，基于C++编写。</p>
-<p>这里介绍Mitsuba0.6 的编译操作指南。注意，因为官方版本长期不维护，这里的来源是一个<a target="_blank" rel="noopener" href="https://github.com/VicentChen/mitsuba">第三方维护版本</a>。</p>
-<h1 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h1><p>这里我不准备编译图形化界面，所以不会涉及到QT有关内容。</p>
-<p>我将自己使用的文件直接上传到我的GitHub仓库，有需要的可以自己下载，理论上从我仓库下载按照说明进行安装就不会出现问题。如果遇到新问题欢迎在我的GitHub上提issue。</p>
-<p>请确保你的电脑已经安装好了</p>
-<ol>
-<li>Visual Studio</li>
-<li>Cmake</li>
-<li>Python 3.9</li>
-</ol>
-<h1 id="详细步骤"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤</h1><h2 id="下载mitsuba"><a href="#下载mitsuba" class="headerlink" title="下载mitsuba"></a>下载mitsuba</h2><p>从我仓库下载mitsuba源码，解压。<br>//TODO </p>
-<h2 id="下载依赖文件"><a href="#下载依赖文件" class="headerlink" title="下载依赖文件"></a>下载依赖文件</h2><p>从<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/mitsuba0.6-dep-py3.9.12">这里</a>下载。</p>
-<p>解压后将文件夹dependencies放在mts目录下。</p>
-<h2 id="设置python目录"><a href="#设置python目录" class="headerlink" title="设置python目录"></a>设置python目录</h2><p>在mts<strong>主目录</strong>下找到CmakeLists.txt。</p>
-<p>修改其中设置：</p>
-<h3 id="添加Python路径"><a href="#添加Python路径" class="headerlink" title="添加Python路径"></a>添加Python路径</h3><p>找到<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (NOT Python_ROOT_DIR)</span><br><span class="line">	set(Python_ROOT_DIR &quot;C:/ProgramData/Anaconda3&quot; CACHE STRING &quot;Python installtion path&quot; FORCE)</span><br><span class="line">	message(&quot;No Python_ROOT_DIR specified. Python_ROOT_DIR is set to default value &#x27;C:/ProgramData/Anaconda3&#x27;&quot;)</span><br><span class="line">endif(NOT Python_ROOT_DIR)</span><br><span class="line">find_package(Python COMPONENTS Interpreter Development REQUIRED)</span><br><span class="line">set(PYTHON_VERSION_WITHOUT_DOT &quot;python$&#123;Python_VERSION_MAJOR&#125;$&#123;Python_VERSION_MINOR&#125;&quot;)</span><br><span class="line">message(&quot;Found python version: $&#123;PYTHON_VERSION_WITHOUT_DOT&#125;&quot;)</span><br></pre></td></tr></table></figure><br>这里是在设置python路径，自行在上方添加自己的python路径<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set(Python_ROOT_DIR &quot;Your Path&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>注意，这里我使用的python版本为<a target="_blank" rel="noopener" href="https://www.python.org/downloads/release/python-3912/">3.9.12</a>，其他版本（anaconda）我本人遇到过报错。</p>
-<h2 id="新建cbuild"><a href="#新建cbuild" class="headerlink" title="新建cbuild"></a>新建cbuild</h2><p>在mts主目录下新建文件夹cbuild。</p>
-<h2 id="生成VS项目"><a href="#生成VS项目" class="headerlink" title="生成VS项目"></a>生成VS项目</h2><p>打开终端，切换到<strong>VS Command</strong>。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/1.png?raw=true" alt="image-1"><br>在VS终端打开刚才创建的cbuild文件夹<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;.../.../cbuild&quot;</span><br></pre></td></tr></table></figure><br>执行<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake ..</span><br></pre></td></tr></table></figure></p>
-<p>会有一些Warnings，忽略即可。</p>
-<h2 id="编译项目"><a href="#编译项目" class="headerlink" title="编译项目"></a>编译项目</h2><p>打开刚才生成好的Mitsuba.sln（在cbuild文件夹下）。</p>
-<p>一定一定一定切换到<strong>Release</strong>模式下进行编译。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/2.png?raw=true" alt="image-2"></p>
-<p>耐心等待即可。</p>
-<p>如果出现问题，请先自己浏览报错信息。并检查自己有没有擅自更改过子目录下的CmakeList.txt!!!</p>
-<p>顺利编译成功。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/3.png?raw=true" alt="image-3"></p>
-<p>这里我的电脑配置还行，编译比较快。</p>
-<p>然后我们就可以开启愉快的Mitsuba之旅啦！</p>
-<p>（我没有编译QT，所以通过命令行运行程序）</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1212,7 +1288,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
