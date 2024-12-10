@@ -162,6 +162,480 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/" class="post-title-link" itemprop="url">FLA复习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-09 22:06:54" itemprop="dateCreated datePublished" datetime="2024-12-09T22:06:54+08:00">2024-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-10 20:06:54" itemprop="dateModified" datetime="2024-12-10T20:06:54+08:00">2024-12-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h1 id="有穷自动机"><a href="#有穷自动机" class="headerlink" title="有穷自动机"></a>有穷自动机</h1><h2 id="确定性有穷自动机"><a href="#确定性有穷自动机" class="headerlink" title="确定性有穷自动机"></a>确定性有穷自动机</h2><p>五元组$(Q, \Sigma, \delta, q_0, F)$</p>
+<ul>
+<li>$Q$ 是一个有限状态集合</li>
+<li>$\Sigma$ 是一个输入字母表</li>
+<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态</li>
+<li>$q_0$ 是初始状态，$q_0\in Q$</li>
+<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
+</ul>
+<p>$\delta$是一个全函数，对于一个状态$q$和输入符号$a$，$\delta(q,a)$一定有对应的转移，如果没有，我们额外定义一个<strong>死状态</strong>。</p>
+<p>对于一个自动机来说，它的语言是从初始状态走到终止状态的所有路径的标签字符串的集合。</p>
+<h2 id="判断DFA的语言和一个自然描述的语言集合"><a href="#判断DFA的语言和一个自然描述的语言集合" class="headerlink" title="判断DFA的语言和一个自然描述的语言集合"></a>判断DFA的语言和一个自然描述的语言集合</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/FLA%E5%A4%8D%E4%B9%A0/1.png?raw=true" alt="1"></p>
+<p>先证$S\subseteq T$，使用归纳假设：</p>
+<ul>
+<li>如果$\delta(A,\omega)=A$，那么$\omega$没有连续的两个$1$并且不以$1$结尾</li>
+<li>如果$\delta(A,\omega)=B$，那么$\omega$没有连续的两个$1$并且以单个$1$结尾</li>
+</ul>
+<p>再证$T\subseteq S$，使用反证法：</p>
+<ul>
+<li>假设$\omega\in T$没有被DFA接受</li>
+</ul>
+<h2 id="正则语言"><a href="#正则语言" class="headerlink" title="正则语言"></a>正则语言</h2><ul>
+<li>证明一个语言不是正则语言（不使用泵引理）：反证法找矛盾</li>
+</ul>
+<h1 id="非确定性有穷自动机"><a href="#非确定性有穷自动机" class="headerlink" title="非确定性有穷自动机"></a>非确定性有穷自动机</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>五元组$(Q, \Sigma, \delta, q_0, F)$</p>
+<ul>
+<li>$Q$ 是一个有限状态集合</li>
+<li>$\Sigma$ 是一个输入字母表</li>
+<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态<strong>集合</strong></li>
+<li>$q_0$ 是初始状态，$q_0\in Q$</li>
+<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
+</ul>
+<h2 id="NFA和DFA的等价性"><a href="#NFA和DFA的等价性" class="headerlink" title="NFA和DFA的等价性"></a>NFA和DFA的等价性</h2><ul>
+<li>DFA-&gt;NFA 显而易见</li>
+<li>NFA-&gt;DFA <strong>子集构造法</strong></li>
+</ul>
+<h1 id="带空转移的NFA"><a href="#带空转移的NFA" class="headerlink" title="带空转移的NFA"></a>带空转移的NFA</h1><p>在NFA的基础上再允许某个状态在没有输入字符的时候就转移到另一个状态，即接受$\epsilon$输入。</p>
+<h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>引入<strong>状态闭包</strong>的概念，即可以通过任意个空转移到达的状态集合。</p>
+<h2 id="NFA和-epsilon-NFA的等价性"><a href="#NFA和-epsilon-NFA的等价性" class="headerlink" title="NFA和$\epsilon$-NFA的等价性"></a>NFA和$\epsilon$-NFA的等价性</h2><ul>
+<li>NFA-&gt;$\epsilon$-NFA 显而易见</li>
+<li>$\epsilon$-NFA-&gt;NFA 先取闭包，后转移，最后再次取闭包</li>
+</ul>
+<h1 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h1><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
+<h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li><strong>并(union)</strong>：就是集合的并操作</li>
+<li><strong>拼接(concatenation)</strong>：LM</li>
+<li><strong>星闭包(Kleene closure)</strong>：L*</li>
+</ul>
+<h2 id="正则表达式与有穷自动机的等价性"><a href="#正则表达式与有穷自动机的等价性" class="headerlink" title="正则表达式与有穷自动机的等价性"></a>正则表达式与有穷自动机的等价性</h2><h3 id="正则表达式转换为-epsilon-NFA"><a href="#正则表达式转换为-epsilon-NFA" class="headerlink" title="正则表达式转换为$\epsilon$-NFA"></a>正则表达式转换为$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
+<h3 id="DFA转换为正则表达式"><a href="#DFA转换为正则表达式" class="headerlink" title="DFA转换为正则表达式"></a>DFA转换为正则表达式</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
+<h2 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h2><ul>
+<li>$R+\emptyset=R$</li>
+<li>$R\emptyset=\emptyset R=\emptyset$</li>
+<li>$\epsilon R=R\epsilon =R$</li>
+<li>$(\epsilon+R)<em>=R</em>$</li>
+<li>$R+SR=(\epsilon+S)R$</li>
+<li>$\epsilon+RR<em>=R</em>$</li>
+<li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
+</ul>
+<h1 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h1><ul>
+<li>成员资格问题：模拟运行</li>
+<li>空问题：是否有一个终止状态可达</li>
+<li>无限性问题：是否有环</li>
+<li>等价性：构造乘积DFA</li>
+<li>包含关系：构造乘积DFA<h2 id="泵引理："><a href="#泵引理：" class="headerlink" title="泵引理："></a>泵引理：</h2>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</li>
+</ul>
+<ol>
+<li>$|xy|\leq n$</li>
+<li>$|y| &gt;0$</li>
+<li>$\forall i \ge 0,xy^iz\in L$<br>判断一个语言不是正则表达式时使用泵引理，还可以利用正则语言的闭包性说明不是。还可以<strong>构造DFA</strong>来说明是正则语言。</li>
+</ol>
+<h2 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h2><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
+<p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
+<h1 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h1><ul>
+<li>并操作、拼接操作以及星闭包操作下的闭包</li>
+<li>交集、差集、补集下的闭包</li>
+<li>逆运算下的闭包</li>
+<li>同态运算下的闭包</li>
+<li>逆同态运算下的闭包</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">迁移系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-09 14:08:40 / 修改时间：23:33:24" itemprop="dateCreated datePublished" datetime="2024-12-09T14:08:40+08:00">2024-12-09</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>迁移系统</strong>(transition system, TS) 是一个反应式的系统，直觉上它由一个所有可能状态的集合以及一些迁移(transition)——或者说状态转换(state change)——的集合组成。</p>
+<p>我们可以用有向图来表示一个迁移系统，图中的结点表示状态，边表示迁移行为。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>迁移系统是一个五元组$(S,S_0,T,\alpha,\beta)$:</p>
+<ul>
+<li>$S$ 是一个有限或无限的状态集合</li>
+<li>$S_0$ 是一个初始状态集合，$S_0 \subseteq S$</li>
+<li>$T$ 是一个迁移集合，$T \subseteq S \times S$</li>
+<li>$\alpha$和$\beta$是两个从$T$到$S$的映射，对于任意的$t\in T$，有$\alpha(t)$表示迁移的<strong>源状态</strong>和$\beta(t)$表示迁移的<strong>目标状态</strong>。</li>
+</ul>
+<p>若$S$和$T$是有限的，则整个迁移系统也是有限的。</p>
+<p>定义一个迁移系统$\mathcal{A}$的路径是一个迁移的序列$t_1,t_2,\dots,t_n$。</p>
+<p>如果一个状态可以由初始状态经过一条路径达到，则称这个状态是<strong>可达</strong>的。<br>如果一个状态不可以到达任何其他状态，则称这个状态是<strong>终结状态</strong>。<br>如果一个状态是可达的同时又是一个终结状态，则称这个状态是<strong>死锁状态</strong>。</p>
+<p>当然，这里$\alpha$和$\beta$的定义可以拓展到对一个路径取源和目标。</p>
+<h2 id="带标签的迁移系统"><a href="#带标签的迁移系统" class="headerlink" title="带标签的迁移系统"></a>带标签的迁移系统</h2><p>一个被字母表$A$标记的，带标签的迁移系统(labeled transition system) 是一个 6 元组$\mathcal{A} = (S,S_0,T,\alpha,\beta,\lambda)$:</p>
+<ul>
+<li>前五元组是一个迁移系统</li>
+<li>$\lambda$是一个从$T$到$A$的映射，对于任意的$t\in T$，有$\lambda(t)$表示迁移的<strong>标签</strong>。</li>
+</ul>
+<p>直觉上，一个迁移的标签意味着触发这个迁移的行为或者事件。</p>
+<p>定义一条如果$c=t_1,t_2,\cdots$是一条路径，那么触发这些迁移的行为的序列$trace(c)=\lambda(t_1),\lambda(t_2),\cdots$被称为这个路径的<strong>踪迹</strong>。</p>
+<h1 id="迁移系统的等价性"><a href="#迁移系统的等价性" class="headerlink" title="迁移系统的等价性"></a>迁移系统的等价性</h1><p>想要证明两个建模语言是等价的，我们可以用迁移系统来刻画它们的行为，然后通过证明迁移系统的等价性来证明建模语言行为的等价性。</p>
+<h2 id="强同构等价"><a href="#强同构等价" class="headerlink" title="强同构等价"></a>强同构等价</h2><p>唯一的区别就只能是状态和迁移的命名不同</p>
+<h2 id="弱同构等价"><a href="#弱同构等价" class="headerlink" title="弱同构等价"></a>弱同构等价</h2><p>如果这两个可达子迁移系统是同构的，我们称原来的两个迁移系统是 弱同构(weak isomorphic) 的。</p>
+<h2 id="双模拟等价"><a href="#双模拟等价" class="headerlink" title="双模拟等价"></a>双模拟等价</h2><p>迁移系统具有相同的行为，并在同一时刻做选择。</p>
+<h1 id="迁移系统的运算"><a href="#迁移系统的运算" class="headerlink" title="迁移系统的运算"></a>迁移系统的运算</h1><h2 id="自由积"><a href="#自由积" class="headerlink" title="自由积"></a>自由积</h2><p>将多个迁移系统的定义做一个笛卡尔积。</p>
+<p>直观上理解，各个子系统的定义不变，加入了时钟来统一驱动多个系统。使之走相同的步数。</p>
+<h2 id="同步积"><a href="#同步积" class="headerlink" title="同步积"></a>同步积</h2><p>当进程之间进行交互的时候，并不是所有可能的全局行为都是有用的，因为这些交互会受到进程通信和同步的限制。</p>
+<p>因此，描述多进程系统的迁移系统一定是各个进程对应的各自迁移系统的自由积的一个子系统，我们可以用同步积来表达这种受到通信和同步约束的全局系统。</p>
+<p>本质上就是加入了一个集合来判断自由积中哪些迁移是被允许的。换句话说，同步积只允许标签向量在同步约束中的全局迁移发生。</p>
+<h2 id="tau-迁移和共享标签"><a href="#tau-迁移和共享标签" class="headerlink" title="$\tau $迁移和共享标签"></a>$\tau $迁移和共享标签</h2><p>自由积有时钟的限制，要求所有子迁移系统必须同进退，要想消除这个限制，只需要每个状态引入一个自环转移($\tau$ transition)就行了。</p>
+<p>我们也可以使用共享标签来表示两个迁移必须同时发生，这样在表达上面会更加简洁。不过这并没有拓展同步积的表达能力就是了，只是换了一种更简便的表达方式而已。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">正则表达式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-09 13:21:51" itemprop="dateCreated datePublished" datetime="2024-12-09T13:21:51+08:00">2024-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-10 16:18:06" itemprop="dateModified" datetime="2024-12-10T16:18:06+08:00">2024-12-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>正则表达式(regular expression, RE) 通过代数式的方式来描述语言。</p>
+<p>如果$E$是一个正则表达式，记它定义的语言为$L(E)$。</p>
+<p>首先回顾一下语言的操作：</p>
+<ul>
+<li><strong>并(union)</strong>：就是集合的并操作</li>
+<li><strong>拼接(concatenation)</strong>：LM</li>
+<li><strong>星闭包(Kleene closure)</strong>：L*</li>
+</ul>
+<p><strong>定义</strong>：<br>递归地定义正则表达式如下：<br>基础情况：</p>
+<ol>
+<li>一个符号是正则表达式</li>
+<li>$\epsilon$是正则表达式</li>
+<li>$\emptyset$是正则表达式<br>递归情况：</li>
+<li>两个正则表达式的并是正则表达式，$E_1+E_2$</li>
+<li>两个正则表达式的拼接是正则表达式，$E_1E_2$</li>
+<li>一个正则表达式的星闭包是正则表达式，$E*$</li>
+</ol>
+<h2 id="操作符号优先级"><a href="#操作符号优先级" class="headerlink" title="操作符号优先级"></a>操作符号优先级</h2><p>星闭包&gt;拼接&gt;并 </p>
+<h2 id="正则表达式和有穷自动机的等价性"><a href="#正则表达式和有穷自动机的等价性" class="headerlink" title="正则表达式和有穷自动机的等价性"></a>正则表达式和有穷自动机的等价性</h2><h3 id="将正则表达式转换成-epsilon-NFA"><a href="#将正则表达式转换成-epsilon-NFA" class="headerlink" title="将正则表达式转换成$\epsilon$-NFA"></a>将正则表达式转换成$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
+<h3 id="将DFA转化为正则表达式"><a href="#将DFA转化为正则表达式" class="headerlink" title="将DFA转化为正则表达式"></a>将DFA转化为正则表达式</h3><p>定义<strong>k-路径</strong>：<br>k-路径指的是DFA状态转换图上的某一条路径，其中，这条路径经过的所有状态的标号不超过k。</p>
+<p>令$R^{k}_{ij}$表示从状态$i$走到状态$j$的k路径。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
+<h2 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h2><ul>
+<li>$R+\emptyset=R$</li>
+<li>$R\emptyset=\emptyset R=\emptyset$</li>
+<li>$\epsilon R=R\epsilon =R$</li>
+<li>$(\epsilon+R)<em>=R</em>$</li>
+<li>$R+SR=(\epsilon+S)R$</li>
+<li>$\epsilon+RR<em>=R</em>$</li>
+<li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
+</ul>
+<h1 id="正则语言的判定性质"><a href="#正则语言的判定性质" class="headerlink" title="正则语言的判定性质"></a>正则语言的判定性质</h1><p>语言类有两类重要的性质：</p>
+<ul>
+<li>判定性质<br>一类语言的<strong>判定性质(decision property)</strong>对应于一个算法，这个算法以某个语言的形式化描述(比如说一个DFA)为输入，然后告诉我们这个语言是否满足某些性质（比如说这个语言是否为空之类的）。语言的表示可以是形式化(formal)的（比如说RE，FA等等），也可以是非形式化(informal)的（比如说自然语言描述，集合描述等等）。</li>
+<li>闭包性质<br>一类语言的<strong>闭包性质(closure property)</strong>说的是给定这个语言类的一些语言，对于这些语言进行某个操作得到的另一个语言依旧在同一个语言类中。</li>
+</ul>
+<p>下面讨论一些常见的判定性质。</p>
+<h2 id="成员资格问题"><a href="#成员资格问题" class="headerlink" title="成员资格问题"></a>成员资格问题</h2><p>一个给定字符串是否属于一个给定正则语言。</p>
+<p>转换成DFA模拟运行即可。</p>
+<h2 id="空问题"><a href="#空问题" class="headerlink" title="空问题"></a>空问题</h2><p>判断一个给定的正则语言是否为空。</p>
+<p>假设语言的表示为DFA，从初始状态开始，计算所有的可达状态的集合，如果至少有一个终止状态可达，那么这个语言就非空，否则为空。</p>
+<h2 id="无限性问题"><a href="#无限性问题" class="headerlink" title="无限性问题"></a>无限性问题</h2><p>判断一个给定的正则语言的语言集合是否为无限大。</p>
+<p>只要找DFA是否出现环。</p>
+<h2 id="泵引理"><a href="#泵引理" class="headerlink" title="泵引理"></a>泵引理</h2><p>判断某个语言是不是正则语言。</p>
+<p>使用<strong>泵引理</strong>：<br>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
+<ol>
+<li>$|xy|\leq n$</li>
+<li>$|y| &gt;0$</li>
+<li>$\forall i \ge 0,xy^iz\in L$</li>
+</ol>
+<p>泵引理被用来判断一个语言不是正则语言。而不是用来判断是正则语言。</p>
+<h2 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h2><p>判断两个正则语言是否等价。</p>
+<p>构造<strong>乘积DFA</strong>：</p>
+<ul>
+<li>状态集：$Q\times R$</li>
+<li>初始状态：$[q_0,r_0]$</li>
+<li>转移函数：$\delta([q,r],a)=[\delta_L(q,a),\delta_R(r,a)]$</li>
+<li><strong>终止状态</strong>：$[q,r]$，其中只有一个是原来DFA的终止状态。</li>
+</ul>
+<p>如果这个自动机是接受的语言是空集，则说明两个正则语言等价。</p>
+<h2 id="包含关系"><a href="#包含关系" class="headerlink" title="包含关系"></a>包含关系</h2><p>判断两个正则语言是否包含。</p>
+<p>仍然构造乘积DFA，但是终止状态定义为$[q,r]$，其中$q$是原来DFA的终止状态，而$r$不是$M$的终止状态。</p>
+<p>这样乘积DFA是空集等价于$L\subseteq M$</p>
+<h2 id="一个正则语言的最小状态DFA"><a href="#一个正则语言的最小状态DFA" class="headerlink" title="一个正则语言的最小状态DFA"></a>一个正则语言的最小状态DFA</h2><p>现在考虑如何将一个DFA找到其等价的最小状态DFA。下面我们介绍一种高效的 <strong>状态最小化(efficient state minimization)</strong> 操作。</p>
+<p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
+<h1 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h1><h2 id="并操作、拼接操作以及星闭包操作下的闭包"><a href="#并操作、拼接操作以及星闭包操作下的闭包" class="headerlink" title="并操作、拼接操作以及星闭包操作下的闭包"></a>并操作、拼接操作以及星闭包操作下的闭包</h2><p>如果$L$和$M$是正则语言，那么$L\cup M$，$LM$，$L*$都是正则语言。</p>
+<h2 id="交集、差集、补集下的闭包"><a href="#交集、差集、补集下的闭包" class="headerlink" title="交集、差集、补集下的闭包"></a>交集、差集、补集下的闭包</h2><ul>
+<li>交集<br>  在交集下闭包，构造一个乘积DFA，令终止状态是两个共同的终止状态。</li>
+<li>差集<br>  在差集下闭包，构造一个乘积DFA，终止状态是包含A的但不包含B的终止状态的状态对。</li>
+<li>补集<br>  在补集下闭包。</li>
+</ul>
+<h2 id="逆运算下的闭包"><a href="#逆运算下的闭包" class="headerlink" title="逆运算下的闭包"></a>逆运算下的闭包</h2><p>递归的进行逆操作即可。</p>
+<h2 id="同态运算和逆同态运算下的闭包"><a href="#同态运算和逆同态运算下的闭包" class="headerlink" title="同态运算和逆同态运算下的闭包"></a>同态运算和逆同态运算下的闭包</h2><p>对于一个字母表的<strong>同态(homomorphism)</strong>指的是一个函数，这个函数对于字母表中的每一个字符给出了一个字符串。</p>
+<p>正则语言在同态和逆同态下是闭包的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">有穷自动机</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-09 11:19:04" itemprop="dateCreated datePublished" datetime="2024-12-09T11:19:04+08:00">2024-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-10 11:19:24" itemprop="dateModified" datetime="2024-12-10T11:19:24+08:00">2024-12-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><h2 id="什么是有穷自动机"><a href="#什么是有穷自动机" class="headerlink" title="什么是有穷自动机"></a>什么是有穷自动机</h2><p>有穷自动机(finite automa) 是一个形式系统，它只记忆有限量的信息，这些信息通过它的 状态(states) 表示。当有 <strong>输入</strong>(input) 给到有穷自动机的时候，它会相应地改变自己的状态。告诉有穷自动机该如何根据输入改变自身状态的规则称为 <strong>转移</strong>(transition) 。</p>
+<h2 id="状态转换图"><a href="#状态转换图" class="headerlink" title="状态转换图"></a>状态转换图</h2><p>双环表示 <strong>终止状态</strong>(final state) ，给定一系列的输入，称为 <strong>输入字符串</strong>(input string) ，从初始状态开始，根据每个输入符号转移到下一状态。如果读入一个特定的字符串能够让状态从初始状态变为终止状态，我们称这个输入被 <strong>接受</strong>(accepted) 了。</p>
+<h2 id="一个自动机的语言"><a href="#一个自动机的语言" class="headerlink" title="一个自动机的语言"></a>一个自动机的语言</h2><p>称能够被一个自动机 A 接受的字符串的集合为 A 的 <strong>语言</strong>(language) ，记为 L(A) 。</p>
+<h1 id="确定性有穷自动机"><a href="#确定性有穷自动机" class="headerlink" title="确定性有穷自动机"></a>确定性有穷自动机</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p><strong>确定性有穷自动机</strong>(Deterministic Finite Automa, DFA) 是一种定义语言的形式化系统，记为五元组$(Q, \Sigma, \delta, q_0, F)$</p>
+<ul>
+<li>$Q$ 是一个有限状态集合</li>
+<li>$\Sigma$ 是一个输入字母表</li>
+<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态</li>
+<li>$q_0$ 是初始状态，$q_0\in Q$</li>
+<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
+</ul>
+<p>注意这里$\delta$是一个全函数，对于一个状态$q$和输入符号$a$，$\delta(q,a)$一定有对应的转移，如果没有，我们额外定义一个<strong>死状态</strong>。</p>
+<h2 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h2><h3 id="图表示"><a href="#图表示" class="headerlink" title="图表示"></a>图表示</h3><p>用状态转移图表示DFA。</p>
+<ul>
+<li>用 结点(node) 表示状态</li>
+<li>用 弧(arc) 表示转移函数</li>
+<li>用标有 Start 的箭头指向起始状态</li>
+<li>用 双圆(double circle) 表示终止状态</li>
+</ul>
+<h3 id="转移表"><a href="#转移表" class="headerlink" title="转移表"></a>转移表</h3><ul>
+<li>行头表示状态，列头表示输入符号</li>
+<li>用箭头指向初始状态，用星号标注终止状态</li>
+<li>每一个表象都是转移函数的结果</li>
+</ul>
+<h2 id="扩展的转移函数"><a href="#扩展的转移函数" class="headerlink" title="扩展的转移函数"></a>扩展的转移函数</h2><p>之前定义的转移函数只对应一个状态面对<strong>单个</strong>字符输入的转移，现在扩展到对一个输入字符串的转移。</p>
+<p>递归定义拓展的转移函数：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/1.png?raw=true" alt="1"></p>
+<h2 id="DFA的语言"><a href="#DFA的语言" class="headerlink" title="DFA的语言"></a>DFA的语言</h2><p>定义对于一个DFA $A$，定义$A$能接受的语言集合为$L(A)$，记为$L(A)=\{w|\delta(q_0,w)\in F\}$。</p>
+<p>PS: 证明一个语言集合等价于一个DFA定义的语言集合，需要证明两个集合互相包含。</p>
+<h2 id="正则语言"><a href="#正则语言" class="headerlink" title="正则语言"></a>正则语言</h2><p>如果一个语言集合$L$可以被某个DFA<strong>恰好</strong>接受，那么我们称这个语言集合为<strong>正则语言</strong>(regular language)。</p>
+<h1 id="非确定性有穷自动机"><a href="#非确定性有穷自动机" class="headerlink" title="非确定性有穷自动机"></a>非确定性有穷自动机</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>非确定性有穷自动机(Nondeterministic Finite Automaton, NFA) 可以同一时刻处在多个状态中。当有一个输入符号的时候，可以从一个状态转移到任意状态的集合。</p>
+<p>直观上，NFA虽然转移函数给出了多个目标状态，但是一个输入字符串对于一个NFA总能找到自己正确的转移路径到终止状态（如果能被接受的话）。</p>
+<p>定义为五元组，与DFA的区别是转移函数不是返回一个单独的状态，而是一个状态<strong>集合</strong>。</p>
+<h2 id="DFA与NFA的等价性"><a href="#DFA与NFA的等价性" class="headerlink" title="DFA与NFA的等价性"></a>DFA与NFA的等价性</h2><p>DFA和NFA是等价的，现在展示互相构造：</p>
+<h3 id="已知DFA构造NFA"><a href="#已知DFA构造NFA" class="headerlink" title="已知DFA构造NFA"></a>已知DFA构造NFA</h3><p>这是显然的，DFA就是一种特殊的NFA，只不过转移函数的新状态集合大小始终为1.</p>
+<h3 id="已知NFA构造DFA"><a href="#已知NFA构造DFA" class="headerlink" title="已知NFA构造DFA"></a>已知NFA构造DFA</h3><p>使用<strong>子集构造</strong>。</p>
+<h1 id="带空转移的NFA"><a href="#带空转移的NFA" class="headerlink" title="带空转移的NFA"></a>带空转移的NFA</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>我们可以在NFA的基础上再允许某个状态在没有输入字符的时候就转移到另一个状态，也就是说转移函数可以接受$\epsilon$输入。</p>
+<p>带空转移的NFA被称为$\epsilon-NFA$。</p>
+<p>只需要再多考虑<strong>状态闭包</strong>。</p>
+<h2 id="NFA与带空转移的NFA的等价性"><a href="#NFA与带空转移的NFA的等价性" class="headerlink" title="NFA与带空转移的NFA的等价性"></a>NFA与带空转移的NFA的等价性</h2><h3 id="已知NFA构造带空转移的NFA"><a href="#已知NFA构造带空转移的NFA" class="headerlink" title="已知NFA构造带空转移的NFA"></a>已知NFA构造带空转移的NFA</h3><p>这也是显然的。</p>
+<h3 id="已知带空转移的NFA构造NFA"><a href="#已知带空转移的NFA构造NFA" class="headerlink" title="已知带空转移的NFA构造NFA"></a>已知带空转移的NFA构造NFA</h3><p>取闭包，后转移，再取一次闭包。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -193,7 +667,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-05 12:02:39" itemprop="dateModified" datetime="2024-12-05T12:02:39+08:00">2024-12-05</time>
+                <time title="修改时间：2024-12-09 23:33:09" itemprop="dateModified" datetime="2024-12-09T23:33:09+08:00">2024-12-09</time>
               </span>
 
           
@@ -394,7 +868,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-29 15:43:43" itemprop="dateModified" datetime="2024-11-29T15:43:43+08:00">2024-11-29</time>
+                <time title="修改时间：2024-12-09 23:15:53" itemprop="dateModified" datetime="2024-12-09T23:15:53+08:00">2024-12-09</time>
               </span>
 
           
@@ -955,337 +1429,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/19/%E5%AF%86%E7%A0%81%E5%AD%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/19/%E5%AF%86%E7%A0%81%E5%AD%A6/" class="post-title-link" itemprop="url">密码学</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-19 11:37:34 / 修改时间：11:38:22" itemprop="dateCreated datePublished" datetime="2024-11-19T11:37:34+08:00">2024-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>该系列为自己整理的一些笔记<br>参考教材为Introduction to Modern Cryptography Third Edition</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/18/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/18/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">形式语言与自动机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-18 22:36:54 / 修改时间：22:38:30" itemprop="dateCreated datePublished" datetime="2024-11-18T22:36:54+08:00">2024-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这个系列是我自己学习过程中对笔记的再整理。</p>
-<p>参考<a target="_blank" rel="noopener" href="https://fla.cuijiacai.com/">网站</a>，内容几乎是一致的，但是自己整理一遍会加深一些印象。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/18/%E5%9B%BE%E7%81%B5%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/18/%E5%9B%BE%E7%81%B5%E6%9C%BA/" class="post-title-link" itemprop="url">图灵机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-18 13:57:55 / 修改时间：17:39:59" itemprop="dateCreated datePublished" datetime="2024-11-18T13:57:55+08:00">2024-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是图灵机"><a href="#什么是图灵机" class="headerlink" title="什么是图灵机"></a>什么是图灵机</h1><h2 id="直觉上"><a href="#直觉上" class="headerlink" title="直觉上"></a>直觉上</h2><p>图灵机长这样</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/1.png?raw=true" alt="1"></p>
-<p>有一条无限长的<strong>纸带</strong>，纸带里有一些方格，方格中的符号来自一个有限字母表。</p>
-<p>图灵机可以根据自己当前的状态和读写头指向的纸带符号，改变自己的状态，重写读写头指向的符号，然后将读写头移动一个方格（可以向左也可以向右）。</p>
-<p>值得注意的是，图灵机和一般的计算机都有等价的表达能力，而因为图灵机有无限内存（纸带无限长），图灵机甚至比物理上的计算机更加强大。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>一个图灵机是一个<strong>七元组</strong> $M=(Q,\sum,\Gamma,\delta,q_0,B,F)$</p>
-<ul>
-<li>$Q$是一个有限的状态集合。</li>
-<li>$\sum$是一个输入字母表。</li>
-<li>$\Gamma$是一个纸带字母表，$\Gamma \subseteq \sum$。</li>
-<li>$\delta$是转移函数。<ul>
-<li>接受两个参数，一个状态$q\in Q$和一个纸带符号$Z\in\Gamma$</li>
-<li>$\delta(q,Z)$要么没定义，要么为一个三元组$(p,Y,D)$，分别是状态，纸带符号，转换头前进方向（L或R）。</li>
-</ul>
-</li>
-<li>$q_0$是起始状态。</li>
-<li>$B$是一个空符号，$B\in \Gamma -\sum$，除了输入以外的其他纸带部分初始都为空。</li>
-<li>$F$是终止状态集合。</li>
-</ul>
-<h2 id="图灵机的即时描述和移动"><a href="#图灵机的即时描述和移动" class="headerlink" title="图灵机的即时描述和移动"></a>图灵机的即时描述和移动</h2><p>在初始时刻，图灵机接受一个有限的输入字符串，字符串两边是无限的空符号。图灵机处于初始状态并且指向最左边的输入符号。</p>
-<h3 id="即时描述-Instantaneous-Description-ID"><a href="#即时描述-Instantaneous-Description-ID" class="headerlink" title="即时描述(Instantaneous Description, ID)"></a>即时描述(Instantaneous Description, ID)</h3><p>图灵机的即时描述是一个字符串$\alpha q \beta$</p>
-<ul>
-<li>其中$\alpha\beta$是纸带上从最左边的非空符号到最右边的非空符号的部分。</li>
-<li>状态$q$放置在正在扫描的符号的左侧。<ul>
-<li>$\alpha\beta q$表示正在扫描最右侧的$B$，可以省略不写。</li>
-<li>$qB\alpha\beta$表示正在扫描最左侧的$B$，不可以省略不写。</li>
-</ul>
-</li>
-</ul>
-<h3 id="移动-move-vdash"><a href="#移动-move-vdash" class="headerlink" title="移动(move) $\vdash $"></a>移动(move) $\vdash $</h3><p>即$ID_1 \vdash ID_2$，根据转移函数进行变化。</p>
-<p>如果可以经过0次或多次移动到达新ID，表示为$ID_1 \vdash^* ID_2$</p>
-<h2 id="图灵机的语言"><a href="#图灵机的语言" class="headerlink" title="图灵机的语言"></a>图灵机的语言</h2><p>图灵机对应的语言可以通过<strong>根据终止状态的定义</strong>或<strong>停机</strong>这两种方式来定义。</p>
-<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>$L(M)=\{\omega | q_0\omega \vdash^* I\text{, where I is an ID with a final state} \}$</p>
-<h3 id="通过停机"><a href="#通过停机" class="headerlink" title="通过停机"></a>通过停机</h3><p>$H(M)=\{\omega | q_0\omega \vdash^* I\text{, and there is no move possible from ID I} \}$</p>
-<h3 id="两种表达的等价性"><a href="#两种表达的等价性" class="headerlink" title="两种表达的等价性"></a>两种表达的等价性</h3><p>能够构造出等价转换的图灵机。</p>
-<h4 id="终止状态到停机"><a href="#终止状态到停机" class="headerlink" title="终止状态到停机"></a>终止状态到停机</h4><p>如果$L=L(M)$，则存在另一个图灵机$M’$，使得$L=H(M’)$</p>
-<ol>
-<li>对于$M$的每个终止状态，删除任意移动，使得$M’$在这个状态必然停机。</li>
-<li>令所有没有定义转移函数的非终止状态都定义为向右移动。</li>
-</ol>
-<h4 id="停机到终止状态"><a href="#停机到终止状态" class="headerlink" title="停机到终止状态"></a>停机到终止状态</h4><p>如果$L=H(M)$，则存在另一个图灵机$M’’$，使得$L=L(M’’)$</p>
-<ol>
-<li>引入新状态$f$，成为唯一的终止状态，且没有移动。</li>
-<li>对于任何没有定义转移函数的二元组，都定义为转换到状态$f$。</li>
-</ol>
-<h2 id="递归可枚举语言和递归语言"><a href="#递归可枚举语言和递归语言" class="headerlink" title="递归可枚举语言和递归语言"></a>递归可枚举语言和递归语言</h2><p>我们称由图灵机定义的语言类被称为<strong>递归可枚举语言</strong>(recursively enumerable language) 。</p>
-<p>定义<strong>算法</strong>是一个图灵机，这个图灵机通过终止状态接收，并且无论接受与否，它都注定会停机。</p>
-<p>如果$L=L(M)$且图灵机$M$是一个算法，则称$L$是一个<strong>递归语言</strong>(recursive language)。</p>
-<p>每个上下文无关语言都是一个递归语言。</p>
-<h1 id="图灵机进阶"><a href="#图灵机进阶" class="headerlink" title="图灵机进阶"></a>图灵机进阶</h1><h2 id="图灵机编程技巧"><a href="#图灵机编程技巧" class="headerlink" title="图灵机编程技巧"></a>图灵机编程技巧</h2><h3 id="多道"><a href="#多道" class="headerlink" title="多道"></a>多道</h3><p>可以将纸带符号看成一个有多个分量的向量。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/2.png?raw=true" alt="2"></p>
-<h3 id="标记"><a href="#标记" class="headerlink" title="标记"></a>标记</h3><p>增加一个通道来标记特殊位置，在新增加的通道上，大多数符号都是空的，这让图灵机能很方便找到这些位置。</p>
-<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>状态也可以是一个向量，首分量用来控制状态，其余分量用来存储一些信息。</p>
-<h2 id="半无穷纸带"><a href="#半无穷纸带" class="headerlink" title="半无穷纸带"></a>半无穷纸带</h2><p>可以构造一个图灵机从来不会移动到初始读写头位置的左边。</p>
-<p>令初始时读写头的位置为0，右侧位置为1、2、……，左侧为-1，-2，……。</p>
-<p>构造一个有两个分道的图灵机，并让增加一个状态分量表示是正在扫描顶部磁道还是底部磁道。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/3.png?raw=true" alt="3"></p>
-<h2 id="更多限制"><a href="#更多限制" class="headerlink" title="更多限制"></a>更多限制</h2><p>两个栈就能模拟一个纸带。</p>
-<p>所以相较于下推自动机，只多了一个栈，但是计算能力有了本质性的提高。</p>
-<h2 id="图灵机的拓展"><a href="#图灵机的拓展" class="headerlink" title="图灵机的拓展"></a>图灵机的拓展</h2><p>扩展的图灵机在本质上表达能力没有变强，只是表示更方便了。</p>
-<h3 id="多纸带图灵机"><a href="#多纸带图灵机" class="headerlink" title="多纸带图灵机"></a>多纸带图灵机</h3><p>多纸带图灵机有多个纸带，每个纸带有自己的读写头，图灵机的移动取决于它的状态以及每个纸带上读写头下的符号。</p>
-<p>用单纸带图灵机模拟多纸带(k)图灵机：</p>
-<p>用有2k个分道的单纸带图灵机来模拟，其中对应多纸带图灵机的每个纸带，单纸带图灵机用一个分道来标记读写头，另一个分道记录纸带。</p>
-<h3 id="非确定性图灵机"><a href="#非确定性图灵机" class="headerlink" title="非确定性图灵机"></a>非确定性图灵机</h3><p>非确定性图灵机(Non-determinstic Turing Machine, NTM) 允许在一次移动的时候有不止一次可能的选择，每一个选择都是一个（状态，符号，方向）三元组，这和 确定性图灵机(Determinstic Turing Machine, DTM)中一样。</p>
-<p>用多分道图灵机来模拟广度优先搜索即可。</p>
-<h1 id="递归可枚举语言和递归语言的闭包性质"><a href="#递归可枚举语言和递归语言的闭包性质" class="headerlink" title="递归可枚举语言和递归语言的闭包性质"></a>递归可枚举语言和递归语言的闭包性质</h1><ul>
-<li>递归可枚举语言和递归语言在并集、拼接、星闭包、翻转、交集以及逆同态操作下都是封闭的。</li>
-<li>递归语言在差集、补集操作下封闭。</li>
-<li>递归可枚举语言在同态操作下是封闭的。</li>
-</ul>
-<h2 id="并集操作"><a href="#并集操作" class="headerlink" title="并集操作"></a>并集操作</h2><ul>
-<li>递归语言：只需要看在两个算法上能否停下来。</li>
-<li>递归可枚举语言：当两个图灵机有一个接受，但是可能不知道什么时候能停机。</li>
-</ul>
-<h2 id="交集操作-差集操作"><a href="#交集操作-差集操作" class="headerlink" title="交集操作/差集操作"></a>交集操作/差集操作</h2><p>类似于并集。</p>
-<h2 id="拼接操作"><a href="#拼接操作" class="headerlink" title="拼接操作"></a>拼接操作</h2><ul>
-<li>递归可枚举语言：用两个单带半无穷图灵机构造一个非确定性图灵机，如果存在一个正确分割方式，那么一定能选择正确的方式。</li>
-<li>递归语言：遍历寻找分割方式。</li>
-</ul>
-<h2 id="星闭包"><a href="#星闭包" class="headerlink" title="星闭包"></a>星闭包</h2><p>和拼接类似。</p>
-<h2 id="翻转"><a href="#翻转" class="headerlink" title="翻转"></a>翻转</h2><p>只需要用一个辅助图灵机翻转字符串。</p>
-<h2 id="逆同态操作"><a href="#逆同态操作" class="headerlink" title="逆同态操作"></a>逆同态操作</h2><p>用一个图灵机模拟同态函数$h$，将其应用于输入$\omega$，得到$h(\omega)$，然后用原本的图灵机来接收$h(\omega)$就可以了。</p>
-<h2 id="同态操作"><a href="#同态操作" class="headerlink" title="同态操作"></a>同态操作</h2><ul>
-<li>递归可枚举语言：设计非确定性图灵机</li>
-<li>递归语言：可能取值是无穷的，不适用。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/16/UE%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/16/UE%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">UE入门</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-16 10:05:05 / 修改时间：18:13:56" itemprop="dateCreated datePublished" datetime="2024-11-16T10:05:05+08:00">2024-11-16</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="游戏引擎简介"><a href="#游戏引擎简介" class="headerlink" title="游戏引擎简介"></a>游戏引擎简介</h1><h2 id="什么是游戏引擎"><a href="#什么是游戏引擎" class="headerlink" title="什么是游戏引擎"></a>什么是游戏引擎</h2><p><strong>UE引擎</strong><br>渲染品质高<br>美术资产制作管线成熟<br>c++与蓝图 性能与可视化编程并重<br>开发周期 提供各种框架<br>跨平台<br>开源<br><strong>Unity</strong><br>不开源<br><strong>CryEngine V</strong><br><strong>Open3D</strong><br><strong>Source2</strong></p>
-<p>专门为游戏而设计的工具和科技集合</p>
-<ol>
-<li>通用性和偏向性</li>
-<li>可扩展性</li>
-<li>完善工具链</li>
-</ol>
-<p>手机渲染和PC渲染的区别</p>
-<p>物理引擎<br><strong>Havok</strong><br><strong>PhysX</strong><br><strong>Bullet</strong></p>
-<p>碰撞检测动态约束布娃娃系统。。。<br><strong>Chaos in UE</strong>大规模场景破坏</p>
-<h1 id="UE介绍"><a href="#UE介绍" class="headerlink" title="UE介绍"></a>UE介绍</h1><p>历史演变</p>
-<p>安装UE5 200</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1355,7 +1498,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
