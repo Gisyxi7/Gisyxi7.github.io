@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="什么是CYK算法CYK算法（英语：Cocke–Younger–Kasami algorithm，缩写为CYK algorithm）是由约翰·科克，Younger和嵩忠雄共同研究出来大约发表于1965年的一个算法，它是一个用来判定任意给定的字符串$\omega\in\sum^*$是否属于一个上下文无关文法的算法。 该算法采用动态规划的思想，将复杂度降低至多项式时间$O(n^3)$，其中$n$是字符串">
+  <meta name="description" content="下推自动机下推自动机(Pushdown Automata, PDA) 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。 直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CYK算法的C++实现">
-<meta property="og:url" content="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:title" content="下推自动机">
+<meta property="og:url" content="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/index.html">
 <meta property="og:site_name" content="Gisyxi7&#39;s blogs">
-<meta property="og:description" content="什么是CYK算法CYK算法（英语：Cocke–Younger–Kasami algorithm，缩写为CYK algorithm）是由约翰·科克，Younger和嵩忠雄共同研究出来大约发表于1965年的一个算法，它是一个用来判定任意给定的字符串$\omega\in\sum^*$是否属于一个上下文无关文法的算法。 该算法采用动态规划的思想，将复杂度降低至多项式时间$O(n^3)$，其中$n$是字符串">
+<meta property="og:description" content="下推自动机下推自动机(Pushdown Automata, PDA) 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。 直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-11-11T13:19:57.000Z">
-<meta property="article:modified_time" content="2024-12-09T15:33:17.782Z">
+<meta property="article:published_time" content="2024-12-11T11:25:50.000Z">
+<meta property="article:modified_time" content="2024-12-11T12:33:42.343Z">
 <meta property="article:author" content="Gisyxi7">
 <meta property="article:tag" content="形式语言与自动机">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/">
+<link rel="canonical" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>CYK算法的C++实现 | Gisyxi7's blogs</title>
+  <title>下推自动机 | Gisyxi7's blogs</title>
   
 
 
@@ -166,7 +166,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +179,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CYK算法的C++实现
+          下推自动机
         </h1>
 
         <div class="post-meta">
@@ -188,16 +188,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2024-11-11 21:19:57" itemprop="dateCreated datePublished" datetime="2024-11-11T21:19:57+08:00">2024-11-11</time>
+              <time title="创建时间：2024-12-11 19:25:50 / 修改时间：20:33:42" itemprop="dateCreated datePublished" datetime="2024-12-11T19:25:50+08:00">2024-12-11</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:33:17" itemprop="dateModified" datetime="2024-12-09T23:33:17+08:00">2024-12-09</time>
-              </span>
 
           
 
@@ -210,72 +204,52 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="什么是CYK算法"><a href="#什么是CYK算法" class="headerlink" title="什么是CYK算法"></a>什么是CYK算法</h1><p>CYK算法（英语：Cocke–Younger–Kasami algorithm，缩写为CYK algorithm）是由约翰·科克，Younger和嵩忠雄共同研究出来大约发表于1965年的一个算法，它是一个用来判定任意给定的字符串$\omega\in\sum^*$是否属于一个上下文无关文法的算法。</p>
-<p>该算法采用动态规划的思想，将复杂度降低至多项式时间$O(n^3)$，其中$n$是字符串的长度。</p>
-<p>注意，使用该算法要先将文法转换为乔姆斯基范式。</p>
-<h1 id="CYK算法思路"><a href="#CYK算法思路" class="headerlink" title="CYK算法思路"></a>CYK算法思路</h1><p>详见<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/#CYK%E7%AE%97%E6%B3%95">传送门</a></p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>判断$\omega=ababa$是否属于$S\rightarrow AB,A\rightarrow BC|a,B\rightarrow AC|b,C\rightarrow a|b$文法定义的语言。</p>
-<p>下表中列为i，行为j。</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th></th>
-<th><strong>1</strong></th>
-<th><strong>2</strong></th>
-<th><strong>3</strong></th>
-<th><strong>4</strong></th>
-<th><strong>5</strong>  </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> <strong>1</strong></td>
-<td>{A, C}</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>2</strong></td>
-<td>{B, S}</td>
-<td>{B, C}</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>3</strong></td>
-<td>{A}</td>
-<td>{A}</td>
-<td>{A, C}</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>4</strong></td>
-<td>{B, S}</td>
-<td>{B, S}</td>
-<td>{B, S}</td>
-<td>{B, C}</td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>5</strong></td>
-<td>{A}</td>
-<td>{A}</td>
-<td>{A, C}</td>
-<td>{A}</td>
-<td>{A, C} </td>
-</tr>
-</tbody>
-</table>
-</div>
-<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>使用<strong>unordered_map</strong>来存储产生式，原先没有使用过这个。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, vector&lt;string&gt;&gt; grammar;</span><br></pre></td></tr></table></figure></p>
-<p>DP过程先初始化基础情况，也就是$X_{ii}$。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">        string terminal(1, str[i]);</span><br><span class="line">        for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">            for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                if (rhs == terminal) &#123;</span><br><span class="line">                    X[i][i].insert(lhs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>再去归纳剩下的状态。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">for (int len = 2; len &lt;= n; len++) &#123;</span><br><span class="line">        for (int i = 0; i &lt;= n - len; i++) &#123;</span><br><span class="line">            int j = i + len - 1;</span><br><span class="line">            for (int k = i; k &lt; j; k++) &#123;</span><br><span class="line">                for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">                    for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                        if (rhs.size() == 2) &#123;</span><br><span class="line">                            string v1(1, rhs[0]);</span><br><span class="line">                            string v2(1, rhs[1]);</span><br><span class="line">                            if (contains(X[i][k], v1) &amp;&amp; contains(X[k + 1][j], v2)) &#123;</span><br><span class="line">                                X[i][j].insert(lhs);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">完整代码在这里</a></p>
+        <h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><p><strong>下推自动机(Pushdown Automata, PDA)</strong> 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。</p>
+<p>直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符号，还依赖于栈顶元素。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p><strong>下推自动机(Pushdown Automata)</strong>为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<ul>
+<li>$Q$为有限状态集合</li>
+<li>$\Sigma$为输入字母表</li>
+<li>$\Gamma$为栈字母表</li>
+<li>$\delta$是转移函数<ul>
+<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
+<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
+</ul>
+</li>
+<li>$q_0\in Q$为初始状态</li>
+<li>$Z_0\in\Gamma$为初始栈顶元素</li>
+<li>$F\subseteq Q$为终止状态集合</li>
+</ul>
+<p>一些字母上的约定：</p>
+<ul>
+<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
+<li>用$\cdots,X,Y,Z$表示栈符号</li>
+<li>用$w,x,y,z$表示输入符号形成的字符串</li>
+<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串</li>
+</ul>
+<h2 id="PDA的运行"><a href="#PDA的运行" class="headerlink" title="PDA的运行"></a>PDA的运行</h2><p>定义一个<strong>即时描述(Instantaneous Description, ID)</strong>是一个三元组$(q,w,\alpha)$：</p>
+<ul>
+<li>$q$是当前状态</li>
+<li>$w$是剩余未处理的输入符号</li>
+<li>$\alpha$是栈的内容，规定左侧为栈顶，右侧为栈底</li>
+</ul>
+<p>定义即时描述之间的转移为<strong>走向(Goes-To)</strong>，用$\vdash $表示。</p>
+<h2 id="PDA的语言"><a href="#PDA的语言" class="headerlink" title="PDA的语言"></a>PDA的语言</h2><p>我们有两种方式来定义PDA的语言。</p>
+<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>接受所有能让PDA走到终止状态的字符串，定义为$L(P)$。</p>
+<h3 id="根据空栈"><a href="#根据空栈" class="headerlink" title="根据空栈"></a>根据空栈</h3><p>接受所有能让PDA的栈为空的字符串，定义为$N(P)$。</p>
+<h3 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h3><p>$L(P)$和$N(P)$在定义语言的能力上是等价的。</p>
+<p>若$L=L(P)$，则存在另一个PDA $P’$使 $L=N(P’)$</p>
+<p>只需要到终止状态再清除栈即可。</p>
+<p>若$L=N(P)$，则存在另一个PDA $P’’$使 $L=L(P’’)$</p>
+<p>只需要发现栈被清空之后转移到终止状态即可。</p>
+<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>我们上面讨论的下推自动机都是<strong>非确定性下推自动机(Nondeterminstic Pushdown Automata, NPDA)</strong>。一般来说，没有特别说明，PDA都指NPDA。</p>
+<p>现在来关注一下<strong>确定性下推自动机(Determinstic Pushdown Automata, DPDA)</strong>，即对于确定的状态、输入符号和栈顶符号，最多只有一种移动的选择。</p>
+<p>我们直到NFA和DFA是等价的，但是在这里，NPDA的表达能力比DPDA要强。</p>
+<h1 id="下推自动机与上下文无关文法的等价性"><a href="#下推自动机与上下文无关文法的等价性" class="headerlink" title="下推自动机与上下文无关文法的等价性"></a>下推自动机与上下文无关文法的等价性</h1><p><strong>定理</strong>：<br>CFG和PDA在定义语言的表达能力上是等价的。</p>
+<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
+<p>思路就是$P$的每一步代表最左推导中的一步。</p>
+<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
+<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
 
     </div>
 
@@ -314,13 +288,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/" rel="prev" title="上下文无关语言">
-      <i class="fa fa-chevron-left"></i> 上下文无关语言
+    <a href="/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/" rel="prev" title="上下文无关文法">
+      <i class="fa fa-chevron-left"></i> 上下文无关文法
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/" rel="next" title="Pumping lemma 和 Ogden's lemma">
-      Pumping lemma 和 Ogden's lemma <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -379,7 +350,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFCYK%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">什么是CYK算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CYK%E7%AE%97%E6%B3%95%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">CYK算法思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">下推自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">形式化定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PDA%E7%9A%84%E8%BF%90%E8%A1%8C"><span class="nav-number">1.2.</span> <span class="nav-text">PDA的运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PDA%E7%9A%84%E8%AF%AD%E8%A8%80"><span class="nav-number">1.3.</span> <span class="nav-text">PDA的语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E7%BB%88%E6%AD%A2%E7%8A%B6%E6%80%81"><span class="nav-number">1.3.1.</span> <span class="nav-text">根据终止状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E7%A9%BA%E6%A0%88"><span class="nav-number">1.3.2.</span> <span class="nav-text">根据空栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">1.3.3.</span> <span class="nav-text">等价性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%80%A7%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA%E4%B8%8E%E9%9D%9E%E7%A1%AE%E5%AE%9A%E6%80%A7%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.4.</span> <span class="nav-text">确定性下推自动机与非确定性下推自动机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA%E4%B8%8E%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">下推自动机与上下文无关文法的等价性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CFG%E8%BD%AC%E5%8F%98%E4%B8%BAPDA"><span class="nav-number">2.1.</span> <span class="nav-text">CFG转变为PDA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PDA%E8%BD%AC%E5%8F%98%E4%B8%BACFG"><span class="nav-number">2.2.</span> <span class="nav-text">PDA转变为CFG</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

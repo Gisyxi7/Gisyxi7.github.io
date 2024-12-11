@@ -162,6 +162,121 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">CCA安全和认证加密</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-11-21 14:39:28" itemprop="dateCreated datePublished" datetime="2024-11-21T14:39:28+08:00">2024-11-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-22 22:34:22" itemprop="dateModified" datetime="2024-11-22T22:34:22+08:00">2024-11-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第五章CCA-Security and Authenticated Encryption</p>
+<p>我们已经讨论过了两种攻击者，一种是监听信道，一种是纂改通信，对应的我们提出了保密性和完整性的目标。现在我们要讨论存在主动攻击者时的保密性问题，以及如何构建同时实现保密性和完整性的加密方案。</p>
+<h1 id="选择密文攻击和CCA安全"><a href="#选择密文攻击和CCA安全" class="headerlink" title="选择密文攻击和CCA安全"></a>选择密文攻击和CCA安全</h1><p>我们上一章中考虑攻击者可以纂改信道，那么显然，攻击者可以有以下的手段，使通信接收方解密攻击者生成的密文，并且攻击者还能知道解密后的消息。</p>
+<h2 id="Padding-Oracle-Attacks"><a href="#Padding-Oracle-Attacks" class="headerlink" title="Padding-Oracle Attacks"></a>Padding-Oracle Attacks</h2><p>现在考虑一种真实情况，客户端使用CBC模式加密向服务器发送消息，假设攻击者能够冒充客户端，向服务器发送其选择的密文，那么攻击者能获得服务器的相关反应来推断密文的有效性（比如服务器解密失败就会要求重传）。</p>
+<p>在CBC加密模式下，我们要求消息长度为底层分组密码长度的整数倍，如果消息长度不满足，则需要进行填充。而填充也需要遵循一定的方案，服务器会解密并验证是否遵循正确的填充方案。</p>
+<p>这意味着服务器会向攻击者提供一个填充查询机，来判断填充是否正确。并且攻击者是有方法根据这个信息来恢复密文对应的明文的。</p>
+<h2 id="CCA-Security-的定义"><a href="#CCA-Security-的定义" class="headerlink" title="CCA-Security 的定义"></a>CCA-Security 的定义</h2><p>下面来形式化定义一下CCA安全。<br>我们仿照之前的实验方案，给出CCA不可区分实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/1.png?raw=true" alt="1"></p>
+<p>注意这里，加密算法应该是概率性的，否则很容易通过加密查询来获取正确结果。</p>
+<p><strong>DEFINITION 5.1</strong><br>一个加密方案是安全的当且仅当<br>$Pr[PrivK^{cca}_{\mathcal{A},\prod}(n)=1]\leq 1/2+negl(n)$</p>
+<p>由此也可以引申出，如果一个方案是CCA安全的，在多密文不可区分实验中仍然是CCA安全的。</p>
+<p>以上实验中给了攻击者很大的能力，比如能知道解密后的明文，但是现实中知道的信息不一定有这么多，我们这里在定义上希望攻击者足够强。</p>
+<p>到目前为止，我们研究的大多数方案都不是CCA安全的。攻击者可以通过比特翻转等攻击方式来打破不可区分性。</p>
+<h1 id="认证加密"><a href="#认证加密" class="headerlink" title="认证加密"></a>认证加密</h1><p>迄今为止，我们分别探讨了如何通过加密实现机密性，以及通过消息认证码实现完整性。下面定义的认证加密（Authenticated Encryption）旨在同时实现这两个目标。在对称密钥环境中，默认同时确保机密性和完整性是最佳实践。事实上，在许多需要机密性的应用中，完整性通常也是至关重要的。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>考虑以下实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/2.png?raw=true" alt="2"><br>简单的说就是要求攻击者不能伪造一个有效的密文。</p>
+<p><strong>DEFINITION 5.2</strong><br>一个方案是不可伪造的(unforgeble)，当且仅当对于任何多项式概率算法攻击者A，都有<br>$Pr[Enc-Forge_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
+<p><strong>DEFINITION 5.3</strong><br>一个方案是AE(authenticated encryption)当且仅当这个方案是CCA安全的并且是不可伪造的。</p>
+<p>我们也可以通过一个单一的实验来定义AE加密方案。<br>假设现在攻击者可以遇到以下两种不同的情况：</p>
+<ol>
+<li>攻击者被提供了一个加密oracle和一个解密oracle的访问权限。</li>
+<li>攻击者获得的是一个加密0字符串的oracle。一个始终返回错误符号$\perp $的解密oracle。</li>
+</ol>
+<p>如果攻击者不能区分这两种场景，这说明攻击者在真实世界中生成的新密文都将无效同时攻击者无法区分真实的加密。</p>
+<p>该实验的定义如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/3.png?raw=true" alt="3"></p>
+<p><strong>DEFINITION 5.4</strong><br>一个方案是AE-secure，当且仅当对于任何多项式概率算法攻击者A，都有<br>$Pr[PrivK^{ae}_{\mathcal{A},\prod}(n)=1]\leq 1/2+negl(n)$</p>
+<p><strong>THEROREM 5.5</strong><br>定义5.3和定义5.4是等价的。</p>
+<p>带有关联数据的认证加密：在许多情况下，可能只有部分内容需要加密，部分内容只要保证完整性即可。虽然对整体消息进行AE方案加密可以满足要求，但是效率较低，现实中，支持关联数据的认证加密方案在文献中被称为带有关联数据的认证加密（Authenticated Encryption with Associated Data，简称 AEAD）。</p>
+<h2 id="CCA安全-vs-认证加密"><a href="#CCA安全-vs-认证加密" class="headerlink" title="CCA安全 vs 认证加密"></a>CCA安全 vs 认证加密</h2><p>我们根据定义可以直接得出任何认证加密（AE）方案也都是选择密文攻击安全（CCA-secure）的。然而，反之则不成立。</p>
+<p>在现实世界中，确实存在情景只需要CCA安全而不关注认证加密。尽管如此，在存在活跃攻击者的情况下，大多数对称密钥加密的应用确实需要完整性保护。幸运的是，大多数自然构造的 CCA 安全加密方案通常也满足更强的认证加密定义。从这个角度来看，没有理由使用那些既是 CCA 安全但不是认证加密的方案，因为没有任何此类方案在效率上比认证加密方案更优。</p>
+<h1 id="认证加密方案"><a href="#认证加密方案" class="headerlink" title="认证加密方案"></a>认证加密方案</h1><h2 id="一般构造"><a href="#一般构造" class="headerlink" title="一般构造"></a>一般构造</h2><p>直觉上认为将一个CPA安全的加密方案和一个安全的MAC方案结合就能得到一个AE方案，但是事实上不是这样的。</p>
+<p>假设：</p>
+<ol>
+<li>$\prod_{E}=(Enc,Dec)$是一个CPA安全的加密方案</li>
+<li>$\prod_{M}=(MAC,Verify)$是一个安全的MAC方案</li>
+<li>两种方案使用独立的密钥$k_E$和$k_M$</li>
+</ol>
+<p>下面是常见的三种构造方式。</p>
+<h3 id="Encrypt-and-authenticate"><a href="#Encrypt-and-authenticate" class="headerlink" title="Encrypt-and-authenticate"></a>Encrypt-and-authenticate</h3><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,m)$<br>因为它未能将机密性和完整性紧密结合，导致标签可能泄露关于消息的信息，确定性MAC可能使攻击者意识到消息的重复发送等问题。</p>
+<h3 id="Authenticate-then-encrypt"><a href="#Authenticate-then-encrypt" class="headerlink" title="Authenticate-then-encrypt"></a>Authenticate-then-encrypt</h3><p>$t\leftarrow MAC(k_M,m),c\leftarrow Enc(k_E,m||t)$<br>一般会用CBC模式进行加密，那么填充部分就可以用来实现攻击，因为不同的错误类型会提供有效信息。一个很直接的解决方案是使错误信息都返回同一种。但是这在现实中并不有效，不利于调试等等问题。</p>
+<h3 id="Encrypt-then-authenticate"><a href="#Encrypt-then-authenticate" class="headerlink" title="Encrypt-then-authenticate"></a>Encrypt-then-authenticate</h3><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,c)$<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/4.png?raw=true" alt="4"><br>直观上这样的构造很安全。</p>
+<p>如果攻击者提交的密文 ⟨c,t⟩ 不来自加密 oracle，认证标签 t 将无法通过验证，解密 oracle 会返回错误。<br>如果攻击者提交的密文确实来自加密 oracle，那么攻击者已经知道该密文的解密结果。<br>这种设计使解密 oracle 对攻击者无用，从而避免了选择密文攻击（CCA）的潜在威胁。</p>
+<p>在解密之前，首先验证标签 t。如果标签验证失败，解密算法立即返回错误，而不会尝试解密密文 c。<br>这种设计避免了与 Authenticate-then-Encrypt 方法类似的填充 Oracle 攻击，因为解密过程不会执行，攻击者无法通过错误信息获知关于明文的任何信息。</p>
+<p><strong>THEROREM 5.7</strong><br>以上构造是AE安全的。</p>
+<hr>
+<p>证明过程有点复杂，可能期末复习的时候再整理。</p>
+<hr>
+<h2 id="标准化方案"><a href="#标准化方案" class="headerlink" title="标准化方案"></a>标准化方案</h2><p>下面介绍实际中应用较广的三种AE方案。</p>
+<h3 id="GCM-Galois-Counter-Mode"><a href="#GCM-Galois-Counter-Mode" class="headerlink" title="GCM(Galois/Counter Mode)"></a>GCM(Galois/Counter Mode)</h3><p>可以看作是一种encrypt-then-authenticate。使用CTR-mode进行加密，GMAC实现消息认证。</p>
+<h3 id="CCM-Counter-with-CBC-MAC"><a href="#CCM-Counter-with-CBC-MAC" class="headerlink" title="CCM (Counter with CBC-MAC)"></a>CCM (Counter with CBC-MAC)</h3><p>其设计基于 Authenticate-then-Encrypt 范式，结合了 CTR 模式和 CBC-MAC。</p>
+<h3 id="ChaCha20–Poly1305"><a href="#ChaCha20–Poly1305" class="headerlink" title="ChaCha20–Poly1305"></a>ChaCha20–Poly1305</h3><p>是一种基于 Encrypt-then-Authenticate 范式的高效认证加密（AE）方案，设计上适合软件实现，特别是在缺乏 GCM 硬件加速的情况下。</p>
+<h1 id="安全通信会话"><a href="#安全通信会话" class="headerlink" title="安全通信会话"></a>安全通信会话</h1><p>这里简单介绍以下通信双方如何实现兼顾保密性和完整性的通信。<br>一般可能遭受的攻击有消息重排攻击，重放攻击，消息丢弃攻击，反射攻击等等。</p>
+<p>可以使用计数器(counters)来维护双方发送接受信息的数量，使用方向比特(directionality bit)来设定消息的来源和方向。将这些信息加入消息中从而抵御这些攻击。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/19/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1215,7 +1330,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
