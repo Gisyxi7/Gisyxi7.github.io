@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="上下文无关文法正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。 直观描述上下文无关文法(context-free grammar)是一种描述语言的记号，对于描述嵌套结构是很有用的。 形式化定义定义上下文无关文法(context-free grammar,CFG)是一个四元组$G&#x3D;(V,T,P,S)$:  $T$为CFG要定义语言的字母">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上下文无关文法">
+<meta property="og:url" content="http://example.com/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/index.html">
+<meta property="og:site_name" content="Gisyxi7&#39;s blogs">
+<meta property="og:description" content="上下文无关文法正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。 直观描述上下文无关文法(context-free grammar)是一种描述语言的记号，对于描述嵌套结构是很有用的。 形式化定义定义上下文无关文法(context-free grammar,CFG)是一个四元组$G&#x3D;(V,T,P,S)$:  $T$为CFG要定义语言的字母">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/1.png?raw=true">
+<meta property="article:published_time" content="2024-12-11T10:06:39.000Z">
+<meta property="article:modified_time" content="2024-12-11T11:24:50.824Z">
+<meta property="article:author" content="Gisyxi7">
+<meta property="article:tag" content="形式语言与自动机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/1.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>上下文无关文法 | Gisyxi7's blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gisyxi7's blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">学不动了</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          上下文无关文法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-11 18:06:39 / 修改时间：19:24:50" itemprop="dateCreated datePublished" datetime="2024-12-11T18:06:39+08:00">2024-12-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><p>正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。</p>
+<h2 id="直观描述"><a href="#直观描述" class="headerlink" title="直观描述"></a>直观描述</h2><p><strong>上下文无关文法(context-free grammar)</strong>是一种描述语言的记号，对于描述嵌套结构是很有用的。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>定义<strong>上下文无关文法(context-free grammar,CFG)</strong>是一个四元组$G=(V,T,P,S)$:</p>
+<ul>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符(Terminals)</strong>。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量(Variables)</strong>或者<strong>非终结符(Nonterminals)</strong>。</li>
+<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
+<li>$P$为CFG的<strong>产生式(productions)</strong>集合，形如$head\rightarrow body$。<ul>
+<li><strong>头(header)</strong>是一个变量</li>
+<li><strong>体(body)</strong>是变量和终结符组成的字符串，可以是空串</li>
+</ul>
+</li>
+</ul>
+<p>一般来说，我们在字母使用下有以下约定</p>
+<ul>
+<li>用$A,B,C\cdots,S$表示变量</li>
+<li>用$a,b,c\cdots$表示终结符</li>
+<li>用$\cdots,X,Y,Z$表示非终结符或变量</li>
+<li>用$w,x,y,z$表示只含有终结符的字符串</li>
+<li>用$\alpha,\beta,\gamma,\cdots$来表示有终结符或变量的字符串</li>
+</ul>
+<p>根据上述定义，想要定义一个语言$\{0^n1^n|n\ge 1\}$:</p>
+<script type="math/tex; mode=display">G=(\{S\},\{0,1\},\{S\rightarrow 01,S\rightarrow 0S1\},S)</script><p>定义：</p>
+<p>称$\alpha A\beta$可以<strong>推导</strong>出$\alpha \gamma \beta$，记为$\alpha A\beta\Rightarrow \alpha \gamma \beta$。如果$A\rightarrow \gamma$是一个产生式。</p>
+<p>称零步或多步推导为<strong>迭代推导</strong>，记为$\Rightarrow^*$</p>
+<p>令$G$是一个上下文无关文法，则记$G$的语言为$L(G)$，称上下文无关文法定义的语言为<strong>上下文无关语言(Context-Free Language, CFL)</strong>。</p>
+<h2 id="最左推导和最右推导"><a href="#最左推导和最右推导" class="headerlink" title="最左推导和最右推导"></a>最左推导和最右推导</h2><p>每一次推导我们都可以替换一个任意位置的变量，但是这个任意会带来很多的不确定性，为了避免不确定性，我们规定每次替换的变量为一个固定位置（最左或最右）的变量。</p>
+<p>我们使用$\Rightarrow_l$表示最左推导，$\Rightarrow_r$ 表示最右推导。</p>
+<h1 id="解析树"><a href="#解析树" class="headerlink" title="解析树"></a>解析树</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>解析树(Parse Tree)</strong>是一棵用某个特定的上下文无关文法中的符号对每个结点做标记的树。如图所示：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/1.png?raw=true" alt="1"></p>
+<h2 id="解析树，最左推导，最右推导"><a href="#解析树，最左推导，最右推导" class="headerlink" title="解析树，最左推导，最右推导"></a>解析树，最左推导，最右推导</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
+<p>由归纳法可以轻松证明。</p>
+<h2 id="文法歧义"><a href="#文法歧义" class="headerlink" title="文法歧义"></a>文法歧义</h2><p>我们称一个文法是<strong>有歧义的(ambiguous)</strong>，如果在这个文法定义的语言中，存在一个字符串可以被两个及以上个解析树产出。</p>
+<p>如果这个字符串存在多个对应的解析树，那么就意味着存在多种推导方式。</p>
+<p>当然，也存在文法，在这个文法定义的语言中，所有的字符串都只有唯一的解析树，我们称之为<strong>LL(1)文法</strong>。</p>
+<p>一般来说，LL(1)文法具有以下的特征：从左往右扫描字符串，且只看下一个符号。</p>
+<h2 id="固有歧义"><a href="#固有歧义" class="headerlink" title="固有歧义"></a>固有歧义</h2><p>有的有歧义的文法可以修改成没有歧义的文法，但是存在一些上下文无关语言本身是具有<strong>固有的歧义性(inherently ambiguous)</strong>的，意思是这个语言的所有的文法都是有歧义的。</p>
+<h1 id="上下文无关文法的范式"><a href="#上下文无关文法的范式" class="headerlink" title="上下文无关文法的范式"></a>上下文无关文法的范式</h1><h2 id="去除无用变量"><a href="#去除无用变量" class="headerlink" title="去除无用变量"></a>去除无用变量</h2><ul>
+<li>无法推导的变量：无法推导出任何终结字符串。</li>
+<li>不可达的符号：有一些变量或者终结符无论如何从起始符号推导都不会出现。</li>
+</ul>
+<p>以上的符号我们称为<strong>无用符号(unused symbols)</strong>。我们通过以下方法去除无用符号：</p>
+<ol>
+<li>删除不能导出终结字符串的符号</li>
+<li>删除所有从起始符号不可达的字符串</li>
+</ol>
+<p><strong>这个顺序不能颠倒！！！</strong></p>
+<h2 id="去除空串"><a href="#去除空串" class="headerlink" title="去除空串"></a>去除空串</h2><p>我们需要考虑不含$\epsilon$的语言，所以我们需要一个算法能够去除空串：</p>
+<ul>
+<li>找到所有空产生式：递归的找出所有能推导出空串的符号</li>
+<li>去除空产生式：<ul>
+<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
+<li>最后去掉所有的空产生式</li>
+</ul>
+</li>
+</ul>
+<h2 id="去除单元产生式"><a href="#去除单元产生式" class="headerlink" title="去除单元产生式"></a>去除单元产生式</h2><p><strong>单元产生式(unit production)</strong>指的是体只有一个变量的产生式。这些产生式也是可以去除的。</p>
+<p>算法如下：</p>
+<ul>
+<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
+<li>基础情况：$(A,A)一定是满足要求的有序对</li>
+<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
+</ul>
+</li>
+<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
+</ul>
+<h2 id="乔姆斯基范式"><a href="#乔姆斯基范式" class="headerlink" title="乔姆斯基范式"></a>乔姆斯基范式</h2><p>如果$L$是一个上下文无关语言，那么对于$L-\{\epsilon\}$一定存在一个上下文无关文法：</p>
+<ul>
+<li>没有无用符号</li>
+<li>没有$\epsilon-$产生式</li>
+<li>没有单元产生式</li>
+</ul>
+<p>要找到这样的文法，一定<strong>遵循以下顺序操作</strong>：</p>
+<ol>
+<li>去除$\epsilon-$产生式</li>
+<li>去除单元产生式</li>
+<li>去除无用符号<ol>
+<li>去除无法推导出终结字符串的变量</li>
+<li>去除从起始符号不可达的变量</li>
+</ol>
+</li>
+</ol>
+<p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
+<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
+<ol>
+<li>$A\rightarrow BC$</li>
+<li>$A\rightarrow a$，其中$a$是终结符。</li>
+</ol>
+<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
+<ol>
+<li>清理文法：去除无用符号，去除空产生式，去除单元产生式。</li>
+<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
+<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我喝奶茶吗QAQ</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Gisyxi7 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Gisyxi7 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag"># 形式语言与自动机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/" rel="prev" title="FLA复习">
+      <i class="fa fa-chevron-left"></i> FLA复习
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">上下文无关文法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E8%A7%82%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">直观描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.</span> <span class="nav-text">形式化定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B7%A6%E6%8E%A8%E5%AF%BC%E5%92%8C%E6%9C%80%E5%8F%B3%E6%8E%A8%E5%AF%BC"><span class="nav-number">1.3.</span> <span class="nav-text">最左推导和最右推导</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">解析树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E6%A0%91%EF%BC%8C%E6%9C%80%E5%B7%A6%E6%8E%A8%E5%AF%BC%EF%BC%8C%E6%9C%80%E5%8F%B3%E6%8E%A8%E5%AF%BC"><span class="nav-number">2.2.</span> <span class="nav-text">解析树，最左推导，最右推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%B3%95%E6%AD%A7%E4%B9%89"><span class="nav-number">2.3.</span> <span class="nav-text">文法歧义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BA%E6%9C%89%E6%AD%A7%E4%B9%89"><span class="nav-number">2.4.</span> <span class="nav-text">固有歧义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95%E7%9A%84%E8%8C%83%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">上下文无关文法的范式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%BB%E9%99%A4%E6%97%A0%E7%94%A8%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">去除无用变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%BB%E9%99%A4%E7%A9%BA%E4%B8%B2"><span class="nav-number">3.2.</span> <span class="nav-text">去除空串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%BB%E9%99%A4%E5%8D%95%E5%85%83%E4%BA%A7%E7%94%9F%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">去除单元产生式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%94%E5%A7%86%E6%96%AF%E5%9F%BA%E8%8C%83%E5%BC%8F"><span class="nav-number">3.4.</span> <span class="nav-text">乔姆斯基范式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Gisyxi7</p>
+  <div class="site-description" itemprop="description">nju cs</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gisyxi7</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
