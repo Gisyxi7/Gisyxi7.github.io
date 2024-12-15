@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="对应教材第三章 Private-Key Encryption 在第二章中我们讨论了完美保密性，这要求密钥空间要大于等于明文空间。但是在现实中，这很难实现，我们需要能够使用较短的密钥来加密较长的信息。所以我们将放宽限制，研究计算保密性。 计算保密性(Computational Security)相对于完美保密要求面对有无限计算能力的攻击者也不能泄露任何信息，计算保密放宽了以下两个限制：  攻击者的计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【三】私钥加密">
+<meta property="og:url" content="http://example.com/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/index.html">
+<meta property="og:site_name" content="Gisyxi7&#39;s blogs">
+<meta property="og:description" content="对应教材第三章 Private-Key Encryption 在第二章中我们讨论了完美保密性，这要求密钥空间要大于等于明文空间。但是在现实中，这很难实现，我们需要能够使用较短的密钥来加密较长的信息。所以我们将放宽限制，研究计算保密性。 计算保密性(Computational Security)相对于完美保密要求面对有无限计算能力的攻击者也不能泄露任何信息，计算保密放宽了以下两个限制：  攻击者的计">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/1.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/2.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/3.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/4.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/5.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/6.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/7.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/8.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/9.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/10.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/11.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/12.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/13.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/14.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/15.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/16.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/17.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/18.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/23.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/19.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/20.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/21.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/22.png?raw=true">
+<meta property="article:published_time" content="2024-12-13T08:13:19.000Z">
+<meta property="article:modified_time" content="2024-12-15T19:20:19.102Z">
+<meta property="article:author" content="Gisyxi7">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/1.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【三】私钥加密 | Gisyxi7's blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gisyxi7's blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">学不动了</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【三】私钥加密
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-13 16:13:19" itemprop="dateCreated datePublished" datetime="2024-12-13T16:13:19+08:00">2024-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-16 03:20:19" itemprop="dateModified" datetime="2024-12-16T03:20:19+08:00">2024-12-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第三章 Private-Key Encryption</p>
+<p>在第二章中我们讨论了完美保密性，这要求密钥空间要大于等于明文空间。但是在现实中，这很难实现，我们需要能够使用较短的密钥来加密较长的信息。所以我们将放宽限制，研究计算保密性。</p>
+<h1 id="计算保密性-Computational-Security"><a href="#计算保密性-Computational-Security" class="headerlink" title="计算保密性(Computational Security)"></a>计算保密性(Computational Security)</h1><p>相对于完美保密要求面对有无限计算能力的攻击者也不能泄露任何信息，计算保密放宽了以下两个限制：</p>
+<ol>
+<li>攻击者的计算能力（计算资源和时间）是有限的</li>
+<li>攻击者被允许以很小的概率攻破，只要概率足够小，也被认为是安全的</li>
+</ol>
+<p>尽管放宽了限制，但是我们仍然要精准定义，所以我们有以下两种方法：</p>
+<ol>
+<li>具体方法(the Concrete Approach)</li>
+<li>渐进方法(the Asymptotic Approach)</li>
+</ol>
+<h2 id="具体方法"><a href="#具体方法" class="headerlink" title="具体方法"></a>具体方法</h2><p>形式化定义为：</p>
+<p>如果任何攻击者在运行时间不超过$t$的情况下，破解方案成功的概率至多为$\epsilon$，则这个方案被称为$(t,\epsilon)$-安全的。</p>
+<p>例如，一个方案可以保证，任何攻击者哪怕使用最强的计算机攻击200年，攻破的概率不超过$2^{-60}$。或者也可以使用计算机周期数来表示时间。</p>
+<p>当然，这种方式的定义提供的信息非常有限。</p>
+<h2 id="渐进方法"><a href="#渐进方法" class="headerlink" title="渐进方法"></a>渐进方法</h2><p>渐进方法以复杂度理论为基础，引入一个整数$n$作为安全参数(security parameter)，该参数用来描述加密方案的相关信息，比如密钥长度。同时，我们将攻击方的运行时间以及攻击成功概率定义为关于$n$的函数。</p>
+<ol>
+<li>我们将高效的攻击者定义为运行时间为多项式时间的随机算法(probabilistic polynomial-time, PPT)</li>
+<li>我们将成功概率小定义为比任何多项式倒数都小的概率，这种概率被称为可忽略的(negligible)</li>
+</ol>
+<p>基于此，我们称一个加密方案是安全的当且仅当任意的PPT攻击者攻破的概率都不超可忽略概率。</p>
+<p>当然，在最终部署一个加密方案的时候，我们也需要使用具体方法给出安全性定义，因为这是必然要挑选一个确定的$n$。</p>
+<h3 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h3><h4 id="Efficient-algorithms"><a href="#Efficient-algorithms" class="headerlink" title="Efficient algorithms"></a>Efficient algorithms</h4><p>一个从自然数到非负实数的函数$f$被称为是<strong>多项式有界</strong>(polynomially bounded)，当且仅当存在一个常数$c$，使得对所有$n$都有$f(n)\leq n^c$。</p>
+<p>如果一个算法$A$的运行时间是多项式时间的，那么存在一个多项式函数$p$，对于任意输入$x\in\{0,1\}^*$，那么算法$A(x)$的计算步数最多为$p(|x|)$。</p>
+<p>我们将高效攻击者(efficient adversaries)定义为运行时间为安全参数$n$的多项式时间。</p>
+<p>默认情况下，我们允许所有算法是<strong>概率的</strong>(probabilistic)，任何这样的算法都假设可以访问一个独立且无偏的随机<br>位序列。</p>
+<h4 id="Negligible-success-probability"><a href="#Negligible-success-probability" class="headerlink" title="Negligible success probability"></a>Negligible success probability</h4><p>一个从自然数到非负实数的函数$f$被称为是<strong>可忽略的</strong>(negligible)，当且仅当对于任何一个多项式$p$，存在一个$N$，使得任何$n&gt;N$，都有$f(n)&lt;\frac{1}{p(n)}$。</p>
+<p>我们用$negl$来表示这样的函数。</p>
+<p>假设$negl_1$和$negl_2$都是可忽略的，那么有以下性质：</p>
+<ol>
+<li>$negl_1+negl_2$是可忽略的</li>
+<li>$p(n)\cdot negl_1(n)$是可忽略的</li>
+</ol>
+<h1 id="定义计算安全加密"><a href="#定义计算安全加密" class="headerlink" title="定义计算安全加密"></a>定义计算安全加密</h1><p>首先我们稍微修改以下对于私钥加密的定义：</p>
+<p>我们使用一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，接受$1^n$作为输入，生成一个密钥$k$，其中不失一般性的假设$|k|\ge n$</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$<ul>
+<li>如果这是一个确定算法，我们写作$c:=Enc_k(m)$</li>
+<li>如果这是一个概率算法，我们写作$c\leftarrow Enc_k(m)$</li>
+</ul>
+</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$或者错误符号$\perp$</li>
+</ul>
+<h2 id="EVA-Security的定义"><a href="#EVA-Security的定义" class="headerlink" title="EVA-Security的定义"></a>EVA-Security的定义</h2><p>我们现在先只考虑仅密文攻击，也就是说攻击者只能观察到一个密文。</p>
+<h3 id="不可区分性实验"><a href="#不可区分性实验" class="headerlink" title="不可区分性实验"></a>不可区分性实验</h3><p>现在定义这种情况下的不可区分性实验$PrivK^{eva}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，输出两个消息$m_0,m_1$，其中$|m_0|=|m_1|$</li>
+<li>运行$Gen(1^n)$获得$k$，并随机选择$b\in \{0,1\}$，计算$c\leftarrow Enc_k(m_b)$并传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$的输出$b’$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个私钥加密方案是<strong>EVA-Secure</strong>的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：<script type="math/tex">Pr[PrivK^{eva}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script></p>
+<p>我们还可以给出一种等价的表达方式，我们定义$out<em>{\mathcal{A}}(PrivK^{eva}</em>{\mathcal{A},\prod}(n,b))$为在这次试验中$\mathcal{A}$的输出结果，则EVA-Secure等价于：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/1.png?raw=true" alt="1"></p>
+<h3 id="关于明文长度"><a href="#关于明文长度" class="headerlink" title="关于明文长度"></a>关于明文长度</h3><p>正常情况下，我们不会要求机密方案隐藏明文的长度。</p>
+<p>但是在以下的一些特殊情况下，需要隐藏明文长度，因为明文长度就隐含着一些信息：</p>
+<ul>
+<li>工资有几位数</li>
+<li>压缩数据</li>
+</ul>
+<p>如果我们需要避免泄露明文长度，就需要事先把消息填充到某个预定长度。</p>
+<h2 id="语义安全"><a href="#语义安全" class="headerlink" title="语义安全"></a>语义安全</h2><p>我们一开始说明了安全加密的定义意味着对手无法从密文中获取任何部分信息。但是上面的定义貌似没有考虑这一点，现在我们通过引入<strong>语义安全</strong>(dsemantic security)来说明这一点。</p>
+<p>首先，我们可以证明以下理论：</p>
+<p>对于一个固定长度的加密方案，这是EVA-Secure的，当且仅当对于任何PPT攻击者$\mathcal{A}$和$i$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/2.png?raw=true" alt="2"></p>
+<p>这很好证明，只需要归约就行。</p>
+<p>然后我们可以进一步证明以下理论：</p>
+<p>对于一个固定长度的加密方案，这是EVA-Secure的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个PPT算法$\mathcal{A}’$，使得对于任何在$\{0,1\}^l$上的分布$\mathcal{D}$和任意的函数$f:\{0,1\}^l\rightarrow\{0,1\}$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/3.png?raw=true" alt="3"></p>
+<p>其中概率中的明文$m$依据$\mathcal{D}$分布。</p>
+<p>现在，我们可以结合上面两个理论，来定义语义安全。</p>
+<p>对于一个固定长度的加密方案，这是语义安全的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个PPT算法$\mathcal{A}’$，使得对于任何PPT算法$Samp$和多项式时间可计算的函数$f,h$，都能使下式为可忽略的函数：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/4.png?raw=true" alt="4"></p>
+<p>其中的明文是根据$Samp$分布的，而这里$h$表示任何攻击者可能获得的信息。</p>
+<p>最终，我们给出结论：</p>
+<p>语义安全和EVA安全是等价的。</p>
+<h1 id="构造EVA安全的加密方案"><a href="#构造EVA安全的加密方案" class="headerlink" title="构造EVA安全的加密方案"></a>构造EVA安全的加密方案</h1><h2 id="伪随机数生成器"><a href="#伪随机数生成器" class="headerlink" title="伪随机数生成器"></a>伪随机数生成器</h2><p>伪随机数生成器$G$是一个高效的确定性算法，功能是将一个比较短的均匀字符串转换为一个较长的伪随机字符串。</p>
+<p>有一些简单的统计方法用来判断伪随机数生成器是否良好，比如，测试伪随机数生成的第一个比特是否以$\frac{1}{2}$的概率为1，但是这样是不严谨的。</p>
+<p>我们希望有更严格的测试方式，比如，面对任意的区分器$\mathcal{D}$，我们都希望接收到伪随机数生成器的输出返回1的概率等于一个真实的伪随机数，这意味着伪随机数生成器对于任何高效的观察者看起来都和真的随机生成的均匀的字符串差不多。</p>
+<h3 id="形式化定义-1"><a href="#形式化定义-1" class="headerlink" title="形式化定义"></a>形式化定义</h3><p>令$G$是一个确定性的多项式时间算法，对于任意的$n$和输入$s\in\{0,1\}^n$，$G$返回一个长度为$l(n)$的伪随机字符串。$G$是一个伪随机数生成器当且仅当：</p>
+<ol>
+<li>$l(n)&gt;n$，这里$l(n)$被称为the expansion factor。</li>
+<li>对于任何PPT算法$D$，都存在一个$negl$使：<script type="math/tex; mode=display">|Pr[D(G(s))=1]-Pr[D(r)=1]|\leq negl(n)</script>其中$s$在$\{0,1\}^n$中被均匀选取，$r$在$\{0,1\}^{l(n)}$中被均匀选取。</li>
+</ol>
+<h3 id="伪随机数生成器的相关讨论"><a href="#伪随机数生成器的相关讨论" class="headerlink" title="伪随机数生成器的相关讨论"></a>伪随机数生成器的相关讨论</h3><p>当然，我们不妨设想这样一个例子，当$l(n)=2n$，这使得能落入$G$生成范围的数占总数的$\frac{2^n}{2^{2n}}=\frac{1}{2^n}$。显然暴力攻击能轻松分辨出伪随机数生成器和真实的随机数，但是这并不能算高效的区分器。</p>
+<p>关于伪随机数生成器种子的选取，种子的作用和加密方案的密钥其实是类似的，我们同样需要种子长度足够大来抵抗暴力攻击。</p>
+<p>关于伪随机数生成器的存在性，显然直接想构造是很困难的，但是我们可以相信对于任何多项式扩展因子的伪随机数生成器都是存在的。在一个较弱的假设下，如果单向函数存在，伪随机数生成器是存在的，此外，我们还可以通过流密码等方式来构造伪随机数生成器，目前还没有发现针对性的高效区分器。</p>
+<p>目前我们先假设伪随机数生成器存在。</p>
+<h2 id="归约证明法"><a href="#归约证明法" class="headerlink" title="归约证明法"></a>归约证明法</h2><p>如果我们要证明一个加密方案$\prod$是安全的，通常我们会经过以下步骤：</p>
+<ol>
+<li>假设对于方案$\prod$，存在PPT攻击者$\mathcal{A}$，攻破方案的概率为$\epsilon(n)$</li>
+<li>构造一个攻击者$\mathcal{A}’$，其试图攻破问题$X$并以$\mathcal{A}$为子进程。这里$\mathcal{A}’$并不需要知道$\mathcal{A}$具体怎么攻破。<ol>
+<li>$\mathcal{A}’$要为$\mathcal{A}$模拟一个$\prod$的交互环境</li>
+<li>当$\mathcal{A}$能成功破解$\prod$时，$\mathcal{A}’$要成功破解$X$以至少多项式倒数的概率($\frac{1}{p(n)}$)。</li>
+</ol>
+</li>
+<li>综上分析，$\mathcal{A}’$攻破的成功概率为$\frac{\epsilon(n)}{p(n)}$，当$\epsilon(n)$是不可忽略的时候，整体也是不可忽略的。</li>
+<li>基于我们对问题$X$的假设，$X$是难解的，这也就意味着如果$\mathcal{A}$能有较大概率攻破$\prod$，那么$\mathcal{A}’$也能攻破问题$X$，矛盾，因此该加密方案是安全的。</li>
+</ol>
+<h2 id="伪随机数生成器构造EVA-Security"><a href="#伪随机数生成器构造EVA-Security" class="headerlink" title="伪随机数生成器构造EVA-Security"></a>伪随机数生成器构造EVA-Security</h2><p>我们可以通过更改One-Time Pad的密钥生成方式来构造一个EVA-Secure的加密方案。</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3><p>令$G$是一个扩展因子为$l(n)$的伪随机数生成器。</p>
+<ol>
+<li>$Gen$：均匀选取$k\in \{0,1\}^n$</li>
+<li>$Enc$：$c:=G(k)\oplus m$</li>
+<li>$Dec$：$m:=c\oplus G(k)$</li>
+</ol>
+<p>注意，这个方案是定长的。</p>
+<h3 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>首先直接给出结论，这个方案是EVA-secure的。</p>
+<p>我们的目标是证明：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/5.png?raw=true" alt="5"></p>
+<p>我们构造以下区分器$\mathcal{D}$，接受$\omega\in \{0,1\}^l$作为输入：</p>
+<ol>
+<li>运行$\mathcal{A}(1^n)$，获得两个输出$m_0,m_1$</li>
+<li>均匀随机挑选$b\in \{0,1\}$，令$c:=\omega\oplus m_b$</li>
+<li>将$c$返回给$\mathcal{A}$，获得输出$b’$，如果$b=b’$，则返回1，否则返回0。</li>
+</ol>
+<p>又因为$G$是一个伪随机数生成器，所以一定有：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/6.png?raw=true" alt="6"></p>
+<p>而考虑$\omega$的来源：</p>
+<ol>
+<li>$\omega$是均匀选取的，则有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/7.png?raw=true" alt="7"></li>
+<li>$\omega$是$G$生成的，则有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/8.png?raw=true" alt="8"></li>
+</ol>
+<p>结合上式我们可以得到：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/9.png?raw=true" alt="9"></p>
+<p>完成了证明。</p>
+<h1 id="更强的安全性概念"><a href="#更强的安全性概念" class="headerlink" title="更强的安全性概念"></a>更强的安全性概念</h1><p>到目前为止我们只讨论了当攻击者仅被允许窃听单个密文的情况，但是显然实际生活中攻击方可以更加强大。</p>
+<h2 id="多重加密的安全性"><a href="#多重加密的安全性" class="headerlink" title="多重加密的安全性"></a>多重加密的安全性</h2><p>现在考虑攻击者可以监听到多个用同一个密钥加密的密文。</p>
+<p>我们可以定义以下的安全性实验，多消息窃听实验$PrivK^{mult}_{\mathcal{A},\prod}(n)$:</p>
+<ol>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，输出两个消息向量$\vec{M<em>0},\vec{M_1}$，其中$|m</em>{0,i}|=|m_{1,i}|$</li>
+<li>运行$Gen(1^n)$获得$k$，并随机选择$b\in \{0,1\}$，计算$c<em>i \leftarrow Enc_k(m</em>{b,i})$并将$\vec{C}$传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$的输出$b’$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个加密方案是多消息不可区分的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：</p>
+<script type="math/tex; mode=display">Pr[PrivK^{mult}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script><p>很显然，对于单密文不可区分的加密方案，多密文下很可能是可区分的，比如当加密算法是确定性算法时，我们就很容易构造输入来进行区分。</p>
+<p>甚至我们有以下定理，当一个加密方案的加密算法是确定性的，这个方案一定不是多消息不可区分的。</p>
+<p>所以在这种情况下，我们必须要设计随机化加密方案，使同样的消息经过同一个密钥加密也可以生成不同的密文。</p>
+<h2 id="选择明文攻击-Chosen-Plaintext-Attacks-和CPA-Security"><a href="#选择明文攻击-Chosen-Plaintext-Attacks-和CPA-Security" class="headerlink" title="选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security"></a>选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security</h2><p>我们现在考虑攻击者可以影响甚至控制明文，使得攻击者可以获取对应的密文。</p>
+<h3 id="CPA不可区分性实验"><a href="#CPA不可区分性实验" class="headerlink" title="CPA不可区分性实验"></a>CPA不可区分性实验</h3><p>现在定义这种情况下的不可区分性实验$PrivK^{cpa}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>运行$Gen(1^n)$获得$k$</li>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，并获得一个查询$Enc_k(\cdot)$的权限(oracle)，输出两个消息$m_0,m_1$，其中$|m_0|=|m_1|$</li>
+<li>，并随机选择$b\in \{0,1\}$，计算$c\leftarrow Enc_k(m_b)$并传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$仍然有查询$Enc_k(\cdot)$的权限，最终输出$b’$</li>
+<li>如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个加密方案是<strong>CPA-Secure</strong>的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：<script type="math/tex">Pr[PrivK^{cpa}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script></p>
+<p>当然，任何CPA安全的私钥加密档案对于多消息加密仍然是CPA安全的。</p>
+<h3 id="固定长度-vs-任意长度"><a href="#固定长度-vs-任意长度" class="headerlink" title="固定长度 vs 任意长度"></a>固定长度 vs 任意长度</h3><p>理论上，只要有固定长度的加密方案，我们就可以把它扩展到任意长度，只需要对消息进行切割或扩充，但是这样的方案会带来较大的开销，效率比较低。</p>
+<h1 id="构造CPA安全的加密方案"><a href="#构造CPA安全的加密方案" class="headerlink" title="构造CPA安全的加密方案"></a>构造CPA安全的加密方案</h1><h2 id="伪随机函数-Pseudorandom-functions-PRFs-和伪随机置换-Permutations"><a href="#伪随机函数-Pseudorandom-functions-PRFs-和伪随机置换-Permutations" class="headerlink" title="伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)"></a>伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)</h2><h3 id="伪随机函数"><a href="#伪随机函数" class="headerlink" title="伪随机函数"></a>伪随机函数</h3><p>我们无法说某个固定函数$f:\{0,1\}^<em>\rightarrow\{0,1\}^</em>$是随机的，这里，我们引入一个带密钥函数(keyed functions)。</p>
+<p>带密钥函数(keyed functions)可以被看作有两个输入，即$F:\{0,1\}^<em> \times \{0,1\}^</em> \rightarrow \{0,1\}^*$。其中，第一个输入为密钥，第二个输入为函数的常规输入。我们只考虑能被在多项式时间内计算的函数。同时，我们先不妨假设密钥长度、输入长度和输出长度相等。</p>
+<p>直观上，我们定义$Func_n$是n比特映射到n比特的函数的集合，令$f$是从中任意选取的一个函数，令$F_k(x)=F(k,x)$，我们希望无法区分$f$和$F_k$。</p>
+<p>当然，假设这里有一个区分器来尝试区分，显然如果知道一个函数详细的描述，是很容易区分的，但是这并不高效，也就是不能在多项式时间内完成。所以我们不妨规定区分器不能接受函数的完整描述，但是能够有一个查询接口，可以对任意的输入$x$查询函数对应的值，当然，也只能进行多项式次数的查询。</p>
+<h4 id="形式化定义-2"><a href="#形式化定义-2" class="headerlink" title="形式化定义"></a>形式化定义</h4><p>现在我们可以给出形式化定义，我们定义一个带密钥函数$F$为一个伪随机函数，当且仅当对于任何多项式时间区分器$D$，都存在一个可忽略函数$negl$，使：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/10.png?raw=true" alt="10"></p>
+<h4 id="伪随机函数和伪随机数生成器"><a href="#伪随机函数和伪随机数生成器" class="headerlink" title="伪随机函数和伪随机数生成器"></a>伪随机函数和伪随机数生成器</h4><p>伪随机函数 (PRFs) 和伪随机生成器 (PRGs) 之间具有密切的关系。他们其实可以相互构造。</p>
+<h3 id="伪随机置换"><a href="#伪随机置换" class="headerlink" title="伪随机置换"></a>伪随机置换</h3><p>伪随机置换要求在伪随机函数的基础上还要是双射，同时逆函数也要能在多项式时间内被计算。</p>
+<p>显然，伪随机置换一定是一个伪随机函数。</p>
+<p>形式化定义如下：<br>我们定义一个带密钥函数$F$为一个强伪随机置换(strong pseudorandom permutation)，当且仅当对于任何多项式时间区分器$D$，都存在一个可忽略函数$negl$，使：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/11.png?raw=true" alt="11"></p>
+<h2 id="构造CPA安全的加密方案-1"><a href="#构造CPA安全的加密方案-1" class="headerlink" title="构造CPA安全的加密方案"></a>构造CPA安全的加密方案</h2><p>这里的目标是构造一个固定长度的CPA安全的加密方案。根据之前的结论，只要有固定长度的，我们可以扩展到任意长度。</p>
+<h3 id="方案-1"><a href="#方案-1" class="headerlink" title="方案"></a>方案</h3><p>令$F$是一个伪随机数函数。</p>
+<ol>
+<li>$Gen$：均匀选取$k\in \{0,1\}^n$</li>
+<li>$Enc$：均匀选取$r\in \{0,1\}^n$，$c:=&lt; r, F_k(r)\oplus m &gt;$</li>
+<li>$Dec$：$m:=F_k(r)\oplus s$</li>
+</ol>
+<h3 id="安全性证明-1"><a href="#安全性证明-1" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>一般来说我们证明加密方案的CPA安全性会采用以下步骤：</p>
+<ol>
+<li>首先考虑用真随机函数来代替伪随机函数，通过归约证明这样修改不会显著提高攻击者的成功概率。</li>
+<li>在假设方案中，通过概率计算来评估攻击成功的概率，这一部分一般不依赖于假设。</li>
+</ol>
+<p>上述方案安全性证明如下：<br>首先我们令方案$\tilde{\prod}$为将伪随机函数替换成真随机函数后的方案，我们将通过归约证明：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/12.png?raw=true" alt="12"></p>
+<p>我们构造一个区分器$D$，其接受输入$1^n$并有一个未知函数的查询机$\mathcal{O}$。</p>
+<ol>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$查询时：<ol>
+<li>$D$均匀选取$r\in \{0,1\}^n$</li>
+<li>查询$y=\mathcal{O}(r)$</li>
+<li>将$&lt; r,y \oplus m &gt;$返回给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>$\mathcal{A}$输出消息$m_0,m_1$，随机选取$b\in \{0,1\}$<ol>
+<li>$D$均匀选取$r\in \{0,1\}^n$</li>
+<li>查询$y=\mathcal{O}(r)$</li>
+<li>将$&lt; r,y \oplus m_b &gt;$返回给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>接受$\mathcal{A}$的最终输出$b’$，如果$b’=b$，输出1，否则输出0。</li>
+</ol>
+<p>由构造我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/13.png?raw=true" alt="13"></p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/14.png?raw=true" alt="14"></p>
+<p>在因为$F$是伪随机函数，根据定义我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/15.png?raw=true" alt="15"></p>
+<p>到此我们已经证明了第一步。</p>
+<p>第二部分我们将证明</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/16.png?raw=true" alt="16"></p>
+<p>我们定义事件$repeat$为$r$已经被使用过，所以有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/17.png?raw=true" alt="17"></p>
+<p>最后将两个部分结合，我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/18.png?raw=true" alt="18"></p>
+<p>到此得证。</p>
+<h1 id="加密模式与实践中的加密"><a href="#加密模式与实践中的加密" class="headerlink" title="加密模式与实践中的加密"></a>加密模式与实践中的加密</h1><p>上述的加密方案在实践中都存在一些缺点，比如效率差限制多等。我们接下来要提出一些实际操作上更优的加密方案。</p>
+<p>首先我们会引入其中的核心部分</p>
+<ul>
+<li>使用<strong>流密码</strong>来实现伪随机数生成器</li>
+<li>使用<strong>分组密码</strong>来实现伪随机函数</li>
+</ul>
+<h2 id="流密码-Stream-ciphers"><a href="#流密码-Stream-ciphers" class="headerlink" title="流密码(Stream ciphers)"></a>流密码(Stream ciphers)</h2><p>流密码是一组确定性算法：</p>
+<ol>
+<li><strong>Init</strong>：$st_0:=Init(s,[IV])$</li>
+<li><strong>GetBits</strong>：$(y<em>i,st_i):=GetBits(st</em>{i-1})$</li>
+</ol>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/23.png?raw=true" alt="23"></p>
+<h2 id="分组密码-Block-ciphers"><a href="#分组密码-Block-ciphers" class="headerlink" title="分组密码(Block ciphers)"></a>分组密码(Block ciphers)</h2><h3 id="ECB-mode"><a href="#ECB-mode" class="headerlink" title="ECB mode"></a>ECB mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/19.png?raw=true" alt="19"></p>
+<p>这是确定性算法，所以是不安全的。</p>
+<h3 id="CBC-mode"><a href="#CBC-mode" class="headerlink" title="CBC mode"></a>CBC mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/20.png?raw=true" alt="20"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>缺点是不能并行化处理。</p>
+<h3 id="OFP-mode"><a href="#OFP-mode" class="headerlink" title="OFP mode"></a>OFP mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/21.png?raw=true" alt="21"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>可以进行预计算。</p>
+<h3 id="CTR-mode"><a href="#CTR-mode" class="headerlink" title="CTR mode"></a>CTR mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/22.png?raw=true" alt="22"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>加密和解密都可以并行化计算。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我喝奶茶吗QAQ</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Gisyxi7 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Gisyxi7 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/" rel="prev" title="【二】完美保密性">
+      <i class="fa fa-chevron-left"></i> 【二】完美保密性
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E4%BF%9D%E5%AF%86%E6%80%A7-Computational-Security"><span class="nav-number">1.</span> <span class="nav-text">计算保密性(Computational Security)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">具体方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">渐进方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">形式化定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Efficient-algorithms"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">Efficient algorithms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Negligible-success-probability"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">Negligible success probability</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E8%AE%A1%E7%AE%97%E5%AE%89%E5%85%A8%E5%8A%A0%E5%AF%86"><span class="nav-number">2.</span> <span class="nav-text">定义计算安全加密</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EVA-Security%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">EVA-Security的定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E5%8C%BA%E5%88%86%E6%80%A7%E5%AE%9E%E9%AA%8C"><span class="nav-number">2.1.1.</span> <span class="nav-text">不可区分性实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%98%8E%E6%96%87%E9%95%BF%E5%BA%A6"><span class="nav-number">2.1.2.</span> <span class="nav-text">关于明文长度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E5%AE%89%E5%85%A8"><span class="nav-number">2.2.</span> <span class="nav-text">语义安全</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E9%80%A0EVA%E5%AE%89%E5%85%A8%E7%9A%84%E5%8A%A0%E5%AF%86%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">构造EVA安全的加密方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">伪随机数生成器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">形式化定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%A8%E8%AE%BA"><span class="nav-number">3.1.2.</span> <span class="nav-text">伪随机数生成器的相关讨论</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E7%BA%A6%E8%AF%81%E6%98%8E%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">归约证明法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8%E6%9E%84%E9%80%A0EVA-Security"><span class="nav-number">3.3.</span> <span class="nav-text">伪随机数生成器构造EVA-Security</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.3.1.</span> <span class="nav-text">方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E8%AF%81%E6%98%8E"><span class="nav-number">3.3.2.</span> <span class="nav-text">安全性证明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%BC%BA%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E6%A6%82%E5%BF%B5"><span class="nav-number">4.</span> <span class="nav-text">更强的安全性概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E5%8A%A0%E5%AF%86%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.1.</span> <span class="nav-text">多重加密的安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%98%8E%E6%96%87%E6%94%BB%E5%87%BB-Chosen-Plaintext-Attacks-%E5%92%8CCPA-Security"><span class="nav-number">4.2.</span> <span class="nav-text">选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPA%E4%B8%8D%E5%8F%AF%E5%8C%BA%E5%88%86%E6%80%A7%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.2.1.</span> <span class="nav-text">CPA不可区分性实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E9%95%BF%E5%BA%A6-vs-%E4%BB%BB%E6%84%8F%E9%95%BF%E5%BA%A6"><span class="nav-number">4.2.2.</span> <span class="nav-text">固定长度 vs 任意长度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E9%80%A0CPA%E5%AE%89%E5%85%A8%E7%9A%84%E5%8A%A0%E5%AF%86%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">构造CPA安全的加密方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E5%87%BD%E6%95%B0-Pseudorandom-functions-PRFs-%E5%92%8C%E4%BC%AA%E9%9A%8F%E6%9C%BA%E7%BD%AE%E6%8D%A2-Permutations"><span class="nav-number">5.1.</span> <span class="nav-text">伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E5%87%BD%E6%95%B0"><span class="nav-number">5.1.1.</span> <span class="nav-text">伪随机函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89-2"><span class="nav-number">5.1.1.1.</span> <span class="nav-text">形式化定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E5%87%BD%E6%95%B0%E5%92%8C%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-number">5.1.1.2.</span> <span class="nav-text">伪随机函数和伪随机数生成器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E9%9A%8F%E6%9C%BA%E7%BD%AE%E6%8D%A2"><span class="nav-number">5.1.2.</span> <span class="nav-text">伪随机置换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0CPA%E5%AE%89%E5%85%A8%E7%9A%84%E5%8A%A0%E5%AF%86%E6%96%B9%E6%A1%88-1"><span class="nav-number">5.2.</span> <span class="nav-text">构造CPA安全的加密方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88-1"><span class="nav-number">5.2.1.</span> <span class="nav-text">方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E8%AF%81%E6%98%8E-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">安全性证明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86"><span class="nav-number">6.</span> <span class="nav-text">加密模式与实践中的加密</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E5%AF%86%E7%A0%81-Stream-ciphers"><span class="nav-number">6.1.</span> <span class="nav-text">流密码(Stream ciphers)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-Block-ciphers"><span class="nav-number">6.2.</span> <span class="nav-text">分组密码(Block ciphers)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ECB-mode"><span class="nav-number">6.2.1.</span> <span class="nav-text">ECB mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBC-mode"><span class="nav-number">6.2.2.</span> <span class="nav-text">CBC mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OFP-mode"><span class="nav-number">6.2.3.</span> <span class="nav-text">OFP mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTR-mode"><span class="nav-number">6.2.4.</span> <span class="nav-text">CTR mode</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Gisyxi7</p>
+  <div class="site-description" itemprop="description">nju cs</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gisyxi7</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

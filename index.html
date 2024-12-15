@@ -162,6 +162,552 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">【三】私钥加密</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-13 16:13:19" itemprop="dateCreated datePublished" datetime="2024-12-13T16:13:19+08:00">2024-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-16 03:20:19" itemprop="dateModified" datetime="2024-12-16T03:20:19+08:00">2024-12-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第三章 Private-Key Encryption</p>
+<p>在第二章中我们讨论了完美保密性，这要求密钥空间要大于等于明文空间。但是在现实中，这很难实现，我们需要能够使用较短的密钥来加密较长的信息。所以我们将放宽限制，研究计算保密性。</p>
+<h1 id="计算保密性-Computational-Security"><a href="#计算保密性-Computational-Security" class="headerlink" title="计算保密性(Computational Security)"></a>计算保密性(Computational Security)</h1><p>相对于完美保密要求面对有无限计算能力的攻击者也不能泄露任何信息，计算保密放宽了以下两个限制：</p>
+<ol>
+<li>攻击者的计算能力（计算资源和时间）是有限的</li>
+<li>攻击者被允许以很小的概率攻破，只要概率足够小，也被认为是安全的</li>
+</ol>
+<p>尽管放宽了限制，但是我们仍然要精准定义，所以我们有以下两种方法：</p>
+<ol>
+<li>具体方法(the Concrete Approach)</li>
+<li>渐进方法(the Asymptotic Approach)</li>
+</ol>
+<h2 id="具体方法"><a href="#具体方法" class="headerlink" title="具体方法"></a>具体方法</h2><p>形式化定义为：</p>
+<p>如果任何攻击者在运行时间不超过$t$的情况下，破解方案成功的概率至多为$\epsilon$，则这个方案被称为$(t,\epsilon)$-安全的。</p>
+<p>例如，一个方案可以保证，任何攻击者哪怕使用最强的计算机攻击200年，攻破的概率不超过$2^{-60}$。或者也可以使用计算机周期数来表示时间。</p>
+<p>当然，这种方式的定义提供的信息非常有限。</p>
+<h2 id="渐进方法"><a href="#渐进方法" class="headerlink" title="渐进方法"></a>渐进方法</h2><p>渐进方法以复杂度理论为基础，引入一个整数$n$作为安全参数(security parameter)，该参数用来描述加密方案的相关信息，比如密钥长度。同时，我们将攻击方的运行时间以及攻击成功概率定义为关于$n$的函数。</p>
+<ol>
+<li>我们将高效的攻击者定义为运行时间为多项式时间的随机算法(probabilistic polynomial-time, PPT)</li>
+<li>我们将成功概率小定义为比任何多项式倒数都小的概率，这种概率被称为可忽略的(negligible)</li>
+</ol>
+<p>基于此，我们称一个加密方案是安全的当且仅当任意的PPT攻击者攻破的概率都不超可忽略概率。</p>
+<p>当然，在最终部署一个加密方案的时候，我们也需要使用具体方法给出安全性定义，因为这是必然要挑选一个确定的$n$。</p>
+<h3 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h3><h4 id="Efficient-algorithms"><a href="#Efficient-algorithms" class="headerlink" title="Efficient algorithms"></a>Efficient algorithms</h4><p>一个从自然数到非负实数的函数$f$被称为是<strong>多项式有界</strong>(polynomially bounded)，当且仅当存在一个常数$c$，使得对所有$n$都有$f(n)\leq n^c$。</p>
+<p>如果一个算法$A$的运行时间是多项式时间的，那么存在一个多项式函数$p$，对于任意输入$x\in\{0,1\}^*$，那么算法$A(x)$的计算步数最多为$p(|x|)$。</p>
+<p>我们将高效攻击者(efficient adversaries)定义为运行时间为安全参数$n$的多项式时间。</p>
+<p>默认情况下，我们允许所有算法是<strong>概率的</strong>(probabilistic)，任何这样的算法都假设可以访问一个独立且无偏的随机<br>位序列。</p>
+<h4 id="Negligible-success-probability"><a href="#Negligible-success-probability" class="headerlink" title="Negligible success probability"></a>Negligible success probability</h4><p>一个从自然数到非负实数的函数$f$被称为是<strong>可忽略的</strong>(negligible)，当且仅当对于任何一个多项式$p$，存在一个$N$，使得任何$n&gt;N$，都有$f(n)&lt;\frac{1}{p(n)}$。</p>
+<p>我们用$negl$来表示这样的函数。</p>
+<p>假设$negl_1$和$negl_2$都是可忽略的，那么有以下性质：</p>
+<ol>
+<li>$negl_1+negl_2$是可忽略的</li>
+<li>$p(n)\cdot negl_1(n)$是可忽略的</li>
+</ol>
+<h1 id="定义计算安全加密"><a href="#定义计算安全加密" class="headerlink" title="定义计算安全加密"></a>定义计算安全加密</h1><p>首先我们稍微修改以下对于私钥加密的定义：</p>
+<p>我们使用一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，接受$1^n$作为输入，生成一个密钥$k$，其中不失一般性的假设$|k|\ge n$</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$<ul>
+<li>如果这是一个确定算法，我们写作$c:=Enc_k(m)$</li>
+<li>如果这是一个概率算法，我们写作$c\leftarrow Enc_k(m)$</li>
+</ul>
+</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$或者错误符号$\perp$</li>
+</ul>
+<h2 id="EVA-Security的定义"><a href="#EVA-Security的定义" class="headerlink" title="EVA-Security的定义"></a>EVA-Security的定义</h2><p>我们现在先只考虑仅密文攻击，也就是说攻击者只能观察到一个密文。</p>
+<h3 id="不可区分性实验"><a href="#不可区分性实验" class="headerlink" title="不可区分性实验"></a>不可区分性实验</h3><p>现在定义这种情况下的不可区分性实验$PrivK^{eva}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，输出两个消息$m_0,m_1$，其中$|m_0|=|m_1|$</li>
+<li>运行$Gen(1^n)$获得$k$，并随机选择$b\in \{0,1\}$，计算$c\leftarrow Enc_k(m_b)$并传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$的输出$b’$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个私钥加密方案是<strong>EVA-Secure</strong>的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：<script type="math/tex">Pr[PrivK^{eva}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script></p>
+<p>我们还可以给出一种等价的表达方式，我们定义$out<em>{\mathcal{A}}(PrivK^{eva}</em>{\mathcal{A},\prod}(n,b))$为在这次试验中$\mathcal{A}$的输出结果，则EVA-Secure等价于：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/1.png?raw=true" alt="1"></p>
+<h3 id="关于明文长度"><a href="#关于明文长度" class="headerlink" title="关于明文长度"></a>关于明文长度</h3><p>正常情况下，我们不会要求机密方案隐藏明文的长度。</p>
+<p>但是在以下的一些特殊情况下，需要隐藏明文长度，因为明文长度就隐含着一些信息：</p>
+<ul>
+<li>工资有几位数</li>
+<li>压缩数据</li>
+</ul>
+<p>如果我们需要避免泄露明文长度，就需要事先把消息填充到某个预定长度。</p>
+<h2 id="语义安全"><a href="#语义安全" class="headerlink" title="语义安全"></a>语义安全</h2><p>我们一开始说明了安全加密的定义意味着对手无法从密文中获取任何部分信息。但是上面的定义貌似没有考虑这一点，现在我们通过引入<strong>语义安全</strong>(dsemantic security)来说明这一点。</p>
+<p>首先，我们可以证明以下理论：</p>
+<p>对于一个固定长度的加密方案，这是EVA-Secure的，当且仅当对于任何PPT攻击者$\mathcal{A}$和$i$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/2.png?raw=true" alt="2"></p>
+<p>这很好证明，只需要归约就行。</p>
+<p>然后我们可以进一步证明以下理论：</p>
+<p>对于一个固定长度的加密方案，这是EVA-Secure的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个PPT算法$\mathcal{A}’$，使得对于任何在$\{0,1\}^l$上的分布$\mathcal{D}$和任意的函数$f:\{0,1\}^l\rightarrow\{0,1\}$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/3.png?raw=true" alt="3"></p>
+<p>其中概率中的明文$m$依据$\mathcal{D}$分布。</p>
+<p>现在，我们可以结合上面两个理论，来定义语义安全。</p>
+<p>对于一个固定长度的加密方案，这是语义安全的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个PPT算法$\mathcal{A}’$，使得对于任何PPT算法$Samp$和多项式时间可计算的函数$f,h$，都能使下式为可忽略的函数：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/4.png?raw=true" alt="4"></p>
+<p>其中的明文是根据$Samp$分布的，而这里$h$表示任何攻击者可能获得的信息。</p>
+<p>最终，我们给出结论：</p>
+<p>语义安全和EVA安全是等价的。</p>
+<h1 id="构造EVA安全的加密方案"><a href="#构造EVA安全的加密方案" class="headerlink" title="构造EVA安全的加密方案"></a>构造EVA安全的加密方案</h1><h2 id="伪随机数生成器"><a href="#伪随机数生成器" class="headerlink" title="伪随机数生成器"></a>伪随机数生成器</h2><p>伪随机数生成器$G$是一个高效的确定性算法，功能是将一个比较短的均匀字符串转换为一个较长的伪随机字符串。</p>
+<p>有一些简单的统计方法用来判断伪随机数生成器是否良好，比如，测试伪随机数生成的第一个比特是否以$\frac{1}{2}$的概率为1，但是这样是不严谨的。</p>
+<p>我们希望有更严格的测试方式，比如，面对任意的区分器$\mathcal{D}$，我们都希望接收到伪随机数生成器的输出返回1的概率等于一个真实的伪随机数，这意味着伪随机数生成器对于任何高效的观察者看起来都和真的随机生成的均匀的字符串差不多。</p>
+<h3 id="形式化定义-1"><a href="#形式化定义-1" class="headerlink" title="形式化定义"></a>形式化定义</h3><p>令$G$是一个确定性的多项式时间算法，对于任意的$n$和输入$s\in\{0,1\}^n$，$G$返回一个长度为$l(n)$的伪随机字符串。$G$是一个伪随机数生成器当且仅当：</p>
+<ol>
+<li>$l(n)&gt;n$，这里$l(n)$被称为the expansion factor。</li>
+<li>对于任何PPT算法$D$，都存在一个$negl$使：<script type="math/tex; mode=display">|Pr[D(G(s))=1]-Pr[D(r)=1]|\leq negl(n)</script>其中$s$在$\{0,1\}^n$中被均匀选取，$r$在$\{0,1\}^{l(n)}$中被均匀选取。</li>
+</ol>
+<h3 id="伪随机数生成器的相关讨论"><a href="#伪随机数生成器的相关讨论" class="headerlink" title="伪随机数生成器的相关讨论"></a>伪随机数生成器的相关讨论</h3><p>当然，我们不妨设想这样一个例子，当$l(n)=2n$，这使得能落入$G$生成范围的数占总数的$\frac{2^n}{2^{2n}}=\frac{1}{2^n}$。显然暴力攻击能轻松分辨出伪随机数生成器和真实的随机数，但是这并不能算高效的区分器。</p>
+<p>关于伪随机数生成器种子的选取，种子的作用和加密方案的密钥其实是类似的，我们同样需要种子长度足够大来抵抗暴力攻击。</p>
+<p>关于伪随机数生成器的存在性，显然直接想构造是很困难的，但是我们可以相信对于任何多项式扩展因子的伪随机数生成器都是存在的。在一个较弱的假设下，如果单向函数存在，伪随机数生成器是存在的，此外，我们还可以通过流密码等方式来构造伪随机数生成器，目前还没有发现针对性的高效区分器。</p>
+<p>目前我们先假设伪随机数生成器存在。</p>
+<h2 id="归约证明法"><a href="#归约证明法" class="headerlink" title="归约证明法"></a>归约证明法</h2><p>如果我们要证明一个加密方案$\prod$是安全的，通常我们会经过以下步骤：</p>
+<ol>
+<li>假设对于方案$\prod$，存在PPT攻击者$\mathcal{A}$，攻破方案的概率为$\epsilon(n)$</li>
+<li>构造一个攻击者$\mathcal{A}’$，其试图攻破问题$X$并以$\mathcal{A}$为子进程。这里$\mathcal{A}’$并不需要知道$\mathcal{A}$具体怎么攻破。<ol>
+<li>$\mathcal{A}’$要为$\mathcal{A}$模拟一个$\prod$的交互环境</li>
+<li>当$\mathcal{A}$能成功破解$\prod$时，$\mathcal{A}’$要成功破解$X$以至少多项式倒数的概率($\frac{1}{p(n)}$)。</li>
+</ol>
+</li>
+<li>综上分析，$\mathcal{A}’$攻破的成功概率为$\frac{\epsilon(n)}{p(n)}$，当$\epsilon(n)$是不可忽略的时候，整体也是不可忽略的。</li>
+<li>基于我们对问题$X$的假设，$X$是难解的，这也就意味着如果$\mathcal{A}$能有较大概率攻破$\prod$，那么$\mathcal{A}’$也能攻破问题$X$，矛盾，因此该加密方案是安全的。</li>
+</ol>
+<h2 id="伪随机数生成器构造EVA-Security"><a href="#伪随机数生成器构造EVA-Security" class="headerlink" title="伪随机数生成器构造EVA-Security"></a>伪随机数生成器构造EVA-Security</h2><p>我们可以通过更改One-Time Pad的密钥生成方式来构造一个EVA-Secure的加密方案。</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3><p>令$G$是一个扩展因子为$l(n)$的伪随机数生成器。</p>
+<ol>
+<li>$Gen$：均匀选取$k\in \{0,1\}^n$</li>
+<li>$Enc$：$c:=G(k)\oplus m$</li>
+<li>$Dec$：$m:=c\oplus G(k)$</li>
+</ol>
+<p>注意，这个方案是定长的。</p>
+<h3 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>首先直接给出结论，这个方案是EVA-secure的。</p>
+<p>我们的目标是证明：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/5.png?raw=true" alt="5"></p>
+<p>我们构造以下区分器$\mathcal{D}$，接受$\omega\in \{0,1\}^l$作为输入：</p>
+<ol>
+<li>运行$\mathcal{A}(1^n)$，获得两个输出$m_0,m_1$</li>
+<li>均匀随机挑选$b\in \{0,1\}$，令$c:=\omega\oplus m_b$</li>
+<li>将$c$返回给$\mathcal{A}$，获得输出$b’$，如果$b=b’$，则返回1，否则返回0。</li>
+</ol>
+<p>又因为$G$是一个伪随机数生成器，所以一定有：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/6.png?raw=true" alt="6"></p>
+<p>而考虑$\omega$的来源：</p>
+<ol>
+<li>$\omega$是均匀选取的，则有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/7.png?raw=true" alt="7"></li>
+<li>$\omega$是$G$生成的，则有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/8.png?raw=true" alt="8"></li>
+</ol>
+<p>结合上式我们可以得到：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/9.png?raw=true" alt="9"></p>
+<p>完成了证明。</p>
+<h1 id="更强的安全性概念"><a href="#更强的安全性概念" class="headerlink" title="更强的安全性概念"></a>更强的安全性概念</h1><p>到目前为止我们只讨论了当攻击者仅被允许窃听单个密文的情况，但是显然实际生活中攻击方可以更加强大。</p>
+<h2 id="多重加密的安全性"><a href="#多重加密的安全性" class="headerlink" title="多重加密的安全性"></a>多重加密的安全性</h2><p>现在考虑攻击者可以监听到多个用同一个密钥加密的密文。</p>
+<p>我们可以定义以下的安全性实验，多消息窃听实验$PrivK^{mult}_{\mathcal{A},\prod}(n)$:</p>
+<ol>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，输出两个消息向量$\vec{M<em>0},\vec{M_1}$，其中$|m</em>{0,i}|=|m_{1,i}|$</li>
+<li>运行$Gen(1^n)$获得$k$，并随机选择$b\in \{0,1\}$，计算$c<em>i \leftarrow Enc_k(m</em>{b,i})$并将$\vec{C}$传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$的输出$b’$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个加密方案是多消息不可区分的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：</p>
+<script type="math/tex; mode=display">Pr[PrivK^{mult}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script><p>很显然，对于单密文不可区分的加密方案，多密文下很可能是可区分的，比如当加密算法是确定性算法时，我们就很容易构造输入来进行区分。</p>
+<p>甚至我们有以下定理，当一个加密方案的加密算法是确定性的，这个方案一定不是多消息不可区分的。</p>
+<p>所以在这种情况下，我们必须要设计随机化加密方案，使同样的消息经过同一个密钥加密也可以生成不同的密文。</p>
+<h2 id="选择明文攻击-Chosen-Plaintext-Attacks-和CPA-Security"><a href="#选择明文攻击-Chosen-Plaintext-Attacks-和CPA-Security" class="headerlink" title="选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security"></a>选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security</h2><p>我们现在考虑攻击者可以影响甚至控制明文，使得攻击者可以获取对应的密文。</p>
+<h3 id="CPA不可区分性实验"><a href="#CPA不可区分性实验" class="headerlink" title="CPA不可区分性实验"></a>CPA不可区分性实验</h3><p>现在定义这种情况下的不可区分性实验$PrivK^{cpa}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>运行$Gen(1^n)$获得$k$</li>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，并获得一个查询$Enc_k(\cdot)$的权限(oracle)，输出两个消息$m_0,m_1$，其中$|m_0|=|m_1|$</li>
+<li>，并随机选择$b\in \{0,1\}$，计算$c\leftarrow Enc_k(m_b)$并传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$仍然有查询$Enc_k(\cdot)$的权限，最终输出$b’$</li>
+<li>如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个加密方案是<strong>CPA-Secure</strong>的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：<script type="math/tex">Pr[PrivK^{cpa}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script></p>
+<p>当然，任何CPA安全的私钥加密档案对于多消息加密仍然是CPA安全的。</p>
+<h3 id="固定长度-vs-任意长度"><a href="#固定长度-vs-任意长度" class="headerlink" title="固定长度 vs 任意长度"></a>固定长度 vs 任意长度</h3><p>理论上，只要有固定长度的加密方案，我们就可以把它扩展到任意长度，只需要对消息进行切割或扩充，但是这样的方案会带来较大的开销，效率比较低。</p>
+<h1 id="构造CPA安全的加密方案"><a href="#构造CPA安全的加密方案" class="headerlink" title="构造CPA安全的加密方案"></a>构造CPA安全的加密方案</h1><h2 id="伪随机函数-Pseudorandom-functions-PRFs-和伪随机置换-Permutations"><a href="#伪随机函数-Pseudorandom-functions-PRFs-和伪随机置换-Permutations" class="headerlink" title="伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)"></a>伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)</h2><h3 id="伪随机函数"><a href="#伪随机函数" class="headerlink" title="伪随机函数"></a>伪随机函数</h3><p>我们无法说某个固定函数$f:\{0,1\}^<em>\rightarrow\{0,1\}^</em>$是随机的，这里，我们引入一个带密钥函数(keyed functions)。</p>
+<p>带密钥函数(keyed functions)可以被看作有两个输入，即$F:\{0,1\}^<em> \times \{0,1\}^</em> \rightarrow \{0,1\}^*$。其中，第一个输入为密钥，第二个输入为函数的常规输入。我们只考虑能被在多项式时间内计算的函数。同时，我们先不妨假设密钥长度、输入长度和输出长度相等。</p>
+<p>直观上，我们定义$Func_n$是n比特映射到n比特的函数的集合，令$f$是从中任意选取的一个函数，令$F_k(x)=F(k,x)$，我们希望无法区分$f$和$F_k$。</p>
+<p>当然，假设这里有一个区分器来尝试区分，显然如果知道一个函数详细的描述，是很容易区分的，但是这并不高效，也就是不能在多项式时间内完成。所以我们不妨规定区分器不能接受函数的完整描述，但是能够有一个查询接口，可以对任意的输入$x$查询函数对应的值，当然，也只能进行多项式次数的查询。</p>
+<h4 id="形式化定义-2"><a href="#形式化定义-2" class="headerlink" title="形式化定义"></a>形式化定义</h4><p>现在我们可以给出形式化定义，我们定义一个带密钥函数$F$为一个伪随机函数，当且仅当对于任何多项式时间区分器$D$，都存在一个可忽略函数$negl$，使：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/10.png?raw=true" alt="10"></p>
+<h4 id="伪随机函数和伪随机数生成器"><a href="#伪随机函数和伪随机数生成器" class="headerlink" title="伪随机函数和伪随机数生成器"></a>伪随机函数和伪随机数生成器</h4><p>伪随机函数 (PRFs) 和伪随机生成器 (PRGs) 之间具有密切的关系。他们其实可以相互构造。</p>
+<h3 id="伪随机置换"><a href="#伪随机置换" class="headerlink" title="伪随机置换"></a>伪随机置换</h3><p>伪随机置换要求在伪随机函数的基础上还要是双射，同时逆函数也要能在多项式时间内被计算。</p>
+<p>显然，伪随机置换一定是一个伪随机函数。</p>
+<p>形式化定义如下：<br>我们定义一个带密钥函数$F$为一个强伪随机置换(strong pseudorandom permutation)，当且仅当对于任何多项式时间区分器$D$，都存在一个可忽略函数$negl$，使：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/11.png?raw=true" alt="11"></p>
+<h2 id="构造CPA安全的加密方案-1"><a href="#构造CPA安全的加密方案-1" class="headerlink" title="构造CPA安全的加密方案"></a>构造CPA安全的加密方案</h2><p>这里的目标是构造一个固定长度的CPA安全的加密方案。根据之前的结论，只要有固定长度的，我们可以扩展到任意长度。</p>
+<h3 id="方案-1"><a href="#方案-1" class="headerlink" title="方案"></a>方案</h3><p>令$F$是一个伪随机数函数。</p>
+<ol>
+<li>$Gen$：均匀选取$k\in \{0,1\}^n$</li>
+<li>$Enc$：均匀选取$r\in \{0,1\}^n$，$c:=&lt; r, F_k(r)\oplus m &gt;$</li>
+<li>$Dec$：$m:=F_k(r)\oplus s$</li>
+</ol>
+<h3 id="安全性证明-1"><a href="#安全性证明-1" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>一般来说我们证明加密方案的CPA安全性会采用以下步骤：</p>
+<ol>
+<li>首先考虑用真随机函数来代替伪随机函数，通过归约证明这样修改不会显著提高攻击者的成功概率。</li>
+<li>在假设方案中，通过概率计算来评估攻击成功的概率，这一部分一般不依赖于假设。</li>
+</ol>
+<p>上述方案安全性证明如下：<br>首先我们令方案$\tilde{\prod}$为将伪随机函数替换成真随机函数后的方案，我们将通过归约证明：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/12.png?raw=true" alt="12"></p>
+<p>我们构造一个区分器$D$，其接受输入$1^n$并有一个未知函数的查询机$\mathcal{O}$。</p>
+<ol>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$查询时：<ol>
+<li>$D$均匀选取$r\in \{0,1\}^n$</li>
+<li>查询$y=\mathcal{O}(r)$</li>
+<li>将$&lt; r,y \oplus m &gt;$返回给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>$\mathcal{A}$输出消息$m_0,m_1$，随机选取$b\in \{0,1\}$<ol>
+<li>$D$均匀选取$r\in \{0,1\}^n$</li>
+<li>查询$y=\mathcal{O}(r)$</li>
+<li>将$&lt; r,y \oplus m_b &gt;$返回给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>接受$\mathcal{A}$的最终输出$b’$，如果$b’=b$，输出1，否则输出0。</li>
+</ol>
+<p>由构造我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/13.png?raw=true" alt="13"></p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/14.png?raw=true" alt="14"></p>
+<p>在因为$F$是伪随机函数，根据定义我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/15.png?raw=true" alt="15"></p>
+<p>到此我们已经证明了第一步。</p>
+<p>第二部分我们将证明</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/16.png?raw=true" alt="16"></p>
+<p>我们定义事件$repeat$为$r$已经被使用过，所以有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/17.png?raw=true" alt="17"></p>
+<p>最后将两个部分结合，我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/18.png?raw=true" alt="18"></p>
+<p>到此得证。</p>
+<h1 id="加密模式与实践中的加密"><a href="#加密模式与实践中的加密" class="headerlink" title="加密模式与实践中的加密"></a>加密模式与实践中的加密</h1><p>上述的加密方案在实践中都存在一些缺点，比如效率差限制多等。我们接下来要提出一些实际操作上更优的加密方案。</p>
+<p>首先我们会引入其中的核心部分</p>
+<ul>
+<li>使用<strong>流密码</strong>来实现伪随机数生成器</li>
+<li>使用<strong>分组密码</strong>来实现伪随机函数</li>
+</ul>
+<h2 id="流密码-Stream-ciphers"><a href="#流密码-Stream-ciphers" class="headerlink" title="流密码(Stream ciphers)"></a>流密码(Stream ciphers)</h2><p>流密码是一组确定性算法：</p>
+<ol>
+<li><strong>Init</strong>：$st_0:=Init(s,[IV])$</li>
+<li><strong>GetBits</strong>：$(y<em>i,st_i):=GetBits(st</em>{i-1})$</li>
+</ol>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/23.png?raw=true" alt="23"></p>
+<h2 id="分组密码-Block-ciphers"><a href="#分组密码-Block-ciphers" class="headerlink" title="分组密码(Block ciphers)"></a>分组密码(Block ciphers)</h2><h3 id="ECB-mode"><a href="#ECB-mode" class="headerlink" title="ECB mode"></a>ECB mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/19.png?raw=true" alt="19"></p>
+<p>这是确定性算法，所以是不安全的。</p>
+<h3 id="CBC-mode"><a href="#CBC-mode" class="headerlink" title="CBC mode"></a>CBC mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/20.png?raw=true" alt="20"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>缺点是不能并行化处理。</p>
+<h3 id="OFP-mode"><a href="#OFP-mode" class="headerlink" title="OFP mode"></a>OFP mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/21.png?raw=true" alt="21"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>可以进行预计算。</p>
+<h3 id="CTR-mode"><a href="#CTR-mode" class="headerlink" title="CTR mode"></a>CTR mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/22.png?raw=true" alt="22"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>加密和解密都可以并行化计算。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/" class="post-title-link" itemprop="url">【二】完美保密性</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-13 14:43:28 / 修改时间：16:19:30" itemprop="dateCreated datePublished" datetime="2024-12-13T14:43:28+08:00">2024-12-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第二章 Perfectly Secret Encryption</p>
+<p>在本章中，我们将探讨另一个极端，即研究即使面对具有无限计算能力的攻击者也能被证明安全的加密方案。这类方案被称为完美安全(perfectly secret)。</p>
+<p>为了简化讨论，我们假设可以各方都可以获得无限供应的独立无偏的随机位。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>首先回顾上一章介绍的加密语法，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，依据某些分布生成一个密钥$k$，$\mathcal{K}$表示密钥空间。</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$，$\mathcal{C}$表示密文集合<ul>
+<li>如果这是一个确定性算法，我们写作$c:=Enc_k(m)$</li>
+<li>如果这是一个概率性算法，我们写作$c\leftarrow Enc_k(m)$</li>
+</ul>
+</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$，$\mathcal{M}$表示明文集合。显然这里解密算法是一个确定性算法</li>
+</ul>
+<h2 id="完美安全性-Perfectly-Secrecy"><a href="#完美安全性-Perfectly-Secrecy" class="headerlink" title="完美安全性(Perfectly Secrecy)"></a>完美安全性(Perfectly Secrecy)</h2><p>现在假设攻击者的能力是：</p>
+<ol>
+<li>知道加密方案</li>
+<li>观察到密文</li>
+</ol>
+<p>一个完美安全的加密方案要求攻击者观察到密文对实际的发送明文的概率没有影响。换句话说，观察到密文对消息选择的先验概率和后验概率应当是相同的。</p>
+<h3 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h3><p>一个加密方案是<strong>完美安全的</strong>，如果对于消息空间$\mathcal{M}$的任意概率分布，任意消息$m\in \mathcal{M}$，任意密文$c\in \mathcal{C}$（其中$Pr[C=c]&gt;0$），有：</p>
+<script type="math/tex; mode=display">Pr[M=m|C=c]=Pr[M=m]</script><h3 id="引理"><a href="#引理" class="headerlink" title="引理"></a>引理</h3><p>一个加密方案是完美安全的，当且仅当对于任意$m,m’\in \mathcal{M}$，任意$c\in \mathcal{C}$，有：</p>
+<script type="math/tex; mode=display">Pr[C=c|M=m]=Pr[C=c|M=m']</script><h3 id="完美不可区分性"><a href="#完美不可区分性" class="headerlink" title="完美不可区分性"></a>完美不可区分性</h3><p>现在介绍一个实验：</p>
+<ol>
+<li>攻击者$\mathcal{A}$指定任意两个消息$m_0,m_1\in \mathcal{M}$</li>
+<li>$Gen$生成一个密钥$k$</li>
+<li>随机选择一个$b\in \{0,1\}$，计算密文$c\leftarrow Enc_k(m_b)$</li>
+<li>将密文$c$返回给攻击者$\mathcal{A}$</li>
+<li>攻击者给出一个猜测值$b’\in \{0,1\}$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eav}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>在攻击者完全随机猜测的情况下，实验结果为$1$的概率为$\frac{1}{2}$。完美保密性的目的就是希望攻击者任何选择的策略都不能优于随机猜测。</p>
+<p>有定义如下：<br>一个方案是<strong>完美不可区分的</strong>当且仅当对于任何攻击者$\mathcal{A}$，都有：</p>
+<script type="math/tex; mode=display">Pr[Privk^{eav}_{\mathcal{A},\prod}=1]=\frac{1}{2}</script><p>有引理如下：<br>完美保密性和完美不可区分性是等价的。</p>
+<h1 id="One-Time-Pad"><a href="#One-Time-Pad" class="headerlink" title="One-Time Pad"></a>One-Time Pad</h1><h2 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h2><p>对于固定长度$l$，我们定义该方案的明文空间、密钥空间和密文空间都为$\{0,1\}^l$：</p>
+<ul>
+<li>$Gen$：从密钥空间中均匀随机选取一个密钥</li>
+<li>$Enc$：$c:=m\oplus  k$</li>
+<li>$Dec$：$m:=c\oplus k$</li>
+</ul>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>这个方案是完美安全的。</p>
+<p>但是这个方案存在限制，密钥只能使用一次，如果多次使用就会变得不安全。这就要求每次加密都要重新生成密钥，这是很麻烦的。</p>
+<h1 id="完美安全的限制"><a href="#完美安全的限制" class="headerlink" title="完美安全的限制"></a>完美安全的限制</h1><p>我们将证明：任何完美安全的加密方案的密钥空间大小必须至少与消息空间大小相等。</p>
+<p>形式化的：</p>
+<p>对于一个完美安全的加密方案，有$|\mathcal{K}|\ge |\mathcal{M}|$</p>
+<p>证明如下：</p>
+<p>假设$|\mathcal{K}|&lt;|\mathcal{M}|$，对于一个密文，其被不同密钥解密出的明文集合大小必然等于密钥空间大小，即小于明文空间大小。这就说明存在一个密文，有对应的明文无论什么密钥都无法加密称为该密文。即：</p>
+<script type="math/tex; mode=display">\exists m',c,s.t. Pr[M=m'|C=c]=0\not =Pr[M=m']</script><p>违背了完美安全的定义。</p>
+<h1 id="香农定理"><a href="#香农定理" class="headerlink" title="香农定理"></a>香农定理</h1><p>令$(Gen,Enc,Dec)$是一个明文空间为$\mathcal{M}$的加密方案，并且$|\mathcal{M}|=|\mathcal{C}|=|\mathcal{K}|$，这个方案是完美安全的当且仅当满足以下条件：</p>
+<ol>
+<li>任意密钥被$Gen$以$\frac{1}{\mathcal{K}}$的概率选择</li>
+<li>对于任意$m\in\mathcal{M},c\in \mathcal{C}$，只存在一个唯一的$k\in \mathcal{K}$使得$c:=Enc_k(m)$</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/" class="post-title-link" itemprop="url">【一】密码学引入</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-12 19:47:28" itemprop="dateCreated datePublished" datetime="2024-12-12T19:47:28+08:00">2024-12-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-13 14:44:16" itemprop="dateModified" datetime="2024-12-13T14:44:16+08:00">2024-12-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第一章 Introduction</p>
+<h1 id="密码学"><a href="#密码学" class="headerlink" title="密码学"></a>密码学</h1><p>在牛津词典中，密码学被定义为编写或破译密码的艺术。该定义只关注用来实现秘密通信的各类密码，但是现代密码学涵盖了更多更广的领域：确保数据完整性的机制、交换秘密密钥的技术、用户认证的协议、电子投票、加密货币等等。</p>
+<h1 id="私钥加密的设定"><a href="#私钥加密的设定" class="headerlink" title="私钥加密的设定"></a>私钥加密的设定</h1><p>古典密码学关注的是设计和使用能够使两方在信息传递过程中保持消息机密的密码（或称密文）的方法。在现代密码学中，我们称之为加密方案(encryption scheme)，所有的古典加密方案都依赖于一个事先双方共享的密钥-私钥(private-key)。</p>
+<p>在私钥加密的背景下，双方共享一把密钥，一方使用密钥进行加密获得密文，一方使用密钥进行解密获得明文。解密和加密使用相同的密钥，这被称为<strong>对称密钥</strong>(symmetric-key)。</p>
+<p>私钥密码学有两个典型应用场景：</p>
+<ul>
+<li>同一时间下不同空间的通信</li>
+<li>同一空间下不同时间的通信</li>
+</ul>
+<h2 id="加密的语法"><a href="#加密的语法" class="headerlink" title="加密的语法"></a>加密的语法</h2><p>形式化上，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，依据某些分布生成一个密钥$k$</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$</li>
+</ul>
+<p>对于$\forall m\in \mathcal{M},Dec_k(Enc_k(m))=m$</p>
+<p>我们用$\mathcal{K}$来表示密钥空间，用$\mathcal{C}$来表示密文空间。</p>
+<h2 id="克克霍夫原则（Kerckhoffs’-principle）"><a href="#克克霍夫原则（Kerckhoffs’-principle）" class="headerlink" title="克克霍夫原则（Kerckhoffs’ principle）"></a>克克霍夫原则（Kerckhoffs’ principle）</h2><p>密码方法不应依赖于保密，甚至在其落入敌手后也不应造成不便。</p>
+<p>也就是说，即使对手知道方案的所有细节，只要对手不知道所用的密钥，加密方案仍应保持安全性。换句话说，安全性不应建立在加密方案本身的保密之上；克克霍夫原则要求安全性仅依赖于密钥的保密。</p>
+<h1 id="古典密码"><a href="#古典密码" class="headerlink" title="古典密码"></a>古典密码</h1><h2 id="凯撒密码"><a href="#凯撒密码" class="headerlink" title="凯撒密码"></a>凯撒密码</h2><p>经典的移位密码，把每个字母统一往后移动$k$位，只需要尝试最多25次就可以破解，所以这也暗示了一个安全的加密方案应该要能够抵抗暴力破解，至少密钥空间要足够大。</p>
+<h2 id="单字母替换密码"><a href="#单字母替换密码" class="headerlink" title="单字母替换密码"></a>单字母替换密码</h2><p>这里使用一个字母表的双射来函数来实现加密，显然密钥空间很大(26!)。</p>
+<p>可以通过词频分析来进行有效率的攻击。</p>
+<h1 id="现代密码学原则"><a href="#现代密码学原则" class="headerlink" title="现代密码学原则"></a>现代密码学原则</h1><p>古典密码学依赖的更多是经验和直觉。如今，人们以更为系统化的方式设计和分析密码方案，最终目标是对给定构造是否安全给出严格的证明。为了实现这一点，我们首先需要形式化的定义，以精确界定“安全”的含义；这些定义本身就很有价值和趣味性。事实证明，大多数密码学证明都依赖于目前尚未证实的假设，即关于某些数学问题的算法求解难度的假设；因此我们必须明确并精确地陈述这些假设。</p>
+<h2 id="原则1-形式化定义"><a href="#原则1-形式化定义" class="headerlink" title="原则1-形式化定义"></a>原则1-形式化定义</h2><p>明确的定义有助于指导密码学方案的设计。定义还为对具体构造进行评估和分析提供了途径。</p>
+<h2 id="原则2-精确假设"><a href="#原则2-精确假设" class="headerlink" title="原则2-精确假设"></a>原则2-精确假设</h2><p>大多数现代密码学构造无法无条件地证明其安全性；要给出无条件的证明意味着要解决计算复杂性理论中当前仍远未能解答的问题。</p>
+<p>现代密码学要求任何此类假设都必须明确、精确地加以阐述。最基本的原因是，安全性证明本身需要精确的假设。</p>
+<p>人们通常倾向于使用“更简单”的假设——也就是对某个简洁明了的数学问题的难度假设，而非对一个复杂方案满足复杂安全定义的假设。</p>
+<h2 id="原则3-安全性证明"><a href="#原则3-安全性证明" class="headerlink" title="原则3-安全性证明"></a>原则3-安全性证明</h2><p>借助前面讨论的两个原则（明确的定义与精确定义的假设），我们即可实现目标：在给定的假设条件下，严格证明某个构造满足相应的安全性定义。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/12/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/12/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/" class="post-title-link" itemprop="url">数论与密码学困难度假设</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-12 19:16:30 / 修改时间：19:38:26" itemprop="dateCreated datePublished" datetime="2024-12-12T19:16:30+08:00">2024-12-12</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第九章 Number Theory and Cryptographic Hardness Assumptions</p>
+<p>现代密码学系统无一例外都基于一些假设</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -185,10 +731,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-12-11 19:25:50 / 修改时间：20:33:42" itemprop="dateCreated datePublished" datetime="2024-12-11T19:25:50+08:00">2024-12-11</time>
+              <time title="创建时间：2024-12-11 19:25:50" itemprop="dateCreated datePublished" datetime="2024-12-11T19:25:50+08:00">2024-12-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-12 18:10:43" itemprop="dateModified" datetime="2024-12-12T18:10:43+08:00">2024-12-12</time>
+              </span>
 
           
 
@@ -203,7 +755,7 @@
       
           <h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><p><strong>下推自动机(Pushdown Automata, PDA)</strong> 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。</p>
 <p>直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符号，还依赖于栈顶元素。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p><strong>下推自动机(Pushdown Automata)</strong>为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
 <ul>
 <li>$Q$为有限状态集合</li>
 <li>$\Sigma$为输入字母表</li>
@@ -224,7 +776,7 @@
 <li>用$w,x,y,z$表示输入符号形成的字符串</li>
 <li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串</li>
 </ul>
-<h2 id="PDA的运行"><a href="#PDA的运行" class="headerlink" title="PDA的运行"></a>PDA的运行</h2><p>定义一个<strong>即时描述(Instantaneous Description, ID)</strong>是一个三元组$(q,w,\alpha)$：</p>
+<h2 id="PDA的运行"><a href="#PDA的运行" class="headerlink" title="PDA的运行"></a>PDA的运行</h2><p>定义一个<strong>即时描述</strong>(Instantaneous Description, ID)是一个三元组$(q,w,\alpha)$：</p>
 <ul>
 <li>$q$是当前状态</li>
 <li>$w$是剩余未处理的输入符号</li>
@@ -289,10 +841,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-12-11 18:06:39 / 修改时间：19:24:50" itemprop="dateCreated datePublished" datetime="2024-12-11T18:06:39+08:00">2024-12-11</time>
+              <time title="创建时间：2024-12-11 18:06:39" itemprop="dateCreated datePublished" datetime="2024-12-11T18:06:39+08:00">2024-12-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-12 18:05:11" itemprop="dateModified" datetime="2024-12-12T18:05:11+08:00">2024-12-12</time>
+              </span>
 
           
 
@@ -306,15 +864,15 @@
 
       
           <h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><p>正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。</p>
-<h2 id="直观描述"><a href="#直观描述" class="headerlink" title="直观描述"></a>直观描述</h2><p><strong>上下文无关文法(context-free grammar)</strong>是一种描述语言的记号，对于描述嵌套结构是很有用的。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>定义<strong>上下文无关文法(context-free grammar,CFG)</strong>是一个四元组$G=(V,T,P,S)$:</p>
+<h2 id="直观描述"><a href="#直观描述" class="headerlink" title="直观描述"></a>直观描述</h2><p><strong>上下文无关文法</strong>(context-free grammar)是一种描述语言的记号，对于描述嵌套结构是很有用的。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
 <ul>
-<li>$T$为CFG要定义语言的字母表，称为<strong>终结符(Terminals)</strong>。</li>
-<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量(Variables)</strong>或者<strong>非终结符(Nonterminals)</strong>。</li>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
 <li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
-<li>$P$为CFG的<strong>产生式(productions)</strong>集合，形如$head\rightarrow body$。<ul>
-<li><strong>头(header)</strong>是一个变量</li>
-<li><strong>体(body)</strong>是变量和终结符组成的字符串，可以是空串</li>
+<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
+<li><strong>头</strong>(header)是一个变量</li>
+<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
 </ul>
 </li>
 </ul>
@@ -361,7 +919,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="去除单元产生式"><a href="#去除单元产生式" class="headerlink" title="去除单元产生式"></a>去除单元产生式</h2><p><strong>单元产生式(unit production)</strong>指的是体只有一个变量的产生式。这些产生式也是可以去除的。</p>
+<h2 id="去除单元产生式"><a href="#去除单元产生式" class="headerlink" title="去除单元产生式"></a>去除单元产生式</h2><p><strong>单元产生式</strong>(unit production)指的是体只有一个变量的产生式。这些产生式也是可以去除的。</p>
 <p>算法如下：</p>
 <ul>
 <li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
@@ -449,7 +1007,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-11 18:27:35" itemprop="dateModified" datetime="2024-12-11T18:27:35+08:00">2024-12-11</time>
+                <time title="修改时间：2024-12-12 18:50:53" itemprop="dateModified" datetime="2024-12-12T18:50:53+08:00">2024-12-12</time>
               </span>
 
           
@@ -504,7 +1062,7 @@
 <li>NFA-&gt;$\epsilon$-NFA 显而易见</li>
 <li>$\epsilon$-NFA-&gt;NFA 先取闭包，后转移，最后再次取闭包</li>
 </ul>
-<h1 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h1><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
+<h2 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h2><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
 <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
 <li><strong>并(union)</strong>：就是集合的并操作</li>
 <li><strong>拼接(concatenation)</strong>：LM</li>
@@ -512,7 +1070,7 @@
 </ul>
 <h2 id="正则表达式与有穷自动机的等价性"><a href="#正则表达式与有穷自动机的等价性" class="headerlink" title="正则表达式与有穷自动机的等价性"></a>正则表达式与有穷自动机的等价性</h2><h3 id="正则表达式转换为-epsilon-NFA"><a href="#正则表达式转换为-epsilon-NFA" class="headerlink" title="正则表达式转换为$\epsilon$-NFA"></a>正则表达式转换为$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
 <h3 id="DFA转换为正则表达式"><a href="#DFA转换为正则表达式" class="headerlink" title="DFA转换为正则表达式"></a>DFA转换为正则表达式</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
-<h2 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h2><ul>
+<h3 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h3><ul>
 <li>$R+\emptyset=R$</li>
 <li>$R\emptyset=\emptyset R=\emptyset$</li>
 <li>$\epsilon R=R\epsilon =R$</li>
@@ -521,28 +1079,102 @@
 <li>$\epsilon+RR<em>=R</em>$</li>
 <li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
 </ul>
-<h1 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h1><ul>
+<h2 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h2><ul>
 <li>成员资格问题：模拟运行</li>
 <li>空问题：是否有一个终止状态可达</li>
 <li>无限性问题：是否有环</li>
 <li>等价性：构造乘积DFA</li>
 <li>包含关系：构造乘积DFA</li>
 </ul>
-<h2 id="泵引理："><a href="#泵引理：" class="headerlink" title="泵引理："></a>泵引理：</h2><p>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
+<h3 id="泵引理："><a href="#泵引理：" class="headerlink" title="泵引理："></a>泵引理：</h3><p>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
 <ol>
 <li>$|xy|\leq n$</li>
 <li>$|y| &gt;0$</li>
 <li>$\forall i \ge 0,xy^iz\in L$<br>判断一个语言不是正则表达式时使用泵引理，还可以利用正则语言的闭包性说明不是。还可以<strong>构造DFA</strong>来说明是正则语言。</li>
 </ol>
-<h2 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h2><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
+<h3 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h3><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
 <p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
-<h1 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h1><ul>
+<h2 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h2><ul>
 <li>并操作、拼接操作以及星闭包操作下的闭包</li>
 <li>交集、差集、补集下的闭包</li>
 <li>逆运算下的闭包</li>
 <li>同态运算下的闭包</li>
 <li>逆同态运算下的闭包</li>
 </ul>
+<h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
+<ul>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
+<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
+<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
+<li><strong>头</strong>(header)是一个变量</li>
+<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
+</ul>
+</li>
+</ul>
+<h2 id="最左推导最右推导，解析树，等价性"><a href="#最左推导最右推导，解析树，等价性" class="headerlink" title="最左推导最右推导，解析树，等价性"></a>最左推导最右推导，解析树，等价性</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
+<h2 id="文法歧义，固有歧义"><a href="#文法歧义，固有歧义" class="headerlink" title="文法歧义，固有歧义"></a>文法歧义，固有歧义</h2><h2 id="上下文无关变量范式"><a href="#上下文无关变量范式" class="headerlink" title="上下文无关变量范式"></a>上下文无关变量范式</h2><p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
+<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
+<ol>
+<li>$A\rightarrow BC$</li>
+<li>$A\rightarrow a$，其中$a$是终结符。</li>
+</ol>
+<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
+<ol>
+<li>清理文法。<ol>
+<li>去除无用符号：<ol>
+<li>删除不能导出终结字符串的符号</li>
+<li>删除所有从起始符号不可达的字符串</li>
+</ol>
+</li>
+<li>去除空产生式：<ol>
+<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
+<li>最后去掉所有的空产生式</li>
+</ol>
+</li>
+<li>去除单元产生式：<ol>
+<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
+<li>基础情况：$(A,A)一定是满足要求的有序对</li>
+<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
+</ul>
+</li>
+<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
+<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
+</ol>
+<h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><h2 id="定义-3"><a href="#定义-3" class="headerlink" title="定义"></a>定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<ul>
+<li>$Q$为有限状态集合</li>
+<li>$\Sigma$为输入字母表</li>
+<li>$\Gamma$为栈字母表</li>
+<li>$\delta$是转移函数<ul>
+<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
+<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
+</ul>
+</li>
+<li>$q_0\in Q$为初始状态</li>
+<li>$Z_0\in\Gamma$为初始栈顶元素</li>
+<li>$F\subseteq Q$为终止状态集合</li>
+</ul>
+<p>一些字母上的约定：</p>
+<ul>
+<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
+<li>用$\cdots,X,Y,Z$表示栈符号</li>
+<li>用$w,x,y,z$表示输入符号形成的字符串</li>
+<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串<h2 id="下推自动机的语言"><a href="#下推自动机的语言" class="headerlink" title="下推自动机的语言"></a>下推自动机的语言</h2></li>
+<li>根据终止状态$L(P)$</li>
+<li>根据空栈$N(P)$</li>
+</ul>
+<p>两者在定义语言的能力上等价，意味着可以通过修改相互转换。</p>
+<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>NPDA的表达能力比DPDA要强。</p>
+<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
+<p>思路就是$P$的每一步代表最左推导中的一步。</p>
+<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
+<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
 
       
     </div>
@@ -889,490 +1521,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/" class="post-title-link" itemprop="url">NJU_FLA大作业2024</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-02 23:07:38" itemprop="dateCreated datePublished" datetime="2024-12-02T23:07:38+08:00">2024-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:33:09" itemprop="dateModified" datetime="2024-12-09T23:33:09+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          Here's something encrypted, password is required to continue reading.
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/02/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/02/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/" class="post-title-link" itemprop="url">单向函数与硬核谓词</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-12-02 17:03:40 / 修改时间：21:06:03" itemprop="dateCreated datePublished" datetime="2024-12-02T17:03:40+08:00">2024-12-02</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第八章Theoretical Constructions of Symmetric-Key Primitives</p>
-<p>我们已经引入了伪随机性的概念，并且定义了一些基础的密码学原语，包括伪随机生成器、伪随机函数和伪随机置换。在本章中，我们正式引入单向函数的概念——一种从非正式上讲“易于计算但难以反向计算”的函数——并展示如何在仅假设单向函数存在的情况下构造伪随机生成器、伪随机函数和伪随机置换。</p>
-<h1 id="单向函数-One-Way-Functions"><a href="#单向函数-One-Way-Functions" class="headerlink" title="单向函数 One-Way Functions"></a>单向函数 One-Way Functions</h1><p>在本节中，我们将正式定义单向函数，并简要讨论一些被认为符合该定义的函数。接下来，我们引入硬核谓词（hard-core predicates）的概念，它可以被视为封装了单向函数反向计算的难度，并将在随后的构造中被广泛使用。</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>单向函数$f$，是计算简单，但是难以反向计算的函数。</p>
-<p>计算简单很容易形式化定义：即$f$是一个可以在多项式时间内计算的函数。</p>
-<p>难以反向计算可以通过以下实验进行定义：<br>The inverting experiment $Invert_{\mathcal{A},f}(n)$</p>
-<ol>
-<li>均匀选取定义域中的x，并计算$f(x)$。</li>
-<li>$\mathcal{A}$接受输入$1^n$和$y$，并输出$x’$。（这里$1^n$只是为了保证运行在关于安全参数n的多项式时间内）</li>
-<li>若$y=f(x’)$，则实验结果为1，否则为0。</li>
-</ol>
-<p>注意，这里的实验并不要求必须满足$x=x’$，只要$y=f(x’)$即可。</p>
-<p><strong>定义8.1</strong><br>$f$是一个单向函数，当且仅当满足以下两个条件：</p>
-<ol>
-<li>存在一个多项式时间算法$M_f$来计算$f$，使$M_f(x)=f(x)$。</li>
-<li>对于任意多项式时间算法$\mathcal{A}$，都存在negl使<br>$Pr[Invert_{\mathcal{A},f}(n)=1]\leq negl(n)$</li>
-</ol>
-<p>条件2还可以用以下形式表示：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/1.png?raw=true" alt="1"></p>
-<p>一个不是单向的函数并不意味着它在所有情况下（甚至“大多数情况下”）都容易反转。</p>
-<p>任何单向函数都可以通过指数时间的暴力搜索进行反转。换句话说，这涉及一个原则上可以解决的问题，但假定它难以高效解决。</p>
-<p>当一个函数始终满足$|f(x)|=|x|$时，我们称该函数为length-preserving的，如果在此基础上这个函数还是单射函数，那么称这个函数为one-way permutation的（单向置换）。</p>
-<p>上述单向函数和置换的定义方便地考虑了一个在无限定义域和值域上的单一函数。然而，大多数候选单向函数和置换并不完全符合这一框架。相反，它们通常是通过某种算法生成一组参数。</p>
-<p><strong>定义8.2</strong><br>$\prod=(Gen,Samp,f)$是一个概率多项式函数三元组，当其符合下面条件时被称为一个function family：</p>
-<ol>
-<li>Gen：输入$1^n$，输出参数$I$，其中$|I|\ge n$。每个$I$对应定义了集合$\mathcal{D}_I$和$\mathcal{R}_I$，分别是函数$f_I$的定义域和值域。</li>
-<li>Samp：输入$I$，输出一个随机均匀分布的元素$x\in\mathcal{D}_I$。</li>
-<li>f：一个确定性的算法，输入$I$和$x\in\mathcal{D}_I$，输出$y=f_I(x)\in\mathcal{R}_I$。</li>
-</ol>
-<p>当对于任意$I$，$\mathcal{D}_I=\mathcal{R}_I$且$f_I(x)$是双射时，我们称$\prod$是一个permutation family。</p>
-<p>我们现在可以对应更改上述实验<br>The inverting experiment $Invert_{\mathcal{A},\prod}(n)$</p>
-<ol>
-<li>运行$Gen(1^n)$，并得到参数$I$。然后运行$Samp(I)$，并得到一个随机均匀分布的元素$x\in\mathcal{D}_I$。最后计算$y=f_I(x)$。</li>
-<li>$\mathcal{A}$接受输入$I$和$y$，并输出$x’$。</li>
-<li>若$y=f_I(x’)$，则实验结果为1，否则为0。</li>
-</ol>
-<p><strong>定义8.3</strong><br>一个function/permutation family $\prod$是one-way的，如果对对于任意多项式时间算法$\mathcal{A}$，都存在negl使<br>$Pr[Invert_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
-<h2 id="潜在的单向函数"><a href="#潜在的单向函数" class="headerlink" title="潜在的单向函数"></a>潜在的单向函数</h2><h3 id="Candidate-1"><a href="#Candidate-1" class="headerlink" title="Candidate 1"></a>Candidate 1</h3><p>我们尚且不能无条件的证明单向函数的存在，所以我们目前必须假设他们的存在，这基于以下事实：一些被广泛研究的问题目前尚未能发现任何多项式时间算法能解决，比如大整数的质因数分解。这个问题难就难在<strong>将两个数相乘得到它们的积很容易，但给定一个数找到它的因数却非常困难</strong>。</p>
-<p>这给了我们灵感，我们定义$f_{mult}(x,y)=x\cdot y$，限制x，y的定义域为等长的素数。</p>
-<h3 id="Candidate-2"><a href="#Candidate-2" class="headerlink" title="Candidate 2"></a>Candidate 2</h3><p>这个单向函数的构造依赖于子集求和问题，其定义为<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/2.png?raw=true" alt="2"><br>其中$x_i$是一个n比特的字符串，解释为一个整数，$J$是一个n比特字符串，表示指定了子集$\{1,\cdots,n\}$的元素。</p>
-<p>这个函数的逆函数是一个NP-complete问题。</p>
-<h3 id="Candidate-3"><a href="#Candidate-3" class="headerlink" title="Candidate 3"></a>Candidate 3</h3><p>现在展示一个a family of permutations是单向的。其中Gen是一个概率多项式时间算法，输出一个n比特素数$p$，以及一个特殊元素$g\in \{2,\cdots,p-1\}$。Samp输出一个均匀分布的整数$x\in \{1,\cdots,p-1\}$。最后，定义$f_{p,g}(x)=g^x \bmod p$</p>
-<p>可以证明这个函数是单射，因此是一个置换。反转这个函数的困难基于离散对数问题的假设。</p>
-<h2 id="硬核谓词-Hard-core-Predicates"><a href="#硬核谓词-Hard-core-Predicates" class="headerlink" title="硬核谓词 Hard-core Predicates"></a>硬核谓词 Hard-core Predicates</h2><p>尽管根据定义单向函数很难反转，这并不意味着我们不能得到任何有用的信息。</p>
-<p>举个例子，假设$g$是一个单向函数，我们定义<br>$f(x_1,x_2)=(x_1,g(x_2))$，其中$|x_1|=|x_2|$。<br>很容易证明$f$是一个单向函数，尽管泄露了一半的输入信息。</p>
-<p>对于我们的应用，我们需要识别某些关于$x$的特定信息，但是这些信息被$f(x)$隐藏。这促使了<strong>硬核谓词</strong>的概念。</p>
-<p><strong>定义8.4</strong><br>一个函数$hc:\{0,1\}^*\rightarrow\{0,1\}$是函数$f$的硬核谓词，当且仅当$hc$可以在多项式时间内计算，并且对于任何的多项式时间算法$\mathcal{A}$，都存在negl使<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/3.png?raw=true" alt="3"></p>
-<p>注意，这里的硬核谓词是一个布尔值函数。同时，上述定义并不要求$f$是一个单向函数。但是如果$f$是一个置换函数，那么除非他是单向的，否则没有硬核谓词。</p>
-<p>硬核谓词不能简单的构造，这里给出定理，对于任何固定的谓词$hc$，总存在一个单向函数，使这个谓词不是这个单向函数的硬核谓词。</p>
-<p>当然，也存在简单的硬核谓词，比如，假设$f$是一个函数，其输出就是丢弃最后的一个比特。那么$hc(x)=x_n$就是$f$的一个硬核谓词。这里$f$是不是单向函数无关紧要。但是，这种简单的硬核谓词在我们后续的构造工作中是没有作用的。</p>
-<h1 id="从单向函数到为随机性"><a href="#从单向函数到为随机性" class="headerlink" title="从单向函数到为随机性"></a>从单向函数到为随机性</h1><p>这节我们展示如何从单向函数构造伪随机生成器，伪随机函数和置换。</p>
-<p>首先，我们说明任何是否任何一个单向函数都有一个硬核谓词，这仍然是一个开放性问题。我们可以展示一个弱一些的结论。</p>
-<p><strong>定理8.5(Goldreich–Levin theorem)</strong><br>假设存在一个单向函数$f$，那么一定存在另一个单向函数$g$和$g$的硬核谓词$gl$。</p>
-<p>我们可以通过以下方式进行构造：<br>令$g(x,r)=(f(x),r)$，其中$|x|=|r|$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/4.png?raw=true" alt="4"></p>
-<p>下一步我们展示如何从一个单项置换的硬核谓词构造一个伪随机函数。</p>
-<p><strong>定理8.6</strong><br>假设存在一个单向置换$f$，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
-<p>直觉上看，因为输入是均匀的，所以置换后看起来也是均匀的，最后连接一个看起来是随机的$hc(s)$，所以整体上看起来是随机的。</p>
-<p>当然，只能拓展一位的伪随机数生成器用处限制很大，但是幸运的是，我们可以获得任何多项式扩展因子的伪随机生成器。</p>
-<p><strong>定理8.7</strong><br>如果存在一个expansion factor是$l(n)=n+1$的伪随机数生成器，那么对于任意的多项式$poly$，都存在expansion factor是l(n)=poly(n)$的伪随机数生成器。</p>
-<p>因此，我们得出结论：可以从任何单向置换构造具有任意（多项式）扩展因子的伪随机生成器。</p>
-<p>伪随机生成器对于构造 EAV 安全的私钥加密方案是足够的。然而，对于 CPA 安全的私钥加密（更不用说消息认证码了），我们依赖于伪随机函数。以下结果表明，后者可以从前者构造出来。</p>
-<p><strong>定理8.8</strong><br>如果存在一个expansion factor是$l(n)=2n$的伪随机数生成器，则存在一个伪随机函数。</p>
-<p><strong>定理8.9</strong><br>如果存在一个伪随机函数，则存在一个伪随机置换。</p>
-<p>综合上述定理，我们发现，只要有单项置换函数，我们就可以构造出</p>
-<ul>
-<li>存在任意扩展因子的伪随机生成器、伪随机函数和强伪随机置换。</li>
-<li>存在认证加密方案和安全的消息认证码。</li>
-</ul>
-<h1 id="来自单向函数的硬核谓词"><a href="#来自单向函数的硬核谓词" class="headerlink" title="来自单向函数的硬核谓词"></a>来自单向函数的硬核谓词</h1><p>我们在这一节证明<strong>定理8.5</strong>。<br>略</p>
-<h1 id="构造伪随机数生成器"><a href="#构造伪随机数生成器" class="headerlink" title="构造伪随机数生成器"></a>构造伪随机数生成器</h1><p>我们首先展示如何在假设单向置换存在的情况下，构造将输入扩展一个比特的伪随机生成器。然后，我们再展示如何扩展这一构造，以获得任意多项式扩展因子。</p>
-<h2 id="最小扩展因子的伪随机数生成器"><a href="#最小扩展因子的伪随机数生成器" class="headerlink" title="最小扩展因子的伪随机数生成器"></a>最小扩展因子的伪随机数生成器</h2><p><strong>定理8.18</strong><br>令$f$为一个单向置换，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
-<p>证明如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/6.png?raw=true" alt="6"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/5.png?raw=true" alt="5"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="post-title-link" itemprop="url">判定性与复杂度</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-26 15:03:06" itemprop="dateCreated datePublished" datetime="2024-11-26T15:03:06+08:00">2024-11-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:15:53" itemprop="dateModified" datetime="2024-12-09T23:15:53+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="判定性-Decidability"><a href="#判定性-Decidability" class="headerlink" title="判定性(Decidability)"></a>判定性(Decidability)</h1><p>到目前为止，我们已经学习了正则语言、上下文无关语言、递归语言（图灵可判定语言）、递归可枚举语言（图灵可识别语言）。</p>
-<p>我们已经知道正则语言是上下文无关语言的子集，上下文无关语言是图灵可判定语言的子集。</p>
-<p>事实上，我们学过的语言符合下图所示的关系。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/1.png?raw=true" alt="1"></p>
-<p>我们这一节的目标是证明<br>$\text{decidable} \varsubsetneqq \text{RE} \varsubsetneqq \text{all languages}$</p>
-<h2 id="可数与可数集"><a href="#可数与可数集" class="headerlink" title="可数与可数集"></a>可数与可数集</h2><p>首先回顾一下<strong>可数</strong>的概念。<br>我们称自然数集$\mathbb{N}=\{1,2,3,\dots\}$中的元素为<strong>可数</strong>。 （这里暂定自然数从1开始，但是没有本质的区别）<br>对于一个集合$S$，如果该集合是有限集，或者存在一个双射$f:N\rightarrow S$我们称$S$为<strong>可数</strong>。</p>
-<hr>
-<p><strong>定理</strong>： 实数集$\mathbb{R}$不可数。</p>
-<p>证明如下：</p>
-<p>假设$\mathbb{R}$是可数，那么存在一个双射$f:N\rightarrow \mathbb{R}$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/2.png?raw=true" alt="2"></p>
-<p>其中<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/3.png?raw=true" alt="3"><br>将有限小数和整数视为后面有无数个0的无限小数。</p>
-<p>令x=0.b1b2b3…，其中bi≠aii。</p>
-<p>所以x一定不在该表格的双射中。矛盾，所以$\mathbb{R}$不可数。</p>
-<hr>
-<h2 id="非递归可枚举语言"><a href="#非递归可枚举语言" class="headerlink" title="非递归可枚举语言"></a>非递归可枚举语言</h2><p>现在我们证明非递归可枚举语言(Non-RE Languages)的存在。</p>
-<p>所谓非递归可枚举语言，是指不能由图灵机接受并判定的语言。</p>
-<hr>
-<p><strong>定理</strong>：非递归可枚举语言存在。</p>
-<p>证明如下：</p>
-<p>所有图灵机的集合是可数的。<br>显然，我们可以由一个有限长度的字符串确定性的表示一个图灵机（将所有要素全部写下来），而对于有限的字母表$\Sigma$，$\Sigma^*$是可数的，因此图灵机是一个可数集的子集，也是可数的。</p>
-<p>所有语言的集合是不可数的。<br>用康托尔对角法很容易证明，仿照上面实数集不可数的证明思路。</p>
-<p>所以从图灵机的集合到语言的集合的函数时不可逆的。即给定一个语言，不一定有对应的图灵机。</p>
-<p>一个显然的事实是，给定一个图灵机，一定会有一个对应的语言；而上面的证明说明了给定一个语言，不一定会有一个能接收这个语言的图灵机，从而递归可枚举语言就是所有语言的真子集。从而得到非递归可枚举语言存在。</p>
-<hr>
-<p>到目前为止，我们从理论上将递归可枚举语言和所有语言区分开。</p>
-<h2 id="停机问题"><a href="#停机问题" class="headerlink" title="停机问题"></a>停机问题</h2><p>现在我们要寻找一个不可判定的语言，将递归语言和递归可枚举语言彻底区分开来。</p>
-<p><strong>定义</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/4.png?raw=true" alt="4"></p>
-<p>这里实际上HALT也可以看作一个语言，只不过这个语言接收一个二元组的字符表示作为它的输入字符串而已。</p>
-<hr>
-<p><strong>定理</strong><br>停机问题不可判定。</p>
-<p>证明如下：</p>
-<p>假设存在图灵机H能判定HALT问题。</p>
-<ul>
-<li>如果M对于输入x可以停机，那么H会接受$&lt; M, x&gt;$</li>
-<li>如果M对于输入x不会停机，那么H会拒绝$&lt; M, x&gt;$</li>
-</ul>
-<p>现在定义一个新图灵机H’，它接受输入$&lt; M&gt;$, 即图灵机的字符串表示</p>
-<ul>
-<li>如果H接受了$&lt; M, &lt; M&gt;&gt;$，则死循环</li>
-<li>如果H拒绝了$&lt; M, &lt; M&gt;&gt;$，则停机</li>
-</ul>
-<p>现在考虑给H’输入$&lt; H’&gt;$</p>
-<ul>
-<li>如果停机，那么H拒绝了输入，说明H不能停机</li>
-<li>如果死循环，那么H接受输入，说明H可以停机</li>
-</ul>
-<p>显然这是矛盾的，因此H和H’都不存在。</p>
-<hr>
-<p>到目前为止，我们已经找到了一种语言，停机问题，是不可判定的，将递归语言和递归可枚举语言彻底区分了开来。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/5.png?raw=true" alt="5"></p>
-<h2 id="图灵不可识别的语言"><a href="#图灵不可识别的语言" class="headerlink" title="图灵不可识别的语言"></a>图灵不可识别的语言</h2><p>下面给出一个具体的例子。<br><strong>定义</strong>：<br>定义一个递归可枚举(RE)语言的补集co-RE，则有如下关系：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/6.png?raw=true" alt="6"></p>
-<p>这里的补集指的是所有的具体语言关于$\Sigma^*$的补集所形成的新的语言的集合。</p>
-<hr>
-<p><strong>定理</strong>：<br>一个语言$L$可判定，当且仅当它既是RE，也是co-RE。</p>
-<p>充要性证明省略</p>
-<hr>
-<p>由此我们可以得出，HALT的补集不是递归可枚举的。</p>
-<p>到此，我们就彻底搞清了各种语言之间的包含关系了。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/7.png?raw=true" alt="7"></p>
-<h1 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>算法是什么：算法是一个必定会停止的图灵机，也就是一个递归语言/图灵可判定语言的图灵机。</p>
-<p>真实世界中，运行算法会占用<strong>时间空间</strong>资源。</p>
-<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><p>一个图灵机运行时间（步数），被称为<strong>时间复杂度</strong>。用一个函数表示：<br>$f:\mathbb{N}\rightarrow\mathbb{N}$<br>其中$f(n)$是$M$对于任意长度为$n$的输入停机所需要的最大步骤数（移动次数）。这里分析的是最坏情况。</p>
-<p><strong>渐进表示法</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/8.png?raw=true" alt="8"></p>
-<h2 id="时间复杂度类"><a href="#时间复杂度类" class="headerlink" title="时间复杂度类"></a>时间复杂度类</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/9.png?raw=true" alt="9"></p>
-<p>用多带图灵机来编程通常会比单带的图灵机更方便一些。</p>
-<ul>
-<li>在我们讨论可判定性的时候，它们是等价的；</li>
-<li>不过当我们讨论复杂度的时候，它们就不等价了。</li>
-</ul>
-<p>同时我们有以下定理<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/10.png?raw=true" alt="10"></p>
-<h1 id="P与NP"><a href="#P与NP" class="headerlink" title="P与NP"></a>P与NP</h1><p>我们认为多项式运行时间是高效的，认为指数运行时间是不高效的。</p>
-<h2 id="P"><a href="#P" class="headerlink" title="P"></a>P</h2><p><strong>定义</strong><br>定义 P 或者 多项式时间(polynomial-time) 是一类语言，它们在一个单带、确定性图灵机上是多项式时间可判定的。<br>$P=\cup_{k\ge 1} TIME(n^k)$</p>
-<p>我们关注P是因为计算模型对多项式是不敏感的，换而言之，在一个确定性计算模型上面多项式时间的算法在另一个确定性计算模型上依旧是多项式时间的。</p>
-<h2 id="NP"><a href="#NP" class="headerlink" title="NP"></a>NP</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/11.png?raw=true" alt="11"></p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/12.png?raw=true" alt="12"><br>意思就是，对于具体的解能在多项式时间能判定。</p>
-<h2 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h2><p>给定一个新问题，如果我们先买个要说明这个问题不可判定，我们通常有两种思路：</p>
-<ol>
-<li>从头开始论证</li>
-<li>将一个已知不可判定的问题转变为新问题，使新问题的解决办法也可以解决旧问题。</li>
-</ol>
-<p><strong>归约(reduction)</strong> 是一种将一个问题转化成另一个问题的方式，使得第二个问题的解决方案也可以用来解决第一个问题。</p>
-<p>首先我们定义什么是可计算的函数<br><strong>定义</strong>：<br>一个函数$f:\sum^<em> \rightarrow \sum^</em>$是<strong>可计算的(computable)</strong>，如果存在一个图灵机$M_f$，使得对于每一个输入$\omega$，$M_f$将$f(\omega)$写到纸带上并停机。</p>
-<p>然后我们来定义归约<br><strong>定义</strong>：<br>A可以被映射归约(mapping reducible)为B，写作$A\leq_m B$，如果存在一个可计算的函数$f$，使得对于所有$\omega$，都有<br>$\omega\in A\Leftrightarrow f(\omega)\in B$<br>等价的<br>$\omega\notin A\Leftrightarrow f(\omega)\notin B$<br>$f$被称为从A到B的一个归约。</p>
-<p>下图是语言$A$到$B$的归约的图示<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/13.png?raw=true" alt="13"></p>
-<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是可判定的，那么$A$也是可判定的。</p>
-<p>注意其逆否命题的方向<br>如果$A\leq_m B$且$A$是不可判定的，那么$B$也是不可判定的。</p>
-<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是RE，那么$A$也是RE。</p>
-<h2 id="Rice定理"><a href="#Rice定理" class="headerlink" title="Rice定理"></a>Rice定理</h2><p>我们发现图灵机的以下一些性质是不可判定的。</p>
-<ul>
-<li>接受字符$\omega$</li>
-<li>在输入字符串$\omega$时停机</li>
-<li>接受语言为空</li>
-</ul>
-<p><strong>定理</strong>：<br><strong>Rice定理</strong>： 图灵机的每一个<strong>非平凡</strong>的<strong>性质</strong>都是不可判定的。</p>
-<p><strong>定义</strong><br>一个图灵机的<strong>性质property</strong>指一个语言$P$，满足对于任意两个图灵机$M_1,M_2$，如果$L(M_1)=L(M_2)$，则<br>$&lt; M_1&gt;\in P\Leftrightarrow &lt; M_2&gt; \in P$</p>
-<p>如果存在一个图灵机$M_1$，使得$&lt; M_1&gt;\in P$且存在一个图灵机$M_2$，使得$&lt; M_2&gt;\notin P$，则称$P$是一个<strong>非平凡</strong>的性质。</p>
-<h1 id="NPC"><a href="#NPC" class="headerlink" title="NPC"></a>NPC</h1><h2 id="多项式时间归约"><a href="#多项式时间归约" class="headerlink" title="多项式时间归约"></a>多项式时间归约</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/14.png?raw=true" alt="14"><br><strong>定理</strong>：<br>如果$A\leq_P B$且$B\in P$，那么$A\in P$。</p>
-<h2 id="NP完全理论"><a href="#NP完全理论" class="headerlink" title="NP完全理论"></a>NP完全理论</h2><p><strong>定义</strong><br>我们称一个语言B是<strong>NP完全的</strong>，当且仅当满足以下条件：</p>
-<ol>
-<li>$B\in NP$</li>
-<li>$\forall A\in NP:A\leq_P B$<br>若只满足第二个条件，则称B是<strong>NP难的</strong>。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">哈希函数及其应用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-22 22:37:32" itemprop="dateCreated datePublished" datetime="2024-11-22T22:37:32+08:00">2024-11-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-25 16:46:03" itemprop="dateModified" datetime="2024-11-25T16:46:03+08:00">2024-11-25</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第六章Hash Functions and Applications</p>
-<p>我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>哈希函数是一类将任意长度的输入压缩为固定长度输出的函数。非加密哈希函数的经典用途是在数据结构中，它们可以用来构建哈希表，从而在存储一组元素时实现$O(1)$的查找。具体来说，如果哈希函数$H$的输出范围大小为$N$，那么元素x被存储在表格的第$H(x)$行。</p>
-<p>一个良好的哈希函数要尽可能的减少碰撞(collision)。抗碰撞(Collision-resistant)哈希函数的目标也是避免碰撞，但是在数据结构的应用中，较少碰撞只是优化的要求，但是在密码学背景下，避免碰撞是一个严格的要求，因为攻击者可能会故意构造发生碰撞的值来进行攻击。所以设计抗碰撞哈希函数的难度要高于设计一般的哈希函数。</p>
-<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥s和一个字符串x，输出$H_s(x)$。</p>
-<p>这里的密钥和我们过去考虑的密钥有所不同，在过去的密钥我们希望保密，但是这里哈希函数中攻击者可能知道密钥，在这个前提下，我们希望哈希函数还具有抗碰撞性。</p>
-<p><strong>DEFINITION 6.1</strong><br>一个哈希函数由一对概率多项式算法组成。</p>
-<ul>
-<li>Gen： 是一个概率算法，输出密钥s</li>
-<li>H： 是一个确定性算法，接受一个密钥s和一个字符串x，输出$H_s(x)$，长度为$l(n)$</li>
-</ul>
-<p>如果H只接受固定长度的字符串输入，我们称哈希函数为fixed-length，H为compression function。显然这里输出的长度必须小于输入长度。</p>
-<p>下面介绍攻击实验The collission-finding experiment $Hash-coll_{\mathcal{A},\mathcal{H}}(n)$:</p>
-<ol>
-<li>生成密钥s</li>
-<li>攻击者接受s，输出$x,x’$。</li>
-<li>如果这两个输出产生碰撞，则实验结果为1，反之为0</li>
-</ol>
-<p>$DEFINITON 6.2$<br>一个哈希函数是Collision Resistant当且仅当<br>$Pr[Hash-coll_{\mathcal{A},\mathcal{H}}(n) = 1]\leq negl(n)$</p>
-<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。<br>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
-<h2 id="弱一些的安全定义"><a href="#弱一些的安全定义" class="headerlink" title="弱一些的安全定义"></a>弱一些的安全定义</h2><ul>
-<li>Second-preimage resistance<br>对于一个哈希函数，如果给定s和x，找不到另一个能碰撞的字符串。</li>
-<li>Preimage resistance<br>对于一个哈希函数，如果给定s和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
-</ul>
-<p>coliision resistant $\Rightarrow$ second-preimage resistance $\Rightarrow$ preimage resistance</p>
-<h1 id="Merkle–Damgard变换"><a href="#Merkle–Damgard变换" class="headerlink" title="Merkle–Damgård变换"></a>Merkle–Damgård变换</h1><p>许多应用需要“完全成熟”的抗碰撞哈希函数，这种哈希函数能够处理非常长的输入，甚至是任意长度的输入。然而，构造固定长度的哈希函数（即压缩函数）更为容易——这些函数只接受“短”的输入。幸运的是，Merkle–Damgård变换使我们可以将后者转换为前者。这种哈希函数域扩展的方法在实践中被频繁使用，例如MD5和SHA系列哈希函数。</p>
-<p>假设已经存在压缩函数$(Gen,h)$，能接受长度大于2n的输入并输出长度为n的输出。那么我们可以通过下面的变换得到一个能处理任意长度输入的哈希函数<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/1.png?raw=true" alt="1"></p>
-<p><strong>THEOREM 6.4</strong><br>如果$(Gen,h)$抗碰撞，那么构造的$(Gen,H)$也抗碰撞</p>
-<p>证明如下：//TODO</p>
-<h1 id="应用哈希函数进行消息认证"><a href="#应用哈希函数进行消息认证" class="headerlink" title="应用哈希函数进行消息认证"></a>应用哈希函数进行消息认证</h1><p>我们之前已经讨论了几种针对任意长度消息的消息认证码（MAC）的构造。在本节中，我们将看到另一种方法，该方法依赖于抗碰撞哈希函数。随后，我们会介绍一种被标准化并广泛使用的方案，称为 HMAC（哈希消息认证码），它可以看作是这种方法的具体实现。</p>
-<h2 id="Hash-and-MAC"><a href="#Hash-and-MAC" class="headerlink" title="Hash-and-MAC"></a>Hash-and-MAC</h2><p>抗碰撞哈希函数可以自然地用于消息认证码（MAC）的域扩展。例如，假设我们有一个固定长度的 MAC，它可以处理长度为 l(n)-比特的消息，并且有一个输出长度为 l(n)-比特的抗碰撞哈希函数。那么我们可以通过对消息 m 进行哈希计算，然后使用 MAC 对哈希值进行认证，从而对任意长度的消息 m 进行认证。（参见构造 6.5。）</p>
-<p>直观上，这种方法是安全的，因为：</p>
-<ul>
-<li>MAC 的安全性 确保攻击者无法认证任何新的哈希值。</li>
-<li>抗碰撞性 确保攻击者无法找到与已使用哈希值相同的哈希的新消息。</li>
-</ul>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/2.png?raw=true" alt="2"></p>
-<p><strong>THEOREM 6.6</strong><br>如果$\prod$是一个secure的MAC，$\mathcal{H}$是一个抗碰撞的哈希函数，那么上述构造是一个secure MAC</p>
-<p>证明如下：//TODO</p>
-<h2 id="HMAC"><a href="#HMAC" class="headerlink" title="HMAC"></a>HMAC</h2><p>在原则上，可以通过将任意抗碰撞哈希函数与第4.5节中的固定长度消息认证码（MAC）相结合，来实现上一节提到的“哈希并认证”（hash-and-MAC）方法。然而，这种方法在实际中有至少两个缺点：</p>
-<ul>
-<li>需要实现两种密码学原语</li>
-<li>哈希函数输出长度与分组密码分组长度之间的不匹配</li>
-</ul>
-<p>HMAC 的设计克服了哈希函数和分组密码之间的不匹配问题，同时通过高效的构造支持任意长度的消息。具体地，HMAC 使用了两次调用哈希函数的过程，同时结合了内置的密钥与填充操作，以确保安全性。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/3.png?raw=true" alt="3"></p>
-<p><strong>THEOREM 6.8</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/4.png?raw=true" alt="4"></p>
-<p>证明如下：//TODO</p>
-<h1 id="对哈希函数的攻击"><a href="#对哈希函数的攻击" class="headerlink" title="对哈希函数的攻击"></a>对哈希函数的攻击</h1><h2 id="Birthday-Attacks"><a href="#Birthday-Attacks" class="headerlink" title="Birthday Attacks"></a>Birthday Attacks</h2><p>最简单的攻击是在输入空间内穷举，但是复杂度高达$2^{n}$。</p>
-<p>现在考虑一个问题，一个房间里有q个人，那么存在两个人生日相同的概率是多少。<br>我们不难发现，当$q\approx 2^{l/2}$时，碰撞的概率接近0.5。</p>
-<p>所以，攻击者只需要尝试$2^{l/2}$次，就能显著提高找到碰撞对的概率。</p>
-<p>所以，要达到相同的安全水平，哈希函数输出的长度应该是2n。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1438,7 +1590,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

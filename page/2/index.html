@@ -162,6 +162,486 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/" class="post-title-link" itemprop="url">NJU_FLA大作业2024</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-02 23:07:38" itemprop="dateCreated datePublished" datetime="2024-12-02T23:07:38+08:00">2024-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-09 23:33:09" itemprop="dateModified" datetime="2024-12-09T23:33:09+08:00">2024-12-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          Here's something encrypted, password is required to continue reading.
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/02/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/02/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/" class="post-title-link" itemprop="url">单向函数与硬核谓词</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-02 17:03:40 / 修改时间：21:06:03" itemprop="dateCreated datePublished" datetime="2024-12-02T17:03:40+08:00">2024-12-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第八章Theoretical Constructions of Symmetric-Key Primitives</p>
+<p>我们已经引入了伪随机性的概念，并且定义了一些基础的密码学原语，包括伪随机生成器、伪随机函数和伪随机置换。在本章中，我们正式引入单向函数的概念——一种从非正式上讲“易于计算但难以反向计算”的函数——并展示如何在仅假设单向函数存在的情况下构造伪随机生成器、伪随机函数和伪随机置换。</p>
+<h1 id="单向函数-One-Way-Functions"><a href="#单向函数-One-Way-Functions" class="headerlink" title="单向函数 One-Way Functions"></a>单向函数 One-Way Functions</h1><p>在本节中，我们将正式定义单向函数，并简要讨论一些被认为符合该定义的函数。接下来，我们引入硬核谓词（hard-core predicates）的概念，它可以被视为封装了单向函数反向计算的难度，并将在随后的构造中被广泛使用。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>单向函数$f$，是计算简单，但是难以反向计算的函数。</p>
+<p>计算简单很容易形式化定义：即$f$是一个可以在多项式时间内计算的函数。</p>
+<p>难以反向计算可以通过以下实验进行定义：<br>The inverting experiment $Invert_{\mathcal{A},f}(n)$</p>
+<ol>
+<li>均匀选取定义域中的x，并计算$f(x)$。</li>
+<li>$\mathcal{A}$接受输入$1^n$和$y$，并输出$x’$。（这里$1^n$只是为了保证运行在关于安全参数n的多项式时间内）</li>
+<li>若$y=f(x’)$，则实验结果为1，否则为0。</li>
+</ol>
+<p>注意，这里的实验并不要求必须满足$x=x’$，只要$y=f(x’)$即可。</p>
+<p><strong>定义8.1</strong><br>$f$是一个单向函数，当且仅当满足以下两个条件：</p>
+<ol>
+<li>存在一个多项式时间算法$M_f$来计算$f$，使$M_f(x)=f(x)$。</li>
+<li>对于任意多项式时间算法$\mathcal{A}$，都存在negl使<br>$Pr[Invert_{\mathcal{A},f}(n)=1]\leq negl(n)$</li>
+</ol>
+<p>条件2还可以用以下形式表示：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/1.png?raw=true" alt="1"></p>
+<p>一个不是单向的函数并不意味着它在所有情况下（甚至“大多数情况下”）都容易反转。</p>
+<p>任何单向函数都可以通过指数时间的暴力搜索进行反转。换句话说，这涉及一个原则上可以解决的问题，但假定它难以高效解决。</p>
+<p>当一个函数始终满足$|f(x)|=|x|$时，我们称该函数为length-preserving的，如果在此基础上这个函数还是单射函数，那么称这个函数为one-way permutation的（单向置换）。</p>
+<p>上述单向函数和置换的定义方便地考虑了一个在无限定义域和值域上的单一函数。然而，大多数候选单向函数和置换并不完全符合这一框架。相反，它们通常是通过某种算法生成一组参数。</p>
+<p><strong>定义8.2</strong><br>$\prod=(Gen,Samp,f)$是一个概率多项式函数三元组，当其符合下面条件时被称为一个function family：</p>
+<ol>
+<li>Gen：输入$1^n$，输出参数$I$，其中$|I|\ge n$。每个$I$对应定义了集合$\mathcal{D}_I$和$\mathcal{R}_I$，分别是函数$f_I$的定义域和值域。</li>
+<li>Samp：输入$I$，输出一个随机均匀分布的元素$x\in\mathcal{D}_I$。</li>
+<li>f：一个确定性的算法，输入$I$和$x\in\mathcal{D}_I$，输出$y=f_I(x)\in\mathcal{R}_I$。</li>
+</ol>
+<p>当对于任意$I$，$\mathcal{D}_I=\mathcal{R}_I$且$f_I(x)$是双射时，我们称$\prod$是一个permutation family。</p>
+<p>我们现在可以对应更改上述实验<br>The inverting experiment $Invert_{\mathcal{A},\prod}(n)$</p>
+<ol>
+<li>运行$Gen(1^n)$，并得到参数$I$。然后运行$Samp(I)$，并得到一个随机均匀分布的元素$x\in\mathcal{D}_I$。最后计算$y=f_I(x)$。</li>
+<li>$\mathcal{A}$接受输入$I$和$y$，并输出$x’$。</li>
+<li>若$y=f_I(x’)$，则实验结果为1，否则为0。</li>
+</ol>
+<p><strong>定义8.3</strong><br>一个function/permutation family $\prod$是one-way的，如果对对于任意多项式时间算法$\mathcal{A}$，都存在negl使<br>$Pr[Invert_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
+<h2 id="潜在的单向函数"><a href="#潜在的单向函数" class="headerlink" title="潜在的单向函数"></a>潜在的单向函数</h2><h3 id="Candidate-1"><a href="#Candidate-1" class="headerlink" title="Candidate 1"></a>Candidate 1</h3><p>我们尚且不能无条件的证明单向函数的存在，所以我们目前必须假设他们的存在，这基于以下事实：一些被广泛研究的问题目前尚未能发现任何多项式时间算法能解决，比如大整数的质因数分解。这个问题难就难在<strong>将两个数相乘得到它们的积很容易，但给定一个数找到它的因数却非常困难</strong>。</p>
+<p>这给了我们灵感，我们定义$f_{mult}(x,y)=x\cdot y$，限制x，y的定义域为等长的素数。</p>
+<h3 id="Candidate-2"><a href="#Candidate-2" class="headerlink" title="Candidate 2"></a>Candidate 2</h3><p>这个单向函数的构造依赖于子集求和问题，其定义为<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/2.png?raw=true" alt="2"><br>其中$x_i$是一个n比特的字符串，解释为一个整数，$J$是一个n比特字符串，表示指定了子集$\{1,\cdots,n\}$的元素。</p>
+<p>这个函数的逆函数是一个NP-complete问题。</p>
+<h3 id="Candidate-3"><a href="#Candidate-3" class="headerlink" title="Candidate 3"></a>Candidate 3</h3><p>现在展示一个a family of permutations是单向的。其中Gen是一个概率多项式时间算法，输出一个n比特素数$p$，以及一个特殊元素$g\in \{2,\cdots,p-1\}$。Samp输出一个均匀分布的整数$x\in \{1,\cdots,p-1\}$。最后，定义$f_{p,g}(x)=g^x \bmod p$</p>
+<p>可以证明这个函数是单射，因此是一个置换。反转这个函数的困难基于离散对数问题的假设。</p>
+<h2 id="硬核谓词-Hard-core-Predicates"><a href="#硬核谓词-Hard-core-Predicates" class="headerlink" title="硬核谓词 Hard-core Predicates"></a>硬核谓词 Hard-core Predicates</h2><p>尽管根据定义单向函数很难反转，这并不意味着我们不能得到任何有用的信息。</p>
+<p>举个例子，假设$g$是一个单向函数，我们定义<br>$f(x_1,x_2)=(x_1,g(x_2))$，其中$|x_1|=|x_2|$。<br>很容易证明$f$是一个单向函数，尽管泄露了一半的输入信息。</p>
+<p>对于我们的应用，我们需要识别某些关于$x$的特定信息，但是这些信息被$f(x)$隐藏。这促使了<strong>硬核谓词</strong>的概念。</p>
+<p><strong>定义8.4</strong><br>一个函数$hc:\{0,1\}^*\rightarrow\{0,1\}$是函数$f$的硬核谓词，当且仅当$hc$可以在多项式时间内计算，并且对于任何的多项式时间算法$\mathcal{A}$，都存在negl使<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/3.png?raw=true" alt="3"></p>
+<p>注意，这里的硬核谓词是一个布尔值函数。同时，上述定义并不要求$f$是一个单向函数。但是如果$f$是一个置换函数，那么除非他是单向的，否则没有硬核谓词。</p>
+<p>硬核谓词不能简单的构造，这里给出定理，对于任何固定的谓词$hc$，总存在一个单向函数，使这个谓词不是这个单向函数的硬核谓词。</p>
+<p>当然，也存在简单的硬核谓词，比如，假设$f$是一个函数，其输出就是丢弃最后的一个比特。那么$hc(x)=x_n$就是$f$的一个硬核谓词。这里$f$是不是单向函数无关紧要。但是，这种简单的硬核谓词在我们后续的构造工作中是没有作用的。</p>
+<h1 id="从单向函数到为随机性"><a href="#从单向函数到为随机性" class="headerlink" title="从单向函数到为随机性"></a>从单向函数到为随机性</h1><p>这节我们展示如何从单向函数构造伪随机生成器，伪随机函数和置换。</p>
+<p>首先，我们说明任何是否任何一个单向函数都有一个硬核谓词，这仍然是一个开放性问题。我们可以展示一个弱一些的结论。</p>
+<p><strong>定理8.5(Goldreich–Levin theorem)</strong><br>假设存在一个单向函数$f$，那么一定存在另一个单向函数$g$和$g$的硬核谓词$gl$。</p>
+<p>我们可以通过以下方式进行构造：<br>令$g(x,r)=(f(x),r)$，其中$|x|=|r|$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/4.png?raw=true" alt="4"></p>
+<p>下一步我们展示如何从一个单项置换的硬核谓词构造一个伪随机函数。</p>
+<p><strong>定理8.6</strong><br>假设存在一个单向置换$f$，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
+<p>直觉上看，因为输入是均匀的，所以置换后看起来也是均匀的，最后连接一个看起来是随机的$hc(s)$，所以整体上看起来是随机的。</p>
+<p>当然，只能拓展一位的伪随机数生成器用处限制很大，但是幸运的是，我们可以获得任何多项式扩展因子的伪随机生成器。</p>
+<p><strong>定理8.7</strong><br>如果存在一个expansion factor是$l(n)=n+1$的伪随机数生成器，那么对于任意的多项式$poly$，都存在expansion factor是l(n)=poly(n)$的伪随机数生成器。</p>
+<p>因此，我们得出结论：可以从任何单向置换构造具有任意（多项式）扩展因子的伪随机生成器。</p>
+<p>伪随机生成器对于构造 EAV 安全的私钥加密方案是足够的。然而，对于 CPA 安全的私钥加密（更不用说消息认证码了），我们依赖于伪随机函数。以下结果表明，后者可以从前者构造出来。</p>
+<p><strong>定理8.8</strong><br>如果存在一个expansion factor是$l(n)=2n$的伪随机数生成器，则存在一个伪随机函数。</p>
+<p><strong>定理8.9</strong><br>如果存在一个伪随机函数，则存在一个伪随机置换。</p>
+<p>综合上述定理，我们发现，只要有单项置换函数，我们就可以构造出</p>
+<ul>
+<li>存在任意扩展因子的伪随机生成器、伪随机函数和强伪随机置换。</li>
+<li>存在认证加密方案和安全的消息认证码。</li>
+</ul>
+<h1 id="来自单向函数的硬核谓词"><a href="#来自单向函数的硬核谓词" class="headerlink" title="来自单向函数的硬核谓词"></a>来自单向函数的硬核谓词</h1><p>我们在这一节证明<strong>定理8.5</strong>。<br>略</p>
+<h1 id="构造伪随机数生成器"><a href="#构造伪随机数生成器" class="headerlink" title="构造伪随机数生成器"></a>构造伪随机数生成器</h1><p>我们首先展示如何在假设单向置换存在的情况下，构造将输入扩展一个比特的伪随机生成器。然后，我们再展示如何扩展这一构造，以获得任意多项式扩展因子。</p>
+<h2 id="最小扩展因子的伪随机数生成器"><a href="#最小扩展因子的伪随机数生成器" class="headerlink" title="最小扩展因子的伪随机数生成器"></a>最小扩展因子的伪随机数生成器</h2><p><strong>定理8.18</strong><br>令$f$为一个单向置换，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
+<p>证明如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/6.png?raw=true" alt="6"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/5.png?raw=true" alt="5"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="post-title-link" itemprop="url">判定性与复杂度</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-11-26 15:03:06" itemprop="dateCreated datePublished" datetime="2024-11-26T15:03:06+08:00">2024-11-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-09 23:15:53" itemprop="dateModified" datetime="2024-12-09T23:15:53+08:00">2024-12-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="判定性-Decidability"><a href="#判定性-Decidability" class="headerlink" title="判定性(Decidability)"></a>判定性(Decidability)</h1><p>到目前为止，我们已经学习了正则语言、上下文无关语言、递归语言（图灵可判定语言）、递归可枚举语言（图灵可识别语言）。</p>
+<p>我们已经知道正则语言是上下文无关语言的子集，上下文无关语言是图灵可判定语言的子集。</p>
+<p>事实上，我们学过的语言符合下图所示的关系。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/1.png?raw=true" alt="1"></p>
+<p>我们这一节的目标是证明<br>$\text{decidable} \varsubsetneqq \text{RE} \varsubsetneqq \text{all languages}$</p>
+<h2 id="可数与可数集"><a href="#可数与可数集" class="headerlink" title="可数与可数集"></a>可数与可数集</h2><p>首先回顾一下<strong>可数</strong>的概念。<br>我们称自然数集$\mathbb{N}=\{1,2,3,\dots\}$中的元素为<strong>可数</strong>。 （这里暂定自然数从1开始，但是没有本质的区别）<br>对于一个集合$S$，如果该集合是有限集，或者存在一个双射$f:N\rightarrow S$我们称$S$为<strong>可数</strong>。</p>
+<hr>
+<p><strong>定理</strong>： 实数集$\mathbb{R}$不可数。</p>
+<p>证明如下：</p>
+<p>假设$\mathbb{R}$是可数，那么存在一个双射$f:N\rightarrow \mathbb{R}$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/2.png?raw=true" alt="2"></p>
+<p>其中<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/3.png?raw=true" alt="3"><br>将有限小数和整数视为后面有无数个0的无限小数。</p>
+<p>令x=0.b1b2b3…，其中bi≠aii。</p>
+<p>所以x一定不在该表格的双射中。矛盾，所以$\mathbb{R}$不可数。</p>
+<hr>
+<h2 id="非递归可枚举语言"><a href="#非递归可枚举语言" class="headerlink" title="非递归可枚举语言"></a>非递归可枚举语言</h2><p>现在我们证明非递归可枚举语言(Non-RE Languages)的存在。</p>
+<p>所谓非递归可枚举语言，是指不能由图灵机接受并判定的语言。</p>
+<hr>
+<p><strong>定理</strong>：非递归可枚举语言存在。</p>
+<p>证明如下：</p>
+<p>所有图灵机的集合是可数的。<br>显然，我们可以由一个有限长度的字符串确定性的表示一个图灵机（将所有要素全部写下来），而对于有限的字母表$\Sigma$，$\Sigma^*$是可数的，因此图灵机是一个可数集的子集，也是可数的。</p>
+<p>所有语言的集合是不可数的。<br>用康托尔对角法很容易证明，仿照上面实数集不可数的证明思路。</p>
+<p>所以从图灵机的集合到语言的集合的函数时不可逆的。即给定一个语言，不一定有对应的图灵机。</p>
+<p>一个显然的事实是，给定一个图灵机，一定会有一个对应的语言；而上面的证明说明了给定一个语言，不一定会有一个能接收这个语言的图灵机，从而递归可枚举语言就是所有语言的真子集。从而得到非递归可枚举语言存在。</p>
+<hr>
+<p>到目前为止，我们从理论上将递归可枚举语言和所有语言区分开。</p>
+<h2 id="停机问题"><a href="#停机问题" class="headerlink" title="停机问题"></a>停机问题</h2><p>现在我们要寻找一个不可判定的语言，将递归语言和递归可枚举语言彻底区分开来。</p>
+<p><strong>定义</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/4.png?raw=true" alt="4"></p>
+<p>这里实际上HALT也可以看作一个语言，只不过这个语言接收一个二元组的字符表示作为它的输入字符串而已。</p>
+<hr>
+<p><strong>定理</strong><br>停机问题不可判定。</p>
+<p>证明如下：</p>
+<p>假设存在图灵机H能判定HALT问题。</p>
+<ul>
+<li>如果M对于输入x可以停机，那么H会接受$&lt; M, x&gt;$</li>
+<li>如果M对于输入x不会停机，那么H会拒绝$&lt; M, x&gt;$</li>
+</ul>
+<p>现在定义一个新图灵机H’，它接受输入$&lt; M&gt;$, 即图灵机的字符串表示</p>
+<ul>
+<li>如果H接受了$&lt; M, &lt; M&gt;&gt;$，则死循环</li>
+<li>如果H拒绝了$&lt; M, &lt; M&gt;&gt;$，则停机</li>
+</ul>
+<p>现在考虑给H’输入$&lt; H’&gt;$</p>
+<ul>
+<li>如果停机，那么H拒绝了输入，说明H不能停机</li>
+<li>如果死循环，那么H接受输入，说明H可以停机</li>
+</ul>
+<p>显然这是矛盾的，因此H和H’都不存在。</p>
+<hr>
+<p>到目前为止，我们已经找到了一种语言，停机问题，是不可判定的，将递归语言和递归可枚举语言彻底区分了开来。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/5.png?raw=true" alt="5"></p>
+<h2 id="图灵不可识别的语言"><a href="#图灵不可识别的语言" class="headerlink" title="图灵不可识别的语言"></a>图灵不可识别的语言</h2><p>下面给出一个具体的例子。<br><strong>定义</strong>：<br>定义一个递归可枚举(RE)语言的补集co-RE，则有如下关系：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/6.png?raw=true" alt="6"></p>
+<p>这里的补集指的是所有的具体语言关于$\Sigma^*$的补集所形成的新的语言的集合。</p>
+<hr>
+<p><strong>定理</strong>：<br>一个语言$L$可判定，当且仅当它既是RE，也是co-RE。</p>
+<p>充要性证明省略</p>
+<hr>
+<p>由此我们可以得出，HALT的补集不是递归可枚举的。</p>
+<p>到此，我们就彻底搞清了各种语言之间的包含关系了。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/7.png?raw=true" alt="7"></p>
+<h1 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>算法是什么：算法是一个必定会停止的图灵机，也就是一个递归语言/图灵可判定语言的图灵机。</p>
+<p>真实世界中，运行算法会占用<strong>时间空间</strong>资源。</p>
+<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><p>一个图灵机运行时间（步数），被称为<strong>时间复杂度</strong>。用一个函数表示：<br>$f:\mathbb{N}\rightarrow\mathbb{N}$<br>其中$f(n)$是$M$对于任意长度为$n$的输入停机所需要的最大步骤数（移动次数）。这里分析的是最坏情况。</p>
+<p><strong>渐进表示法</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/8.png?raw=true" alt="8"></p>
+<h2 id="时间复杂度类"><a href="#时间复杂度类" class="headerlink" title="时间复杂度类"></a>时间复杂度类</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/9.png?raw=true" alt="9"></p>
+<p>用多带图灵机来编程通常会比单带的图灵机更方便一些。</p>
+<ul>
+<li>在我们讨论可判定性的时候，它们是等价的；</li>
+<li>不过当我们讨论复杂度的时候，它们就不等价了。</li>
+</ul>
+<p>同时我们有以下定理<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/10.png?raw=true" alt="10"></p>
+<h1 id="P与NP"><a href="#P与NP" class="headerlink" title="P与NP"></a>P与NP</h1><p>我们认为多项式运行时间是高效的，认为指数运行时间是不高效的。</p>
+<h2 id="P"><a href="#P" class="headerlink" title="P"></a>P</h2><p><strong>定义</strong><br>定义 P 或者 多项式时间(polynomial-time) 是一类语言，它们在一个单带、确定性图灵机上是多项式时间可判定的。<br>$P=\cup_{k\ge 1} TIME(n^k)$</p>
+<p>我们关注P是因为计算模型对多项式是不敏感的，换而言之，在一个确定性计算模型上面多项式时间的算法在另一个确定性计算模型上依旧是多项式时间的。</p>
+<h2 id="NP"><a href="#NP" class="headerlink" title="NP"></a>NP</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/11.png?raw=true" alt="11"></p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/12.png?raw=true" alt="12"><br>意思就是，对于具体的解能在多项式时间能判定。</p>
+<h2 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h2><p>给定一个新问题，如果我们先买个要说明这个问题不可判定，我们通常有两种思路：</p>
+<ol>
+<li>从头开始论证</li>
+<li>将一个已知不可判定的问题转变为新问题，使新问题的解决办法也可以解决旧问题。</li>
+</ol>
+<p><strong>归约(reduction)</strong> 是一种将一个问题转化成另一个问题的方式，使得第二个问题的解决方案也可以用来解决第一个问题。</p>
+<p>首先我们定义什么是可计算的函数<br><strong>定义</strong>：<br>一个函数$f:\sum^<em> \rightarrow \sum^</em>$是<strong>可计算的(computable)</strong>，如果存在一个图灵机$M_f$，使得对于每一个输入$\omega$，$M_f$将$f(\omega)$写到纸带上并停机。</p>
+<p>然后我们来定义归约<br><strong>定义</strong>：<br>A可以被映射归约(mapping reducible)为B，写作$A\leq_m B$，如果存在一个可计算的函数$f$，使得对于所有$\omega$，都有<br>$\omega\in A\Leftrightarrow f(\omega)\in B$<br>等价的<br>$\omega\notin A\Leftrightarrow f(\omega)\notin B$<br>$f$被称为从A到B的一个归约。</p>
+<p>下图是语言$A$到$B$的归约的图示<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/13.png?raw=true" alt="13"></p>
+<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是可判定的，那么$A$也是可判定的。</p>
+<p>注意其逆否命题的方向<br>如果$A\leq_m B$且$A$是不可判定的，那么$B$也是不可判定的。</p>
+<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是RE，那么$A$也是RE。</p>
+<h2 id="Rice定理"><a href="#Rice定理" class="headerlink" title="Rice定理"></a>Rice定理</h2><p>我们发现图灵机的以下一些性质是不可判定的。</p>
+<ul>
+<li>接受字符$\omega$</li>
+<li>在输入字符串$\omega$时停机</li>
+<li>接受语言为空</li>
+</ul>
+<p><strong>定理</strong>：<br><strong>Rice定理</strong>： 图灵机的每一个<strong>非平凡</strong>的<strong>性质</strong>都是不可判定的。</p>
+<p><strong>定义</strong><br>一个图灵机的<strong>性质property</strong>指一个语言$P$，满足对于任意两个图灵机$M_1,M_2$，如果$L(M_1)=L(M_2)$，则<br>$&lt; M_1&gt;\in P\Leftrightarrow &lt; M_2&gt; \in P$</p>
+<p>如果存在一个图灵机$M_1$，使得$&lt; M_1&gt;\in P$且存在一个图灵机$M_2$，使得$&lt; M_2&gt;\notin P$，则称$P$是一个<strong>非平凡</strong>的性质。</p>
+<h1 id="NPC"><a href="#NPC" class="headerlink" title="NPC"></a>NPC</h1><h2 id="多项式时间归约"><a href="#多项式时间归约" class="headerlink" title="多项式时间归约"></a>多项式时间归约</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/14.png?raw=true" alt="14"><br><strong>定理</strong>：<br>如果$A\leq_P B$且$B\in P$，那么$A\in P$。</p>
+<h2 id="NP完全理论"><a href="#NP完全理论" class="headerlink" title="NP完全理论"></a>NP完全理论</h2><p><strong>定义</strong><br>我们称一个语言B是<strong>NP完全的</strong>，当且仅当满足以下条件：</p>
+<ol>
+<li>$B\in NP$</li>
+<li>$\forall A\in NP:A\leq_P B$<br>若只满足第二个条件，则称B是<strong>NP难的</strong>。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">哈希函数及其应用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-11-22 22:37:32" itemprop="dateCreated datePublished" datetime="2024-11-22T22:37:32+08:00">2024-11-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-25 16:46:03" itemprop="dateModified" datetime="2024-11-25T16:46:03+08:00">2024-11-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第六章Hash Functions and Applications</p>
+<p>我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>哈希函数是一类将任意长度的输入压缩为固定长度输出的函数。非加密哈希函数的经典用途是在数据结构中，它们可以用来构建哈希表，从而在存储一组元素时实现$O(1)$的查找。具体来说，如果哈希函数$H$的输出范围大小为$N$，那么元素x被存储在表格的第$H(x)$行。</p>
+<p>一个良好的哈希函数要尽可能的减少碰撞(collision)。抗碰撞(Collision-resistant)哈希函数的目标也是避免碰撞，但是在数据结构的应用中，较少碰撞只是优化的要求，但是在密码学背景下，避免碰撞是一个严格的要求，因为攻击者可能会故意构造发生碰撞的值来进行攻击。所以设计抗碰撞哈希函数的难度要高于设计一般的哈希函数。</p>
+<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥s和一个字符串x，输出$H_s(x)$。</p>
+<p>这里的密钥和我们过去考虑的密钥有所不同，在过去的密钥我们希望保密，但是这里哈希函数中攻击者可能知道密钥，在这个前提下，我们希望哈希函数还具有抗碰撞性。</p>
+<p><strong>DEFINITION 6.1</strong><br>一个哈希函数由一对概率多项式算法组成。</p>
+<ul>
+<li>Gen： 是一个概率算法，输出密钥s</li>
+<li>H： 是一个确定性算法，接受一个密钥s和一个字符串x，输出$H_s(x)$，长度为$l(n)$</li>
+</ul>
+<p>如果H只接受固定长度的字符串输入，我们称哈希函数为fixed-length，H为compression function。显然这里输出的长度必须小于输入长度。</p>
+<p>下面介绍攻击实验The collission-finding experiment $Hash-coll_{\mathcal{A},\mathcal{H}}(n)$:</p>
+<ol>
+<li>生成密钥s</li>
+<li>攻击者接受s，输出$x,x’$。</li>
+<li>如果这两个输出产生碰撞，则实验结果为1，反之为0</li>
+</ol>
+<p>$DEFINITON 6.2$<br>一个哈希函数是Collision Resistant当且仅当<br>$Pr[Hash-coll_{\mathcal{A},\mathcal{H}}(n) = 1]\leq negl(n)$</p>
+<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。<br>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
+<h2 id="弱一些的安全定义"><a href="#弱一些的安全定义" class="headerlink" title="弱一些的安全定义"></a>弱一些的安全定义</h2><ul>
+<li>Second-preimage resistance<br>对于一个哈希函数，如果给定s和x，找不到另一个能碰撞的字符串。</li>
+<li>Preimage resistance<br>对于一个哈希函数，如果给定s和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
+</ul>
+<p>coliision resistant $\Rightarrow$ second-preimage resistance $\Rightarrow$ preimage resistance</p>
+<h1 id="Merkle–Damgard变换"><a href="#Merkle–Damgard变换" class="headerlink" title="Merkle–Damgård变换"></a>Merkle–Damgård变换</h1><p>许多应用需要“完全成熟”的抗碰撞哈希函数，这种哈希函数能够处理非常长的输入，甚至是任意长度的输入。然而，构造固定长度的哈希函数（即压缩函数）更为容易——这些函数只接受“短”的输入。幸运的是，Merkle–Damgård变换使我们可以将后者转换为前者。这种哈希函数域扩展的方法在实践中被频繁使用，例如MD5和SHA系列哈希函数。</p>
+<p>假设已经存在压缩函数$(Gen,h)$，能接受长度大于2n的输入并输出长度为n的输出。那么我们可以通过下面的变换得到一个能处理任意长度输入的哈希函数<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/1.png?raw=true" alt="1"></p>
+<p><strong>THEOREM 6.4</strong><br>如果$(Gen,h)$抗碰撞，那么构造的$(Gen,H)$也抗碰撞</p>
+<p>证明如下：//TODO</p>
+<h1 id="应用哈希函数进行消息认证"><a href="#应用哈希函数进行消息认证" class="headerlink" title="应用哈希函数进行消息认证"></a>应用哈希函数进行消息认证</h1><p>我们之前已经讨论了几种针对任意长度消息的消息认证码（MAC）的构造。在本节中，我们将看到另一种方法，该方法依赖于抗碰撞哈希函数。随后，我们会介绍一种被标准化并广泛使用的方案，称为 HMAC（哈希消息认证码），它可以看作是这种方法的具体实现。</p>
+<h2 id="Hash-and-MAC"><a href="#Hash-and-MAC" class="headerlink" title="Hash-and-MAC"></a>Hash-and-MAC</h2><p>抗碰撞哈希函数可以自然地用于消息认证码（MAC）的域扩展。例如，假设我们有一个固定长度的 MAC，它可以处理长度为 l(n)-比特的消息，并且有一个输出长度为 l(n)-比特的抗碰撞哈希函数。那么我们可以通过对消息 m 进行哈希计算，然后使用 MAC 对哈希值进行认证，从而对任意长度的消息 m 进行认证。（参见构造 6.5。）</p>
+<p>直观上，这种方法是安全的，因为：</p>
+<ul>
+<li>MAC 的安全性 确保攻击者无法认证任何新的哈希值。</li>
+<li>抗碰撞性 确保攻击者无法找到与已使用哈希值相同的哈希的新消息。</li>
+</ul>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/2.png?raw=true" alt="2"></p>
+<p><strong>THEOREM 6.6</strong><br>如果$\prod$是一个secure的MAC，$\mathcal{H}$是一个抗碰撞的哈希函数，那么上述构造是一个secure MAC</p>
+<p>证明如下：//TODO</p>
+<h2 id="HMAC"><a href="#HMAC" class="headerlink" title="HMAC"></a>HMAC</h2><p>在原则上，可以通过将任意抗碰撞哈希函数与第4.5节中的固定长度消息认证码（MAC）相结合，来实现上一节提到的“哈希并认证”（hash-and-MAC）方法。然而，这种方法在实际中有至少两个缺点：</p>
+<ul>
+<li>需要实现两种密码学原语</li>
+<li>哈希函数输出长度与分组密码分组长度之间的不匹配</li>
+</ul>
+<p>HMAC 的设计克服了哈希函数和分组密码之间的不匹配问题，同时通过高效的构造支持任意长度的消息。具体地，HMAC 使用了两次调用哈希函数的过程，同时结合了内置的密钥与填充操作，以确保安全性。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/3.png?raw=true" alt="3"></p>
+<p><strong>THEOREM 6.8</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/4.png?raw=true" alt="4"></p>
+<p>证明如下：//TODO</p>
+<h1 id="对哈希函数的攻击"><a href="#对哈希函数的攻击" class="headerlink" title="对哈希函数的攻击"></a>对哈希函数的攻击</h1><h2 id="Birthday-Attacks"><a href="#Birthday-Attacks" class="headerlink" title="Birthday Attacks"></a>Birthday Attacks</h2><p>最简单的攻击是在输入空间内穷举，但是复杂度高达$2^{n}$。</p>
+<p>现在考虑一个问题，一个房间里有q个人，那么存在两个人生日相同的概率是多少。<br>我们不难发现，当$q\approx 2^{l/2}$时，碰撞的概率接近0.5。</p>
+<p>所以，攻击者只需要尝试$2^{l/2}$次，就能显著提高找到碰撞对的概率。</p>
+<p>所以，要达到相同的安全水平，哈希函数输出的长度应该是2n。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -818,453 +1298,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/" class="post-title-link" itemprop="url">Mitsuba0.6编译指南</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-13 13:50:55 / 修改时间：14:56:59" itemprop="dateCreated datePublished" datetime="2024-11-13T13:50:55+08:00">2024-11-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="关于Mitsuba"><a href="#关于Mitsuba" class="headerlink" title="关于Mitsuba"></a>关于Mitsuba</h1><p><a target="_blank" rel="noopener" href="https://www.mitsuba-renderer.org/">Mitsuba</a>是一个学术界应用很广的渲染系统，基于C++编写。</p>
-<p>这里介绍Mitsuba0.6 的编译操作指南。注意，因为官方版本长期不维护，这里的来源是一个<a target="_blank" rel="noopener" href="https://github.com/VicentChen/mitsuba">第三方维护版本</a>。</p>
-<h1 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h1><p>这里我不准备编译图形化界面，所以不会涉及到QT有关内容。</p>
-<p>我将自己使用的文件直接上传到我的GitHub仓库，有需要的可以自己下载，理论上从我仓库下载按照说明进行安装就不会出现问题。如果遇到新问题欢迎在我的GitHub上提issue。</p>
-<p>请确保你的电脑已经安装好了</p>
-<ol>
-<li>Visual Studio</li>
-<li>Cmake</li>
-<li>Python 3.9</li>
-</ol>
-<h1 id="详细步骤"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤</h1><h2 id="下载mitsuba"><a href="#下载mitsuba" class="headerlink" title="下载mitsuba"></a>下载mitsuba</h2><p>从我仓库下载mitsuba源码，解压。<br>//TODO </p>
-<h2 id="下载依赖文件"><a href="#下载依赖文件" class="headerlink" title="下载依赖文件"></a>下载依赖文件</h2><p>从<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/mitsuba0.6-dep-py3.9.12">这里</a>下载。</p>
-<p>解压后将文件夹dependencies放在mts目录下。</p>
-<h2 id="设置python目录"><a href="#设置python目录" class="headerlink" title="设置python目录"></a>设置python目录</h2><p>在mts<strong>主目录</strong>下找到CmakeLists.txt。</p>
-<p>修改其中设置：</p>
-<h3 id="添加Python路径"><a href="#添加Python路径" class="headerlink" title="添加Python路径"></a>添加Python路径</h3><p>找到<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (NOT Python_ROOT_DIR)</span><br><span class="line">	set(Python_ROOT_DIR &quot;C:/ProgramData/Anaconda3&quot; CACHE STRING &quot;Python installtion path&quot; FORCE)</span><br><span class="line">	message(&quot;No Python_ROOT_DIR specified. Python_ROOT_DIR is set to default value &#x27;C:/ProgramData/Anaconda3&#x27;&quot;)</span><br><span class="line">endif(NOT Python_ROOT_DIR)</span><br><span class="line">find_package(Python COMPONENTS Interpreter Development REQUIRED)</span><br><span class="line">set(PYTHON_VERSION_WITHOUT_DOT &quot;python$&#123;Python_VERSION_MAJOR&#125;$&#123;Python_VERSION_MINOR&#125;&quot;)</span><br><span class="line">message(&quot;Found python version: $&#123;PYTHON_VERSION_WITHOUT_DOT&#125;&quot;)</span><br></pre></td></tr></table></figure><br>这里是在设置python路径，自行在上方添加自己的python路径<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set(Python_ROOT_DIR &quot;Your Path&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>注意，这里我使用的python版本为<a target="_blank" rel="noopener" href="https://www.python.org/downloads/release/python-3912/">3.9.12</a>，其他版本（anaconda）我本人遇到过报错。</p>
-<h2 id="新建cbuild"><a href="#新建cbuild" class="headerlink" title="新建cbuild"></a>新建cbuild</h2><p>在mts主目录下新建文件夹cbuild。</p>
-<h2 id="生成VS项目"><a href="#生成VS项目" class="headerlink" title="生成VS项目"></a>生成VS项目</h2><p>打开终端，切换到<strong>VS Command</strong>。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/1.png?raw=true" alt="image-1"><br>在VS终端打开刚才创建的cbuild文件夹<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;.../.../cbuild&quot;</span><br></pre></td></tr></table></figure><br>执行<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake ..</span><br></pre></td></tr></table></figure></p>
-<p>会有一些Warnings，忽略即可。</p>
-<h2 id="编译项目"><a href="#编译项目" class="headerlink" title="编译项目"></a>编译项目</h2><p>打开刚才生成好的Mitsuba.sln（在cbuild文件夹下）。</p>
-<p>一定一定一定切换到<strong>Release</strong>模式下进行编译。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/2.png?raw=true" alt="image-2"></p>
-<p>耐心等待即可。</p>
-<p>如果出现问题，请先自己浏览报错信息。并检查自己有没有擅自更改过子目录下的CmakeList.txt!!!</p>
-<p>顺利编译成功。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/3.png?raw=true" alt="image-3"></p>
-<p>这里我的电脑配置还行，编译比较快。</p>
-<p>然后我们就可以开启愉快的Mitsuba之旅啦！</p>
-<p>（我没有编译QT，所以通过命令行运行程序）</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/" class="post-title-link" itemprop="url">Pumping lemma 和 Ogden's lemma</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-12 14:05:34" itemprop="dateCreated datePublished" datetime="2024-11-12T14:05:34+08:00">2024-11-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:32:52" itemprop="dateModified" datetime="2024-12-09T23:32:52+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。</p>
-<p>现在介绍一个判断上下文无关语言的更强的引理：<strong>Ogden’s lemma</strong>（中文翻译为鄂登引理）。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z=uvwxy$，总满足：</p>
-<ol>
-<li>$vwx$含有最多$n$个标记</li>
-<li>$vx$含有至少一个标记</li>
-<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
-</ol>
-<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>显而易见的，泵引理就是Ogden’s lemma标记字符串所有的位置时的情况，由此可见，Ogden’s lemma更加灵活，比泵引理更强，能再泵引理不足以判断的时候起到作用。下面会举个例子。</p>
-<p>关于我们用泵引理和鄂登引理到底来干什么，下面的说明会帮助产生一个清晰的认识。</p>
-<ol>
-<li>如果一个语言是上下文无关语言，那么属于这个语言的字符串<strong>一定</strong>满足泵引理</li>
-<li>如果一个语言不是上下文无关语言，那么属于这个语言的字符串仍然<strong>可能</strong>满足泵引理</li>
-<li>如果一个字符串满足泵引理，那么这个字符串代表的语言<strong>可能</strong>是上下文无关语言</li>
-<li>如果一个字符串不满足泵引理，那么这个字符串代表的语言<strong>一定不是</strong>上下文无关语言</li>
-</ol>
-<p>这说明我们一般使用泵引理来判断一个语言不是上下文无关语言（即证明里面该语言存在字符串不满足泵引理）。</p>
-<p>使用泵引理说明一个语言是上下文无关语言没有意义。</p>
-<h1 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h1><p>关于该引理的证明<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=_95IZWDRHNQ">请看这里</a><br>我觉得还是讲的很清楚的。</p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>该例子参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12613082/using-ogden-s-lemma-versus-regular-pumping-lemma-for-context-free-grammars">stackoverflow的一个问答</a></p>
-<p>考虑语言$L = \{a^ib^jc^kd^l | i=0 \text{ or }j=k=l\}$，证明其不是上下文无关语言。</p>
-<p>我们先考虑使用泵引理。</p>
-<p>令$z=uvwxy$，假设$z$包含a，我们可以令$v=a,x=\epsilon,y=\epsilon$；假设$z$不包含a，我们可以令$v=b,x=\epsilon,y=\epsilon$。都满足泵引理，因此无法通过泵引理来证明不是上下文无关语言。</p>
-<p>现在考虑用鄂登引理。</p>
-<p>令$z=ab^nc^nd^n$，标记所有的b，令$z=uvwxy$。</p>
-<p>假如v或x有超过一种（区分于一个）字符，则重复就会出现错误的顺序。</p>
-<p>所以v和x至少包含一个字符$b$，则出现以下五种情况：</p>
-<ol>
-<li>$v=\epsilon,x=b^i$</li>
-<li>$v=a,x=b^i$</li>
-<li>$v=b^i,x=c^j$</li>
-<li>$v=b^i,x=d^j$</li>
-<li>$v=b^i,x=\epsilon$<br>容易验证以上五种情况都不满足鄂登引理。因此，$L$不是上下文无关语言。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">CYK算法的C++实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-11 21:19:57" itemprop="dateCreated datePublished" datetime="2024-11-11T21:19:57+08:00">2024-11-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:33:17" itemprop="dateModified" datetime="2024-12-09T23:33:17+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是CYK算法"><a href="#什么是CYK算法" class="headerlink" title="什么是CYK算法"></a>什么是CYK算法</h1><p>CYK算法（英语：Cocke–Younger–Kasami algorithm，缩写为CYK algorithm）是由约翰·科克，Younger和嵩忠雄共同研究出来大约发表于1965年的一个算法，它是一个用来判定任意给定的字符串$\omega\in\sum^*$是否属于一个上下文无关文法的算法。</p>
-<p>该算法采用动态规划的思想，将复杂度降低至多项式时间$O(n^3)$，其中$n$是字符串的长度。</p>
-<p>注意，使用该算法要先将文法转换为乔姆斯基范式。</p>
-<h1 id="CYK算法思路"><a href="#CYK算法思路" class="headerlink" title="CYK算法思路"></a>CYK算法思路</h1><p>详见<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/#CYK%E7%AE%97%E6%B3%95">传送门</a></p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>判断$\omega=ababa$是否属于$S\rightarrow AB,A\rightarrow BC|a,B\rightarrow AC|b,C\rightarrow a|b$文法定义的语言。</p>
-<p>下表中列为i，行为j。</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th></th>
-<th><strong>1</strong></th>
-<th><strong>2</strong></th>
-<th><strong>3</strong></th>
-<th><strong>4</strong></th>
-<th><strong>5</strong>  </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> <strong>1</strong></td>
-<td>{A, C}</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>2</strong></td>
-<td>{B, S}</td>
-<td>{B, C}</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>3</strong></td>
-<td>{A}</td>
-<td>{A}</td>
-<td>{A, C}</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>4</strong></td>
-<td>{B, S}</td>
-<td>{B, S}</td>
-<td>{B, S}</td>
-<td>{B, C}</td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>5</strong></td>
-<td>{A}</td>
-<td>{A}</td>
-<td>{A, C}</td>
-<td>{A}</td>
-<td>{A, C} </td>
-</tr>
-</tbody>
-</table>
-</div>
-<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>使用<strong>unordered_map</strong>来存储产生式，原先没有使用过这个。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, vector&lt;string&gt;&gt; grammar;</span><br></pre></td></tr></table></figure></p>
-<p>DP过程先初始化基础情况，也就是$X_{ii}$。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">        string terminal(1, str[i]);</span><br><span class="line">        for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">            for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                if (rhs == terminal) &#123;</span><br><span class="line">                    X[i][i].insert(lhs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>再去归纳剩下的状态。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">for (int len = 2; len &lt;= n; len++) &#123;</span><br><span class="line">        for (int i = 0; i &lt;= n - len; i++) &#123;</span><br><span class="line">            int j = i + len - 1;</span><br><span class="line">            for (int k = i; k &lt; j; k++) &#123;</span><br><span class="line">                for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">                    for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                        if (rhs.size() == 2) &#123;</span><br><span class="line">                            string v1(1, rhs[0]);</span><br><span class="line">                            string v2(1, rhs[1]);</span><br><span class="line">                            if (contains(X[i][k], v1) &amp;&amp; contains(X[k + 1][j], v2)) &#123;</span><br><span class="line">                                X[i][j].insert(lhs);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">完整代码在这里</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/" class="post-title-link" itemprop="url">上下文无关语言</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-11 13:00:34" itemprop="dateCreated datePublished" datetime="2024-11-11T13:00:34+08:00">2024-11-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:32:52" itemprop="dateModified" datetime="2024-12-09T23:32:52+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="上下文无关语言的泵引理"><a href="#上下文无关语言的泵引理" class="headerlink" title="上下文无关语言的泵引理"></a>上下文无关语言的泵引理</h1><p>回忆一下<strong>正则语言</strong>的泵引理(Pumping Lemma)：</p>
-<p>如果这个正则语言被有限自动机识别，因为自动机的状态数是有限的，当字符串长度大于状态数时，必然有某些状态被循环重复。</p>
-<h2 id="正则语言的泵引理"><a href="#正则语言的泵引理" class="headerlink" title="正则语言的泵引理"></a>正则语言的泵引理</h2><p>对于每一个正则语言$ L$ 来说，存在一个整数$ n $，使得对于$ L $中的每一个长度$ \ge n $的字符串$ w $，我们可以写作$ w=xyz $，满足：</p>
-<ol>
-<li>$|xy|\leq n$</li>
-<li>$|y|&gt;0$</li>
-<li>$\forall i\ge 0,xy^{i}z\in L$</li>
-</ol>
-<p>对于上下文无关语言来说，我们可以找到两个部分，将它们任意泵进泵出。</p>
-<h2 id="上下文无关语言的泵引理-1"><a href="#上下文无关语言的泵引理-1" class="headerlink" title="上下文无关语言的泵引理"></a>上下文无关语言的泵引理</h2><p>对于每一个上下文无关语言$ L $，存在一个整数$ n $，使得$\forall z\in L,|z|\ge n,\exists z=uvwxy$，满足：</p>
-<ol>
-<li>$|vwx|\leq n$</li>
-<li>$|vx|&gt;0$</li>
-<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
-</ol>
-<h3 id="泵引理的证明"><a href="#泵引理的证明" class="headerlink" title="泵引理的证明"></a>泵引理的证明</h3><p>考虑$L-\left\{\epsilon\right\}$的CNF（乔姆斯基范式）一个文法，令该文法有$m$个不同的变量，取$n=2^{m}$。</p>
-<p>取$z\in L \land |z|\ge n$，有<strong>引理1</strong>：产出$z$的解析树一定存在一条长度至少为$m+2$的路径。</p>
-<p>由引理1，一定存在路径，有至少$m+1$个变量（去掉终结符）。由容斥原理，考虑一条最长的路径，在低$m+1$个非叶结点中，一定存在有两个结点，标记的是同一个变量，不妨记为$A$.</p>
-<p>而$A$一定有两条候选的推导方式，$A\Rightarrow vAx$和$A\Rightarrow w$。</p>
-<p>其中，$|vw|\not ={0}$，因为CNF文法中不含空产生式。</p>
-<p>并且，$|vwx|\leq 2^{m}=n$，因为我们选取的是低$m+1$个非叶结点，树高最多为$m+1$。</p>
-<h4 id="引理1的证明"><a href="#引理1的证明" class="headerlink" title="引理1的证明"></a>引理1的证明</h4><p>假设一个CNF文法的解析树的所有路径长度都小于等于$m+1$，则产生最长字符串长度为$2^{m-1}$，矛盾。</p>
-<h3 id="泵引理的使用"><a href="#泵引理的使用" class="headerlink" title="泵引理的使用"></a>泵引理的使用</h3><p>上下文无关语言的泵引理主要被用来证明某个语言不是上下文无关语言。<br>例如：</p>
-<h4 id="例1"><a href="#例1" class="headerlink" title="例1"></a>例1</h4><p>$z=0^{n}10^{n}10^{n}$</p>
-<p>令$z=uvwxy,|vwx|\leq n\land |vx|\ge 1$。</p>
-<p>情况一： $vx$中没有 0</p>
-<p>$vx$中一定有1，那么重复就会导致超过两个 1 ，矛盾。</p>
-<p>情况二： $vx$中至少有一个 0</p>
-<p>因为$|vwx|\leq n$，所以无法完整覆盖到所有的 0 串，所以$|uwy|$中会出现不足 n 个 0 的 0 串，矛盾。</p>
-<hr>
-<h1 id="上下文无关语言的判定性质"><a href="#上下文无关语言的判定性质" class="headerlink" title="上下文无关语言的判定性质"></a>上下文无关语言的判定性质</h1><p>本届主要介绍上下文无关语言的一些性质如何去判定。</p>
-<p>需要注意的是，有一些问题在正则语言中可以判定，但是在上下文无关语言中不能判定。比如判断两个上下文无关语言是否相同。</p>
-<h2 id="判断是否为空"><a href="#判断是否为空" class="headerlink" title="判断是否为空"></a>判断是否为空</h2><p>等价于去除无用变量。</p>
-<h2 id="判断字符串是否属于语言"><a href="#判断字符串是否属于语言" class="headerlink" title="判断字符串是否属于语言"></a>判断字符串是否属于语言</h2><p>我们想判断字符串$\omega$是否属于上下文无关文法$G$描述的语言$L$。</p>
-<p>情况一：$\omega=\epsilon$</p>
-<p>只需要简单判断起始符号是否可以为空。</p>
-<p>情况二：$\omega \not =\epsilon$<br>使用<strong>CYK</strong>算法，可以在时间复杂度$O(|\omega|^{3})$内判断。</p>
-<h3 id="CYK算法"><a href="#CYK算法" class="headerlink" title="CYK算法"></a>CYK算法</h3><p>令$\omega=a_1a_2\cdots a_n$，我们将构造一个$n\times n$的三角形变量矩阵</p>
-<p>其中，$X_{ij}=\left\{A|A\Rightarrow a_i\cdots a_j\right\}$</p>
-<p>进行归纳构造。<br>基础情况：$X_{ij}=\left\{A|A\rightarrow a_i\in P\right\}$</p>
-<p>归纳：$X_{ij}=\left\{A|A\rightarrow BC \in P\right\}$</p>
-<p>$B\in X_{ik}$</p>
-<p>$C\in X_{k+1,j}$</p>
-<p>最后只需要判断$S\in X_{1,n}$</p>
-<p>附上我自己写的<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">一个简单的CYK算法的C++实现</a></p>
-<h2 id="判断是否无穷"><a href="#判断是否无穷" class="headerlink" title="判断是否无穷"></a>判断是否无穷</h2><p>使用泵引理常数$n$，如果该语言存在一个长度在$n$到$2n−1$之间的字符串，那么这个语言就是无穷的，否则就是有穷的。</p>
-<hr>
-<h1 id="上下文无关语言的闭包性质"><a href="#上下文无关语言的闭包性质" class="headerlink" title="上下文无关语言的闭包性质"></a>上下文无关语言的闭包性质</h1><h2 id="并集下的闭包"><a href="#并集下的闭包" class="headerlink" title="并集下的闭包"></a>并集下的闭包</h2><p>令$L$和$M$是上下文无关文法G和H的上下文无关语言，只需要假设没有共同变量，如有则重命名。</p>
-<p>$L\cup M$只需增加$S\rightarrow S_1|S_2$。</p>
-<h2 id="拼接下的闭包"><a href="#拼接下的闭包" class="headerlink" title="拼接下的闭包"></a>拼接下的闭包</h2><p>令$L$和$M$是上下文无关文法G和H的上下文无关语言，只需要假设没有共同变量，如有则重命名。</p>
-<p>$LM$只需增加$S\rightarrow S_1S_2$。</p>
-<h2 id="星闭包下的闭包"><a href="#星闭包下的闭包" class="headerlink" title="星闭包下的闭包"></a>星闭包下的闭包</h2><p>令$L$是上下文无关文法G的上下文无关语言。</p>
-<p>$L^*$只需增加$S\rightarrow S_1S|\epsilon$。</p>
-<h2 id="翻转操作下的闭包"><a href="#翻转操作下的闭包" class="headerlink" title="翻转操作下的闭包"></a>翻转操作下的闭包</h2><p>令$L$是上下文无关文法G的上下文无关语言。</p>
-<p>只需要翻转每一个产生式体来构造$L^R$的文法。</p>
-<h2 id="同态操作下的闭包"><a href="#同态操作下的闭包" class="headerlink" title="同态操作下的闭包"></a>同态操作下的闭包</h2><p>令$L$是上下文无关文法G的上下文无关语言。</p>
-<p>只需要将每个终结符$a$替换成$h(a)$来构造$h(L)$的文法。</p>
-<h2 id="交集和差集"><a href="#交集和差集" class="headerlink" title="交集和差集"></a>交集和差集</h2><p>上下文无关语言在交集操作下并不封闭。</p>
-<p>上下文无关语言在差集操作下也不封闭。</p>
-<h3 id="证明差集操作和交集操作的等价性"><a href="#证明差集操作和交集操作的等价性" class="headerlink" title="证明差集操作和交集操作的等价性"></a>证明差集操作和交集操作的等价性</h3><p>$L\cap M=L-(L-M)$<br>所以任何在差集下封闭的语言，在交集下也封闭。</p>
-<h3 id="上下文无关语言和正则语言的交集是一个上下文无关语言"><a href="#上下文无关语言和正则语言的交集是一个上下文无关语言" class="headerlink" title="上下文无关语言和正则语言的交集是一个上下文无关语言"></a>上下文无关语言和正则语言的交集是一个上下文无关语言</h3><p>这个性质的证明过程包含了将一个DFA和一个PDA同时运行，它们组合起来依旧是PDA。这里PDA是根据终止状态接收的。</p>
-<p>构造过程与乘积自动机类似但是多了一个栈。</p>
-<h3 id="逆同态下的闭包性质"><a href="#逆同态下的闭包性质" class="headerlink" title="逆同态下的闭包性质"></a>逆同态下的闭包性质</h3><p>可以通过构造新的PDA的方式来证明这个性质。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1330,7 +1367,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

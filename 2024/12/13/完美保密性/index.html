@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="引入我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。 现在介绍一个判断上下文无关语言的更强的引理：Ogden’s lemma（中文翻译为鄂登引理）。 定义如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z&#x3D;uvwxy$，总满足：  $">
+  <meta name="description" content="对应教材第二章 Perfectly Secret Encryption 在本章中，我们将探讨另一个极端，即研究即使面对具有无限计算能力的攻击者也能被证明安全的加密方案。这类方案被称为完美安全(perfectly secret)。 为了简化讨论，我们假设可以各方都可以获得无限供应的独立无偏的随机位。 定义首先回顾上一章介绍的加密语法，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Ge">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pumping lemma 和 Ogden&#39;s lemma">
-<meta property="og:url" content="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/index.html">
+<meta property="og:title" content="【二】完美保密性">
+<meta property="og:url" content="http://example.com/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/index.html">
 <meta property="og:site_name" content="Gisyxi7&#39;s blogs">
-<meta property="og:description" content="引入我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。 现在介绍一个判断上下文无关语言的更强的引理：Ogden’s lemma（中文翻译为鄂登引理）。 定义如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z&#x3D;uvwxy$，总满足：  $">
+<meta property="og:description" content="对应教材第二章 Perfectly Secret Encryption 在本章中，我们将探讨另一个极端，即研究即使面对具有无限计算能力的攻击者也能被证明安全的加密方案。这类方案被称为完美安全(perfectly secret)。 为了简化讨论，我们假设可以各方都可以获得无限供应的独立无偏的随机位。 定义首先回顾上一章介绍的加密语法，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Ge">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-11-12T06:05:34.000Z">
-<meta property="article:modified_time" content="2024-12-09T15:32:52.226Z">
+<meta property="article:published_time" content="2024-12-13T06:43:28.000Z">
+<meta property="article:modified_time" content="2024-12-13T08:19:30.694Z">
 <meta property="article:author" content="Gisyxi7">
-<meta property="article:tag" content="形式语言与自动机">
+<meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
+<link rel="canonical" href="http://example.com/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Pumping lemma 和 Ogden's lemma | Gisyxi7's blogs</title>
+  <title>【二】完美保密性 | Gisyxi7's blogs</title>
   
 
 
@@ -166,7 +166,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +179,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Pumping lemma 和 Ogden's lemma
+          【二】完美保密性
         </h1>
 
         <div class="post-meta">
@@ -188,16 +188,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2024-11-12 14:05:34" itemprop="dateCreated datePublished" datetime="2024-11-12T14:05:34+08:00">2024-11-12</time>
+              <time title="创建时间：2024-12-13 14:43:28 / 修改时间：16:19:30" itemprop="dateCreated datePublished" datetime="2024-12-13T14:43:28+08:00">2024-12-13</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:32:52" itemprop="dateModified" datetime="2024-12-09T23:32:52+08:00">2024-12-09</time>
-              </span>
 
           
 
@@ -210,39 +204,56 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。</p>
-<p>现在介绍一个判断上下文无关语言的更强的引理：<strong>Ogden’s lemma</strong>（中文翻译为鄂登引理）。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z=uvwxy$，总满足：</p>
+        <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第二章 Perfectly Secret Encryption</p>
+<p>在本章中，我们将探讨另一个极端，即研究即使面对具有无限计算能力的攻击者也能被证明安全的加密方案。这类方案被称为完美安全(perfectly secret)。</p>
+<p>为了简化讨论，我们假设可以各方都可以获得无限供应的独立无偏的随机位。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>首先回顾上一章介绍的加密语法，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，依据某些分布生成一个密钥$k$，$\mathcal{K}$表示密钥空间。</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$，$\mathcal{C}$表示密文集合<ul>
+<li>如果这是一个确定性算法，我们写作$c:=Enc_k(m)$</li>
+<li>如果这是一个概率性算法，我们写作$c\leftarrow Enc_k(m)$</li>
+</ul>
+</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$，$\mathcal{M}$表示明文集合。显然这里解密算法是一个确定性算法</li>
+</ul>
+<h2 id="完美安全性-Perfectly-Secrecy"><a href="#完美安全性-Perfectly-Secrecy" class="headerlink" title="完美安全性(Perfectly Secrecy)"></a>完美安全性(Perfectly Secrecy)</h2><p>现在假设攻击者的能力是：</p>
 <ol>
-<li>$vwx$含有最多$n$个标记</li>
-<li>$vx$含有至少一个标记</li>
-<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
+<li>知道加密方案</li>
+<li>观察到密文</li>
 </ol>
-<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>显而易见的，泵引理就是Ogden’s lemma标记字符串所有的位置时的情况，由此可见，Ogden’s lemma更加灵活，比泵引理更强，能再泵引理不足以判断的时候起到作用。下面会举个例子。</p>
-<p>关于我们用泵引理和鄂登引理到底来干什么，下面的说明会帮助产生一个清晰的认识。</p>
+<p>一个完美安全的加密方案要求攻击者观察到密文对实际的发送明文的概率没有影响。换句话说，观察到密文对消息选择的先验概率和后验概率应当是相同的。</p>
+<h3 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h3><p>一个加密方案是<strong>完美安全的</strong>，如果对于消息空间$\mathcal{M}$的任意概率分布，任意消息$m\in \mathcal{M}$，任意密文$c\in \mathcal{C}$（其中$Pr[C=c]&gt;0$），有：</p>
+<script type="math/tex; mode=display">Pr[M=m|C=c]=Pr[M=m]</script><h3 id="引理"><a href="#引理" class="headerlink" title="引理"></a>引理</h3><p>一个加密方案是完美安全的，当且仅当对于任意$m,m’\in \mathcal{M}$，任意$c\in \mathcal{C}$，有：</p>
+<script type="math/tex; mode=display">Pr[C=c|M=m]=Pr[C=c|M=m']</script><h3 id="完美不可区分性"><a href="#完美不可区分性" class="headerlink" title="完美不可区分性"></a>完美不可区分性</h3><p>现在介绍一个实验：</p>
 <ol>
-<li>如果一个语言是上下文无关语言，那么属于这个语言的字符串<strong>一定</strong>满足泵引理</li>
-<li>如果一个语言不是上下文无关语言，那么属于这个语言的字符串仍然<strong>可能</strong>满足泵引理</li>
-<li>如果一个字符串满足泵引理，那么这个字符串代表的语言<strong>可能</strong>是上下文无关语言</li>
-<li>如果一个字符串不满足泵引理，那么这个字符串代表的语言<strong>一定不是</strong>上下文无关语言</li>
+<li>攻击者$\mathcal{A}$指定任意两个消息$m_0,m_1\in \mathcal{M}$</li>
+<li>$Gen$生成一个密钥$k$</li>
+<li>随机选择一个$b\in \{0,1\}$，计算密文$c\leftarrow Enc_k(m_b)$</li>
+<li>将密文$c$返回给攻击者$\mathcal{A}$</li>
+<li>攻击者给出一个猜测值$b’\in \{0,1\}$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eav}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
 </ol>
-<p>这说明我们一般使用泵引理来判断一个语言不是上下文无关语言（即证明里面该语言存在字符串不满足泵引理）。</p>
-<p>使用泵引理说明一个语言是上下文无关语言没有意义。</p>
-<h1 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h1><p>关于该引理的证明<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=_95IZWDRHNQ">请看这里</a><br>我觉得还是讲的很清楚的。</p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>该例子参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12613082/using-ogden-s-lemma-versus-regular-pumping-lemma-for-context-free-grammars">stackoverflow的一个问答</a></p>
-<p>考虑语言$L = \{a^ib^jc^kd^l | i=0 \text{ or }j=k=l\}$，证明其不是上下文无关语言。</p>
-<p>我们先考虑使用泵引理。</p>
-<p>令$z=uvwxy$，假设$z$包含a，我们可以令$v=a,x=\epsilon,y=\epsilon$；假设$z$不包含a，我们可以令$v=b,x=\epsilon,y=\epsilon$。都满足泵引理，因此无法通过泵引理来证明不是上下文无关语言。</p>
-<p>现在考虑用鄂登引理。</p>
-<p>令$z=ab^nc^nd^n$，标记所有的b，令$z=uvwxy$。</p>
-<p>假如v或x有超过一种（区分于一个）字符，则重复就会出现错误的顺序。</p>
-<p>所以v和x至少包含一个字符$b$，则出现以下五种情况：</p>
+<p>在攻击者完全随机猜测的情况下，实验结果为$1$的概率为$\frac{1}{2}$。完美保密性的目的就是希望攻击者任何选择的策略都不能优于随机猜测。</p>
+<p>有定义如下：<br>一个方案是<strong>完美不可区分的</strong>当且仅当对于任何攻击者$\mathcal{A}$，都有：</p>
+<script type="math/tex; mode=display">Pr[Privk^{eav}_{\mathcal{A},\prod}=1]=\frac{1}{2}</script><p>有引理如下：<br>完美保密性和完美不可区分性是等价的。</p>
+<h1 id="One-Time-Pad"><a href="#One-Time-Pad" class="headerlink" title="One-Time Pad"></a>One-Time Pad</h1><h2 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h2><p>对于固定长度$l$，我们定义该方案的明文空间、密钥空间和密文空间都为$\{0,1\}^l$：</p>
+<ul>
+<li>$Gen$：从密钥空间中均匀随机选取一个密钥</li>
+<li>$Enc$：$c:=m\oplus  k$</li>
+<li>$Dec$：$m:=c\oplus k$</li>
+</ul>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>这个方案是完美安全的。</p>
+<p>但是这个方案存在限制，密钥只能使用一次，如果多次使用就会变得不安全。这就要求每次加密都要重新生成密钥，这是很麻烦的。</p>
+<h1 id="完美安全的限制"><a href="#完美安全的限制" class="headerlink" title="完美安全的限制"></a>完美安全的限制</h1><p>我们将证明：任何完美安全的加密方案的密钥空间大小必须至少与消息空间大小相等。</p>
+<p>形式化的：</p>
+<p>对于一个完美安全的加密方案，有$|\mathcal{K}|\ge |\mathcal{M}|$</p>
+<p>证明如下：</p>
+<p>假设$|\mathcal{K}|&lt;|\mathcal{M}|$，对于一个密文，其被不同密钥解密出的明文集合大小必然等于密钥空间大小，即小于明文空间大小。这就说明存在一个密文，有对应的明文无论什么密钥都无法加密称为该密文。即：</p>
+<script type="math/tex; mode=display">\exists m',c,s.t. Pr[M=m'|C=c]=0\not =Pr[M=m']</script><p>违背了完美安全的定义。</p>
+<h1 id="香农定理"><a href="#香农定理" class="headerlink" title="香农定理"></a>香农定理</h1><p>令$(Gen,Enc,Dec)$是一个明文空间为$\mathcal{M}$的加密方案，并且$|\mathcal{M}|=|\mathcal{C}|=|\mathcal{K}|$，这个方案是完美安全的当且仅当满足以下条件：</p>
 <ol>
-<li>$v=\epsilon,x=b^i$</li>
-<li>$v=a,x=b^i$</li>
-<li>$v=b^i,x=c^j$</li>
-<li>$v=b^i,x=d^j$</li>
-<li>$v=b^i,x=\epsilon$<br>容易验证以上五种情况都不满足鄂登引理。因此，$L$不是上下文无关语言。</li>
+<li>任意密钥被$Gen$以$\frac{1}{\mathcal{K}}$的概率选择</li>
+<li>对于任意$m\in\mathcal{M},c\in \mathcal{C}$，只存在一个唯一的$k\in \mathcal{K}$使得$c:=Enc_k(m)$</li>
 </ol>
 
     </div>
@@ -273,7 +284,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag"># 形式语言与自动机</a>
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
           </div>
 
         
@@ -282,12 +293,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/" rel="prev" title="CYK算法的C++实现">
-      <i class="fa fa-chevron-left"></i> CYK算法的C++实现
+    <a href="/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/" rel="prev" title="【一】密码学引入">
+      <i class="fa fa-chevron-left"></i> 【一】密码学引入
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/" rel="next" title="Mitsuba0.6编译指南">
-      Mitsuba0.6编译指南 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/" rel="next" title="【三】私钥加密">
+      【三】私钥加密 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -347,7 +358,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%81%E6%98%8E"><span class="nav-number">4.</span> <span class="nav-text">证明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">例</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E7%BE%8E%E5%AE%89%E5%85%A8%E6%80%A7-Perfectly-Secrecy"><span class="nav-number">1.1.</span> <span class="nav-text">完美安全性(Perfectly Secrecy)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">形式化定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E7%90%86"><span class="nav-number">1.1.2.</span> <span class="nav-text">引理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E7%BE%8E%E4%B8%8D%E5%8F%AF%E5%8C%BA%E5%88%86%E6%80%A7"><span class="nav-number">1.1.3.</span> <span class="nav-text">完美不可区分性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#One-Time-Pad"><span class="nav-number">2.</span> <span class="nav-text">One-Time Pad</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">2.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">2.2.</span> <span class="nav-text">安全性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%8C%E7%BE%8E%E5%AE%89%E5%85%A8%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">完美安全的限制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A6%99%E5%86%9C%E5%AE%9A%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">香农定理</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

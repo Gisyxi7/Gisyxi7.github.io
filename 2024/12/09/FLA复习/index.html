@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true">
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true">
 <meta property="article:published_time" content="2024-12-09T14:06:54.000Z">
-<meta property="article:modified_time" content="2024-12-11T10:27:35.061Z">
+<meta property="article:modified_time" content="2024-12-12T10:50:53.090Z">
 <meta property="article:author" content="Gisyxi7">
 <meta property="article:tag" content="形式语言与自动机">
 <meta name="twitter:card" content="summary">
@@ -201,7 +201,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-11 18:27:35" itemprop="dateModified" datetime="2024-12-11T18:27:35+08:00">2024-12-11</time>
+                <time title="修改时间：2024-12-12 18:50:53" itemprop="dateModified" datetime="2024-12-12T18:50:53+08:00">2024-12-12</time>
               </span>
 
           
@@ -256,7 +256,7 @@
 <li>NFA-&gt;$\epsilon$-NFA 显而易见</li>
 <li>$\epsilon$-NFA-&gt;NFA 先取闭包，后转移，最后再次取闭包</li>
 </ul>
-<h1 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h1><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
+<h2 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h2><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
 <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
 <li><strong>并(union)</strong>：就是集合的并操作</li>
 <li><strong>拼接(concatenation)</strong>：LM</li>
@@ -264,7 +264,7 @@
 </ul>
 <h2 id="正则表达式与有穷自动机的等价性"><a href="#正则表达式与有穷自动机的等价性" class="headerlink" title="正则表达式与有穷自动机的等价性"></a>正则表达式与有穷自动机的等价性</h2><h3 id="正则表达式转换为-epsilon-NFA"><a href="#正则表达式转换为-epsilon-NFA" class="headerlink" title="正则表达式转换为$\epsilon$-NFA"></a>正则表达式转换为$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
 <h3 id="DFA转换为正则表达式"><a href="#DFA转换为正则表达式" class="headerlink" title="DFA转换为正则表达式"></a>DFA转换为正则表达式</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
-<h2 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h2><ul>
+<h3 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h3><ul>
 <li>$R+\emptyset=R$</li>
 <li>$R\emptyset=\emptyset R=\emptyset$</li>
 <li>$\epsilon R=R\epsilon =R$</li>
@@ -273,28 +273,102 @@
 <li>$\epsilon+RR<em>=R</em>$</li>
 <li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
 </ul>
-<h1 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h1><ul>
+<h2 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h2><ul>
 <li>成员资格问题：模拟运行</li>
 <li>空问题：是否有一个终止状态可达</li>
 <li>无限性问题：是否有环</li>
 <li>等价性：构造乘积DFA</li>
 <li>包含关系：构造乘积DFA</li>
 </ul>
-<h2 id="泵引理："><a href="#泵引理：" class="headerlink" title="泵引理："></a>泵引理：</h2><p>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
+<h3 id="泵引理："><a href="#泵引理：" class="headerlink" title="泵引理："></a>泵引理：</h3><p>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
 <ol>
 <li>$|xy|\leq n$</li>
 <li>$|y| &gt;0$</li>
 <li>$\forall i \ge 0,xy^iz\in L$<br>判断一个语言不是正则表达式时使用泵引理，还可以利用正则语言的闭包性说明不是。还可以<strong>构造DFA</strong>来说明是正则语言。</li>
 </ol>
-<h2 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h2><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
+<h3 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h3><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
 <p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
-<h1 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h1><ul>
+<h2 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h2><ul>
 <li>并操作、拼接操作以及星闭包操作下的闭包</li>
 <li>交集、差集、补集下的闭包</li>
 <li>逆运算下的闭包</li>
 <li>同态运算下的闭包</li>
 <li>逆同态运算下的闭包</li>
 </ul>
+<h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
+<ul>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
+<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
+<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
+<li><strong>头</strong>(header)是一个变量</li>
+<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
+</ul>
+</li>
+</ul>
+<h2 id="最左推导最右推导，解析树，等价性"><a href="#最左推导最右推导，解析树，等价性" class="headerlink" title="最左推导最右推导，解析树，等价性"></a>最左推导最右推导，解析树，等价性</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
+<h2 id="文法歧义，固有歧义"><a href="#文法歧义，固有歧义" class="headerlink" title="文法歧义，固有歧义"></a>文法歧义，固有歧义</h2><h2 id="上下文无关变量范式"><a href="#上下文无关变量范式" class="headerlink" title="上下文无关变量范式"></a>上下文无关变量范式</h2><p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
+<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
+<ol>
+<li>$A\rightarrow BC$</li>
+<li>$A\rightarrow a$，其中$a$是终结符。</li>
+</ol>
+<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
+<ol>
+<li>清理文法。<ol>
+<li>去除无用符号：<ol>
+<li>删除不能导出终结字符串的符号</li>
+<li>删除所有从起始符号不可达的字符串</li>
+</ol>
+</li>
+<li>去除空产生式：<ol>
+<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
+<li>最后去掉所有的空产生式</li>
+</ol>
+</li>
+<li>去除单元产生式：<ol>
+<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
+<li>基础情况：$(A,A)一定是满足要求的有序对</li>
+<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
+</ul>
+</li>
+<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
+<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
+</ol>
+<h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><h2 id="定义-3"><a href="#定义-3" class="headerlink" title="定义"></a>定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<ul>
+<li>$Q$为有限状态集合</li>
+<li>$\Sigma$为输入字母表</li>
+<li>$\Gamma$为栈字母表</li>
+<li>$\delta$是转移函数<ul>
+<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
+<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
+</ul>
+</li>
+<li>$q_0\in Q$为初始状态</li>
+<li>$Z_0\in\Gamma$为初始栈顶元素</li>
+<li>$F\subseteq Q$为终止状态集合</li>
+</ul>
+<p>一些字母上的约定：</p>
+<ul>
+<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
+<li>用$\cdots,X,Y,Z$表示栈符号</li>
+<li>用$w,x,y,z$表示输入符号形成的字符串</li>
+<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串<h2 id="下推自动机的语言"><a href="#下推自动机的语言" class="headerlink" title="下推自动机的语言"></a>下推自动机的语言</h2></li>
+<li>根据终止状态$L(P)$</li>
+<li>根据空栈$N(P)$</li>
+</ul>
+<p>两者在定义语言的能力上等价，意味着可以通过修改相互转换。</p>
+<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>NPDA的表达能力比DPDA要强。</p>
+<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
+<p>思路就是$P$的每一步代表最左推导中的一步。</p>
+<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
+<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
 
     </div>
 
@@ -398,7 +472,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">有穷自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">确定性有穷自动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%ADDFA%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E4%B8%80%E4%B8%AA%E8%87%AA%E7%84%B6%E6%8F%8F%E8%BF%B0%E7%9A%84%E8%AF%AD%E8%A8%80%E9%9B%86%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">判断DFA的语言和一个自然描述的语言集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%AF%AD%E8%A8%80"><span class="nav-number">2.3.</span> <span class="nav-text">正则语言</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">3.</span> <span class="nav-text">非确定性有穷自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFA%E5%92%8CDFA%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">3.2.</span> <span class="nav-text">NFA和DFA的等价性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%A6%E7%A9%BA%E8%BD%AC%E7%A7%BB%E7%9A%84NFA"><span class="nav-number">4.</span> <span class="nav-text">带空转移的NFA</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFA%E5%92%8C-epsilon-NFA%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">4.2.</span> <span class="nav-text">NFA和$\epsilon$-NFA的等价性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">有穷自动机总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">6.1.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8E%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">6.2.</span> <span class="nav-text">正则表达式与有穷自动机的等价性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BD%AC%E6%8D%A2%E4%B8%BA-epsilon-NFA"><span class="nav-number">6.2.1.</span> <span class="nav-text">正则表达式转换为$\epsilon$-NFA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DFA%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.2.2.</span> <span class="nav-text">DFA转换为正则表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%BB%A3%E6%95%B0%E8%BF%90%E7%AE%97%E6%B3%95%E5%88%99"><span class="nav-number">6.3.</span> <span class="nav-text">正则表达式的代数运算法则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%88%A4%E5%AE%9A%E6%80%A7%E8%B4%A8"><span class="nav-number">7.</span> <span class="nav-text">正则表达式的判定性质</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%B5%E5%BC%95%E7%90%86%EF%BC%9A"><span class="nav-number">7.1.</span> <span class="nav-text">泵引理：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%AF%AD%E8%A8%80%E7%9A%84%E6%9C%80%E5%B0%8F%E7%8A%B6%E6%80%81DFA"><span class="nav-number">7.2.</span> <span class="nav-text">正则语言的最小状态DFA</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%AF%AD%E8%A8%80%E7%9A%84%E9%97%AD%E5%8C%85%E6%80%A7%E8%B4%A8"><span class="nav-number">8.</span> <span class="nav-text">正则语言的闭包性质</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">有穷自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">确定性有穷自动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%ADDFA%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E4%B8%80%E4%B8%AA%E8%87%AA%E7%84%B6%E6%8F%8F%E8%BF%B0%E7%9A%84%E8%AF%AD%E8%A8%80%E9%9B%86%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">判断DFA的语言和一个自然描述的语言集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%AF%AD%E8%A8%80"><span class="nav-number">2.3.</span> <span class="nav-text">正则语言</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">3.</span> <span class="nav-text">非确定性有穷自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFA%E5%92%8CDFA%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">3.2.</span> <span class="nav-text">NFA和DFA的等价性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%A6%E7%A9%BA%E8%BD%AC%E7%A7%BB%E7%9A%84NFA"><span class="nav-number">4.</span> <span class="nav-text">带空转移的NFA</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="nav-number">4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFA%E5%92%8C-epsilon-NFA%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">4.2.</span> <span class="nav-text">NFA和$\epsilon$-NFA的等价性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA%E6%80%BB%E7%BB%93"><span class="nav-number">4.3.</span> <span class="nav-text">有穷自动机总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">5.1.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8E%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">5.2.</span> <span class="nav-text">正则表达式与有穷自动机的等价性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%BD%AC%E6%8D%A2%E4%B8%BA-epsilon-NFA"><span class="nav-number">5.2.1.</span> <span class="nav-text">正则表达式转换为$\epsilon$-NFA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DFA%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">5.2.2.</span> <span class="nav-text">DFA转换为正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%BB%A3%E6%95%B0%E8%BF%90%E7%AE%97%E6%B3%95%E5%88%99"><span class="nav-number">5.2.3.</span> <span class="nav-text">正则表达式的代数运算法则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%88%A4%E5%AE%9A%E6%80%A7%E8%B4%A8"><span class="nav-number">5.3.</span> <span class="nav-text">正则表达式的判定性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%B5%E5%BC%95%E7%90%86%EF%BC%9A"><span class="nav-number">5.3.1.</span> <span class="nav-text">泵引理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%AF%AD%E8%A8%80%E7%9A%84%E6%9C%80%E5%B0%8F%E7%8A%B6%E6%80%81DFA"><span class="nav-number">5.3.2.</span> <span class="nav-text">正则语言的最小状态DFA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%AF%AD%E8%A8%80%E7%9A%84%E9%97%AD%E5%8C%85%E6%80%A7%E8%B4%A8"><span class="nav-number">5.4.</span> <span class="nav-text">正则语言的闭包性质</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">上下文无关文法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="nav-number">6.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B7%A6%E6%8E%A8%E5%AF%BC%E6%9C%80%E5%8F%B3%E6%8E%A8%E5%AF%BC%EF%BC%8C%E8%A7%A3%E6%9E%90%E6%A0%91%EF%BC%8C%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">6.2.</span> <span class="nav-text">最左推导最右推导，解析树，等价性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%B3%95%E6%AD%A7%E4%B9%89%EF%BC%8C%E5%9B%BA%E6%9C%89%E6%AD%A7%E4%B9%89"><span class="nav-number">6.3.</span> <span class="nav-text">文法歧义，固有歧义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E5%8F%98%E9%87%8F%E8%8C%83%E5%BC%8F"><span class="nav-number">6.4.</span> <span class="nav-text">上下文无关变量范式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">7.</span> <span class="nav-text">下推自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="nav-number">7.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%9A%84%E8%AF%AD%E8%A8%80"><span class="nav-number">7.2.</span> <span class="nav-text">下推自动机的语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%80%A7%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA%E4%B8%8E%E9%9D%9E%E7%A1%AE%E5%AE%9A%E6%80%A7%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">7.3.</span> <span class="nav-text">确定性下推自动机与非确定性下推自动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CFG%E8%BD%AC%E5%8F%98%E4%B8%BAPDA"><span class="nav-number">7.4.</span> <span class="nav-text">CFG转变为PDA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PDA%E8%BD%AC%E5%8F%98%E4%B8%BACFG"><span class="nav-number">7.5.</span> <span class="nav-text">PDA转变为CFG</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -412,7 +486,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
