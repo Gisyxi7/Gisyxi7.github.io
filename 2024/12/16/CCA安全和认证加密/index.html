@@ -22,8 +22,8 @@
 
   <meta name="description" content="对应教材第五章CCA-Security and Authenticated Encryption 我们已经讨论过了两种攻击者，一种是监听信道，一种是纂改通信，对应的我们提出了保密性和完整性的目标。现在我们要讨论存在主动攻击者时的保密性问题，以及如何构建同时实现保密性和完整性的加密方案。 选择密文攻击和CCA安全我们上一章中考虑攻击者可以纂改信道，那么显然，攻击者可以有以下的手段，使通信接收方解密攻">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CCA安全和认证加密">
-<meta property="og:url" content="http://example.com/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/index.html">
+<meta property="og:title" content="【五】CCA安全和认证加密">
+<meta property="og:url" content="http://example.com/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/index.html">
 <meta property="og:site_name" content="Gisyxi7&#39;s blogs">
 <meta property="og:description" content="对应教材第五章CCA-Security and Authenticated Encryption 我们已经讨论过了两种攻击者，一种是监听信道，一种是纂改通信，对应的我们提出了保密性和完整性的目标。现在我们要讨论存在主动攻击者时的保密性问题，以及如何构建同时实现保密性和完整性的加密方案。 选择密文攻击和CCA安全我们上一章中考虑攻击者可以纂改信道，那么显然，攻击者可以有以下的手段，使通信接收方解密攻">
 <meta property="og:locale" content="zh_CN">
@@ -31,14 +31,18 @@
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/2.png?raw=true">
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/3.png?raw=true">
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/4.png?raw=true">
-<meta property="article:published_time" content="2024-11-21T06:39:28.000Z">
-<meta property="article:modified_time" content="2024-11-22T14:34:22.417Z">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/5.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/6.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/7.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/8.png?raw=true">
+<meta property="article:published_time" content="2024-12-16T05:00:28.000Z">
+<meta property="article:modified_time" content="2024-12-16T08:59:51.922Z">
 <meta property="article:author" content="Gisyxi7">
 <meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/1.png?raw=true">
 
-<link rel="canonical" href="http://example.com/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
+<link rel="canonical" href="http://example.com/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
 
 
 <script id="page-configurations">
@@ -51,7 +55,7 @@
   };
 </script>
 
-  <title>CCA安全和认证加密 | Gisyxi7's blogs</title>
+  <title>【五】CCA安全和认证加密 | Gisyxi7's blogs</title>
   
 
 
@@ -171,7 +175,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/21/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -184,7 +188,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CCA安全和认证加密
+          【五】CCA安全和认证加密
         </h1>
 
         <div class="post-meta">
@@ -193,16 +197,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2024-11-21 14:39:28" itemprop="dateCreated datePublished" datetime="2024-11-21T14:39:28+08:00">2024-11-21</time>
+              <time title="创建时间：2024-12-16 13:00:28 / 修改时间：16:59:51" itemprop="dateCreated datePublished" datetime="2024-12-16T13:00:28+08:00">2024-12-16</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-22 22:34:22" itemprop="dateModified" datetime="2024-11-22T22:34:22+08:00">2024-11-22</time>
-              </span>
 
           
 
@@ -223,14 +221,14 @@
 <p>这意味着服务器会向攻击者提供一个填充查询机，来判断填充是否正确。并且攻击者是有方法根据这个信息来恢复密文对应的明文的。</p>
 <h2 id="CCA-Security-的定义"><a href="#CCA-Security-的定义" class="headerlink" title="CCA-Security 的定义"></a>CCA-Security 的定义</h2><p>下面来形式化定义一下CCA安全。<br>我们仿照之前的实验方案，给出CCA不可区分实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/1.png?raw=true" alt="1"></p>
 <p>注意这里，加密算法应该是概率性的，否则很容易通过加密查询来获取正确结果。</p>
-<p><strong>DEFINITION 5.1</strong><br>一个加密方案是安全的当且仅当<br>$Pr[PrivK^{cca}_{\mathcal{A},\prod}(n)=1]\leq 1/2+negl(n)$</p>
-<p>由此也可以引申出，如果一个方案是CCA安全的，在多密文不可区分实验中仍然是CCA安全的。</p>
+<p><strong>DEFINITION 5.1</strong><br>一个加密方案是CCA安全的当且仅当</p>
+<script type="math/tex; mode=display">Pr[PrivK^{cca}_{\mathcal{A},\prod}(n)=1]\leq 1/2+negl(n)</script><p>由此也可以引申出，如果一个方案是CCA安全的，在多密文不可区分实验中仍然是CCA安全的。</p>
 <p>以上实验中给了攻击者很大的能力，比如能知道解密后的明文，但是现实中知道的信息不一定有这么多，我们这里在定义上希望攻击者足够强。</p>
 <p>到目前为止，我们研究的大多数方案都不是CCA安全的。攻击者可以通过比特翻转等攻击方式来打破不可区分性。</p>
 <h1 id="认证加密"><a href="#认证加密" class="headerlink" title="认证加密"></a>认证加密</h1><p>迄今为止，我们分别探讨了如何通过加密实现机密性，以及通过消息认证码实现完整性。下面定义的认证加密（Authenticated Encryption）旨在同时实现这两个目标。在对称密钥环境中，默认同时确保机密性和完整性是最佳实践。事实上，在许多需要机密性的应用中，完整性通常也是至关重要的。</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>考虑以下实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/2.png?raw=true" alt="2"><br>简单的说就是要求攻击者不能伪造一个有效的密文。</p>
-<p><strong>DEFINITION 5.2</strong><br>一个方案是不可伪造的(unforgeble)，当且仅当对于任何多项式概率算法攻击者A，都有<br>$Pr[Enc-Forge_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
-<p><strong>DEFINITION 5.3</strong><br>一个方案是AE(authenticated encryption)当且仅当这个方案是CCA安全的并且是不可伪造的。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h3 id="不可伪造实验"><a href="#不可伪造实验" class="headerlink" title="不可伪造实验"></a>不可伪造实验</h3><p>考虑以下实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/2.png?raw=true" alt="2"><br>简单的说就是要求攻击者不能伪造一个有效的密文。</p>
+<p><strong>DEFINITION 5.2</strong><br>一个方案是不可伪造的(unforgeble)，当且仅当对于任何多项式概率算法攻击者A，都有</p>
+<script type="math/tex; mode=display">Pr[Enc-Forge_{\mathcal{A},\prod}(n)=1]\leq negl(n)</script><h3 id="AE的定义"><a href="#AE的定义" class="headerlink" title="AE的定义"></a>AE的定义</h3><p><strong>DEFINITION 5.3</strong><br>一个方案是AE(authenticated encryption)当且仅当这个方案是CCA安全的并且是不可伪造的。</p>
 <p>我们也可以通过一个单一的实验来定义AE加密方案。<br>假设现在攻击者可以遇到以下两种不同的情况：</p>
 <ol>
 <li>攻击者被提供了一个加密oracle和一个解密oracle的访问权限。</li>
@@ -238,7 +236,7 @@
 </ol>
 <p>如果攻击者不能区分这两种场景，这说明攻击者在真实世界中生成的新密文都将无效同时攻击者无法区分真实的加密。</p>
 <p>该实验的定义如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/3.png?raw=true" alt="3"></p>
-<p><strong>DEFINITION 5.4</strong><br>一个方案是AE-secure，当且仅当对于任何多项式概率算法攻击者A，都有<br>$Pr[PrivK^{ae}_{\mathcal{A},\prod}(n)=1]\leq 1/2+negl(n)$</p>
+<p><strong>DEFINITION 5.4</strong><br>一个方案是AE-secure，当且仅当对于任何多项式概率算法攻击者A，都有<br>$Pr[PrivK^{ae}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)$</p>
 <p><strong>THEROREM 5.5</strong><br>定义5.3和定义5.4是等价的。</p>
 <p>带有关联数据的认证加密：在许多情况下，可能只有部分内容需要加密，部分内容只要保证完整性即可。虽然对整体消息进行AE方案加密可以满足要求，但是效率较低，现实中，支持关联数据的认证加密方案在文献中被称为带有关联数据的认证加密（Authenticated Encryption with Associated Data，简称 AEAD）。</p>
 <h2 id="CCA安全-vs-认证加密"><a href="#CCA安全-vs-认证加密" class="headerlink" title="CCA安全 vs 认证加密"></a>CCA安全 vs 认证加密</h2><p>我们根据定义可以直接得出任何认证加密（AE）方案也都是选择密文攻击安全（CCA-secure）的。然而，反之则不成立。</p>
@@ -251,15 +249,56 @@
 <li>两种方案使用独立的密钥$k_E$和$k_M$</li>
 </ol>
 <p>下面是常见的三种构造方式。</p>
-<h3 id="Encrypt-and-authenticate"><a href="#Encrypt-and-authenticate" class="headerlink" title="Encrypt-and-authenticate"></a>Encrypt-and-authenticate</h3><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,m)$<br>因为它未能将机密性和完整性紧密结合，导致标签可能泄露关于消息的信息，确定性MAC可能使攻击者意识到消息的重复发送等问题。</p>
-<h3 id="Authenticate-then-encrypt"><a href="#Authenticate-then-encrypt" class="headerlink" title="Authenticate-then-encrypt"></a>Authenticate-then-encrypt</h3><p>$t\leftarrow MAC(k_M,m),c\leftarrow Enc(k_E,m||t)$<br>一般会用CBC模式进行加密，那么填充部分就可以用来实现攻击，因为不同的错误类型会提供有效信息。一个很直接的解决方案是使错误信息都返回同一种。但是这在现实中并不有效，不利于调试等等问题。</p>
-<h3 id="Encrypt-then-authenticate"><a href="#Encrypt-then-authenticate" class="headerlink" title="Encrypt-then-authenticate"></a>Encrypt-then-authenticate</h3><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,c)$<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/4.png?raw=true" alt="4"><br>直观上这样的构造很安全。</p>
-<p>如果攻击者提交的密文 ⟨c,t⟩ 不来自加密 oracle，认证标签 t 将无法通过验证，解密 oracle 会返回错误。<br>如果攻击者提交的密文确实来自加密 oracle，那么攻击者已经知道该密文的解密结果。<br>这种设计使解密 oracle 对攻击者无用，从而避免了选择密文攻击（CCA）的潜在威胁。</p>
-<p>在解密之前，首先验证标签 t。如果标签验证失败，解密算法立即返回错误，而不会尝试解密密文 c。<br>这种设计避免了与 Authenticate-then-Encrypt 方法类似的填充 Oracle 攻击，因为解密过程不会执行，攻击者无法通过错误信息获知关于明文的任何信息。</p>
-<p><strong>THEROREM 5.7</strong><br>以上构造是AE安全的。</p>
-<hr>
-<p>证明过程有点复杂，可能期末复习的时候再整理。</p>
-<hr>
+<h3 id="Encrypt-and-authenticate"><a href="#Encrypt-and-authenticate" class="headerlink" title="Encrypt-and-authenticate"></a>Encrypt-and-authenticate</h3><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,m)$，密文为$&lt; c , t &gt;$<br>因为它未能将保密性和完整性紧密结合，导致标签可能泄露关于消息的信息，确定性MAC可能使攻击者意识到消息的重复发送等问题。</p>
+<h3 id="Authenticate-then-encrypt"><a href="#Authenticate-then-encrypt" class="headerlink" title="Authenticate-then-encrypt"></a>Authenticate-then-encrypt</h3><p>$t\leftarrow MAC(k_M,m),c\leftarrow Enc(k_E,m||t)$，密文为$c$<br>一般会用CBC模式进行加密，那么填充部分就可以用来实现攻击，因为不同的错误类型会提供有效信息。一个很直接的解决方案是使错误信息都返回同一种。但是这在现实中并不有效，不利于调试等等问题。</p>
+<h3 id="Encrypt-then-authenticate"><a href="#Encrypt-then-authenticate" class="headerlink" title="Encrypt-then-authenticate"></a>Encrypt-then-authenticate</h3><h4 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h4><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,c)$，密文为$&lt; c , t &gt;$<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/4.png?raw=true" alt="4"><br>直观上这样的构造很安全。</p>
+<p>如果攻击者提交的密文$ ⟨ c ,t ⟩ $不来自加密 oracle，认证标签 t 将无法通过验证，解密 oracle 会返回错误。</p>
+<p>如果攻击者提交的密文确实来自加密 oracle，那么攻击者已经知道该密文的解密结果。</p>
+<p>这种设计使解密 oracle 对攻击者无用，从而避免了选择密文攻击（CCA）的潜在威胁。</p>
+<p>在解密之前，首先验证标签 t。如果标签验证失败，解密算法立即返回错误，而不会尝试解密密文 c。</p>
+<p>这种设计避免了与 Authenticate-then-Encrypt 方法类似的填充 Oracle 攻击，因为解密过程不会执行，攻击者无法通过错误信息获知关于明文的任何信息。</p>
+<h4 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h4><p><strong>THEROREM 5.7</strong><br>以上构造是AE安全的。</p>
+<p>我们的目标是证明这个方案不可伪造且CCA安全。令$\mathcal{A}$是一个PPT攻击者</p>
+<p>我们令$VaildQuery$代表事件：攻击者成功向$Dec(\cdot)$提交了一个新的有效密文。我们要证明$Pr[ValidQuery]$是可忽略的。</p>
+<p>如果事件$VaildQuery$发生，那么攻击者成功通过了$Mac-sforge$实验，令$q(\cdot)$代表攻击者向解密查询机查询次数的多项式上界。现在考虑对于$\prod_M$的攻击者$\mathcal{A}_M$:</p>
+<ol>
+<li>$\mathcal{A}<em>M$获得查询权限$Mac</em>{k_M}(\cdot)$</li>
+<li>均匀选取$k_E\in \{0,1\}^n,i\in \{1,\cdots,q(n)\}$</li>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$对消息$m$有加密查询时<ol>
+<li>计算$c\leftarrow Enc_{k_E}(m)$</li>
+<li>查询$t:=Mac_{k_M}(c)$，返回$&lt; c,t &gt;$给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>当$\mathcal{A}$对$&lt; c,t &gt;$有解密查询时，如果这是第$i$次加密查询，输$(c,t)$并停止，否则：<ol>
+<li>如果$&lt; c,t &gt;$，是之前加密查询的结果，则返回对应的$m$</li>
+<li>否则返回$\perp$</li>
+</ol>
+</li>
+</ol>
+<p>本质上，$\mathcal{A}<em>M$是在猜测$\mathcal{A}$的第$i$次加密查询是一次新的有效的查询。所以如果$\mathcal{A}_M$正确猜测了$VaildQuery$的第一个索引$i$，就可以成功通过$Mac-sforge</em>{\mathcal{A}_M,\prod_M}(n)$。这个成功猜测的概率是$\frac{1}{q(n)}$。</p>
+<p>而根据$\prod_M$是一个强安全MAC，我们有：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/5.png?raw=true" alt="5"></p>
+<p>综上我们证明了这是不可伪造的。下面我们继续证明该方案是CCA安全。</p>
+<p>首先我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/6.png?raw=true" alt="6"></p>
+<p>而不等式右边的第一项已经证明是可忽略的，现在我们的目标是证明</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/7.png?raw=true" alt="7"></p>
+<p>现在我们构造$\mathcal{A}<em>E$来攻击$\prod_E$，其中$\mathcal{A}_E$有查询$Enc</em>{k_E}(\cdot)$的权限：</p>
+<ol>
+<li>均匀选取$k_E\in \{0,1\}^n$</li>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$对消息$m$有加密查询时<ol>
+<li>查询$c\leftarrow Enc_{k_E}(m)$</li>
+<li>计算$t\leftarrow Mac_{k_M}(c)$，返回$&lt; c,t &gt;$给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>当$\mathcal{A}$对密文$&lt; c,t &gt;$有解密查询时，如果在之前的加密查询中出现过，则返回对应的$m$，否则返回$\perp$</li>
+<li>当$\mathcal{A}$输出$(m<em>0,m_1)$，将这个结果输出并获得密文$c$，计算$t\leftarrow Mac</em>{k_M}(c)$，并将$&lt; c,t &gt;$返回给$\mathcal{A}$</li>
+<li>输出$\mathcal{A}$的结果$b’$</li>
+</ol>
+<p>根据构造我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/8.png?raw=true" alt="8"></p>
+<p>根据$\prod_E$是CPA安全的，综上我们可以证明这是CCA安全的。</p>
+<p>到此得证。</p>
 <h2 id="标准化方案"><a href="#标准化方案" class="headerlink" title="标准化方案"></a>标准化方案</h2><p>下面介绍实际中应用较广的三种AE方案。</p>
 <h3 id="GCM-Galois-Counter-Mode"><a href="#GCM-Galois-Counter-Mode" class="headerlink" title="GCM(Galois/Counter Mode)"></a>GCM(Galois/Counter Mode)</h3><p>可以看作是一种encrypt-then-authenticate。使用CTR-mode进行加密，GMAC实现消息认证。</p>
 <h3 id="CCM-Counter-with-CBC-MAC"><a href="#CCM-Counter-with-CBC-MAC" class="headerlink" title="CCM (Counter with CBC-MAC)"></a>CCM (Counter with CBC-MAC)</h3><p>其设计基于 Authenticate-then-Encrypt 范式，结合了 CTR 模式和 CBC-MAC。</p>
@@ -304,13 +343,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/11/19/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/" rel="prev" title="消息认证码">
-      <i class="fa fa-chevron-left"></i> 消息认证码
+    <a href="/2024/12/16/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/" rel="prev" title="【四】消息认证码">
+      <i class="fa fa-chevron-left"></i> 【四】消息认证码
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/" rel="next" title="哈希函数及其应用">
-      哈希函数及其应用 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -369,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%AF%86%E6%96%87%E6%94%BB%E5%87%BB%E5%92%8CCCA%E5%AE%89%E5%85%A8"><span class="nav-number">1.</span> <span class="nav-text">选择密文攻击和CCA安全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Padding-Oracle-Attacks"><span class="nav-number">1.1.</span> <span class="nav-text">Padding-Oracle Attacks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CCA-Security-%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.</span> <span class="nav-text">CCA-Security 的定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86"><span class="nav-number">2.</span> <span class="nav-text">认证加密</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CCA%E5%AE%89%E5%85%A8-vs-%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86"><span class="nav-number">2.2.</span> <span class="nav-text">CCA安全 vs 认证加密</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">认证加密方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E6%9E%84%E9%80%A0"><span class="nav-number">3.1.</span> <span class="nav-text">一般构造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Encrypt-and-authenticate"><span class="nav-number">3.1.1.</span> <span class="nav-text">Encrypt-and-authenticate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Authenticate-then-encrypt"><span class="nav-number">3.1.2.</span> <span class="nav-text">Authenticate-then-encrypt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Encrypt-then-authenticate"><span class="nav-number">3.1.3.</span> <span class="nav-text">Encrypt-then-authenticate</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E5%8C%96%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.</span> <span class="nav-text">标准化方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GCM-Galois-Counter-Mode"><span class="nav-number">3.2.1.</span> <span class="nav-text">GCM(Galois&#x2F;Counter Mode)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CCM-Counter-with-CBC-MAC"><span class="nav-number">3.2.2.</span> <span class="nav-text">CCM (Counter with CBC-MAC)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChaCha20%E2%80%93Poly1305"><span class="nav-number">3.2.3.</span> <span class="nav-text">ChaCha20–Poly1305</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1%E4%BC%9A%E8%AF%9D"><span class="nav-number">4.</span> <span class="nav-text">安全通信会话</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%AF%86%E6%96%87%E6%94%BB%E5%87%BB%E5%92%8CCCA%E5%AE%89%E5%85%A8"><span class="nav-number">1.</span> <span class="nav-text">选择密文攻击和CCA安全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Padding-Oracle-Attacks"><span class="nav-number">1.1.</span> <span class="nav-text">Padding-Oracle Attacks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CCA-Security-%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.</span> <span class="nav-text">CCA-Security 的定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86"><span class="nav-number">2.</span> <span class="nav-text">认证加密</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E4%BC%AA%E9%80%A0%E5%AE%9E%E9%AA%8C"><span class="nav-number">2.1.1.</span> <span class="nav-text">不可伪造实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.2.</span> <span class="nav-text">AE的定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CCA%E5%AE%89%E5%85%A8-vs-%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86"><span class="nav-number">2.2.</span> <span class="nav-text">CCA安全 vs 认证加密</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">认证加密方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E6%9E%84%E9%80%A0"><span class="nav-number">3.1.</span> <span class="nav-text">一般构造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Encrypt-and-authenticate"><span class="nav-number">3.1.1.</span> <span class="nav-text">Encrypt-and-authenticate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Authenticate-then-encrypt"><span class="nav-number">3.1.2.</span> <span class="nav-text">Authenticate-then-encrypt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Encrypt-then-authenticate"><span class="nav-number">3.1.3.</span> <span class="nav-text">Encrypt-then-authenticate</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E8%AF%81%E6%98%8E"><span class="nav-number">3.1.3.2.</span> <span class="nav-text">安全性证明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E5%8C%96%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.</span> <span class="nav-text">标准化方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GCM-Galois-Counter-Mode"><span class="nav-number">3.2.1.</span> <span class="nav-text">GCM(Galois&#x2F;Counter Mode)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CCM-Counter-with-CBC-MAC"><span class="nav-number">3.2.2.</span> <span class="nav-text">CCM (Counter with CBC-MAC)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChaCha20%E2%80%93Poly1305"><span class="nav-number">3.2.3.</span> <span class="nav-text">ChaCha20–Poly1305</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1%E4%BC%9A%E8%AF%9D"><span class="nav-number">4.</span> <span class="nav-text">安全通信会话</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
