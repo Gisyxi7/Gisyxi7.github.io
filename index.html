@@ -162,6 +162,443 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/17/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/17/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/" class="post-title-link" itemprop="url">【八】数论与密码学困难度假设</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-17 11:16:30" itemprop="dateCreated datePublished" datetime="2024-12-17T11:16:30+08:00">2024-12-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 01:09:57" itemprop="dateModified" datetime="2024-12-18T01:09:57+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第九章 Number Theory and Cryptographic Hardness Assumptions</p>
+<p>到目前为止我们构建的现代密码学系统无一例外都基于一些假设：</p>
+<ul>
+<li>对称密钥密码学和消息验证码都基于伪随机置换存在的假设</li>
+<li>伪随机置换的存在基于单向函数存在的假设</li>
+<li>单向函数的存在基于一些问题是难问题的假设</li>
+</ul>
+<p>这一章我们将研究数论，这是进一步研究难问题的基础。</p>
+<h1 id="预备知识和基本群论"><a href="#预备知识和基本群论" class="headerlink" title="预备知识和基本群论"></a>预备知识和基本群论</h1><h2 id="素数和可除性"><a href="#素数和可除性" class="headerlink" title="素数和可除性"></a>素数和可除性</h2><p>首先，我们记$\mathbb{Z}$为整数集合。</p>
+<p>对于$a,b\in\mathbb{Z}$，如果存在整数$c$，使得$ac=b$，则我们记作$a\mid b$，否则记作$a\nmid b$。（我们主要关注都是正数的情况，尽管这个定义在存在负数或零时也成立）</p>
+<p>存在结论，如果$a\mid b$且$a\mid c$，那么$\forall X,Y\in\mathbb{Z}$，$s.t. a\mid(Xb+Yc)$。</p>
+<p>如果$a\mid b$且$a&gt;0$，我们称$a$是$b$的<strong>除数</strong>(divisor)，如果$a\notin \{1,b\}$，则称$a$是$b$的<strong>非平凡除数</strong>(nontrivial divisor)或<strong>因子</strong>(factor)。如果一个大于一的正整数没有因子，则称其为<strong>素数</strong>(prime)，否则为<strong>合数</strong>(composite)。$1$既不是素数也不是合数。</p>
+<p><strong>算数基本定理</strong>指出任何大于$1$的正整数可以唯一地写成素数的乘积，即$\forall N&gt;1,N= \prod_{i}p_i^{e_i}$。</p>
+<p>我们熟悉的余数可以形式化表述为，令$a$是一个整数，$b$是一个正整数，一定存在唯一的整数$q,r$，使$a=qb+r$且$0\leq r&lt;b$。</p>
+<p>对于给定整数的除法，我们可以在多项式事件内算出商和余数。在<strong>算法数论</strong>的背景下，整数输入通常用二进制表示，因此算法的运算时间是根据输入整数$N$的长度衡量的，记作$\parallel N \parallel =  \lfloor \log N\rfloor +1$。</p>
+<p>我们称整数$a,b$的<strong>最大公约数</strong>(greatest common divisor)，记作$\gcd(a,b)$，是满足$c\mid a$和$c\mid b$的最大整数$c$。我们一般只考虑$a,b$都是正整数的情况。但是要注意$\gcd(0,b)=\gcd(b,0)=b$。若$p$为素数，则$\gcd(p,q)=1$或$gcd(p,q)=p$。如果$\gcd(a,b)=1$，则称$a,b$<strong>互质</strong>(relatively prime)。</p>
+<p>对于$a,b$是正整数，那么存在整数$X,Y$使得$Xa+Yb=\gcd(a,b)$。</p>
+<p>存在算法在多项式时间内计算$\gcd(a,b)$和对应的$X,Y$。</p>
+<p>如果$c\mid ab$且$\gcd(a,c)=1$，则$c\mid b$。如果$p$是质数且$p\mid ab$，则$p\mid a$或$p\mid b$。</p>
+<p>如果$a\mid N$且$b\mid N$且$\gcd(a,b)=1$，则$ab\mid N$。</p>
+<h2 id="模运算"><a href="#模运算" class="headerlink" title="模运算"></a>模运算</h2><p>我们用$a \bmod b$表示$a$被$b$整除的余数。</p>
+<p>$a$和$b$同余表示为$a=b \bmod N$，等价于$N\mid (a-b)$。</p>
+<p>同余是一个等价关系，其满足自反性、对称性、传递性。</p>
+<p>同余也满足加法、减法和乘法的算数法则，如果$a=a’\bmod N,b=b’\bmod N$：</p>
+<ul>
+<li>$(a+b)=(a’+b’)\bmod N$</li>
+<li>$ab=a’b’\bmod N$</li>
+</ul>
+<p>显然对于除法，同余是不可传递的。但是我们可以定义一种有意义的除法。</p>
+<p>如果对于给定的整数$b$，存在一个整数$c$使得$bc=1\bmod N$，我们称$b$在模$N$的意义下是<strong>可逆的</strong>(invertible)，并称$c$是$b$在模$N$下的逆元。</p>
+<p>$0$是不可逆的。如果$c$是$b$在模$N$下的逆元，那么$c\bmod N$也是。</p>
+<p>当$b$是可逆的时候，我们记$b^{-1}$为唯一的在$\{1,\cdots,N-1\}$范围那内的乘法逆元。</p>
+<p>当$b$是可逆时，我们定义除以$b$等价于乘$b^{-1}$，即$[\frac{a}{b}\bmod N]=[ab^{-1}\bmod N]$。</p>
+<p>那么问题的关键就是哪些整数在模$N$下是可逆的。我们有以下结论：令$b\ge 1,N&gt;1$是整数，那么$b$在模$N$下是可逆的当且仅当$gcd(b,N)=1$。</p>
+<p>要求$b$在模$N$下的逆元，先找出$X,Y$使得$bX+NY=1\bmod N$，然后计算$b^{-1}=[X\bmod N]$</p>
+<p>当然，有关模的计算都是可以多项式时间内完成的。</p>
+<ul>
+<li>$[a+b\bmod N]$</li>
+<li>$[a-b\bmod N]$</li>
+<li>$[ab\bmod N]$</li>
+<li>$[a^{-1}\bmod N]$</li>
+<li>$[a^{k}\bmod N]$</li>
+</ul>
+<h2 id="群"><a href="#群" class="headerlink" title="群"></a>群</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>令$\mathbb{G}$是一个集合，该集合上的一个二元运算就是一个将该集合中的两个元素映射到另一个元素的函数$\circ (\cdot,\cdot)$。我们写作$g\circ h$而非$\circ(g,h)$。</p>
+<p>一个<strong>群</strong>(group)是一个集合$\mathbb{G}$和一个二元运算$\circ$，满足以下条件：</p>
+<ul>
+<li>闭包：$\forall g,h\in\mathbb{G},g\circ h\in\mathbb{G}$</li>
+<li>存在单位元：$\exists e\in\mathbb{G},s.t.\forall g\in \mathbb{G},e\circ g=g\circ e=g$</li>
+<li>存在逆元：$\forall g\in\mathbb{G},\exists h\in\mathbb{G},s.t.g\circ h=h\circ g=e$，我们称之为<strong>逆元</strong>(inverse)。</li>
+<li>结合性：$\forall g,h,k\in\mathbb{G},(g\circ h)\circ k=g\circ (h\circ k)$</li>
+</ul>
+<p>一个群被称为<strong>阿贝尔群</strong>(abelian group)，当且仅当它还满足以下性质：</p>
+<ul>
+<li>交换性：$\forall g,h\in\mathbb{G},g\circ h=h\circ g$</li>
+</ul>
+<p>当$\mathbb{G}$为有限集合时，我们用$|\mathbb{G}|$来表示集合$\mathbb{G}$的阶(order)。</p>
+<p>我们称$\mathbb{H}$是$\mathbb{G}$的子群(subgroup)，当且仅当$\mathbb{H}\subseteq \mathbb{G}$且$\mathbb{H}$在相同运算下也构成一个群。要验证是子群，我们需要检查：</p>
+<ul>
+<li>闭包</li>
+<li>单位元</li>
+<li>逆元</li>
+<li>结合性和交换性无需单独验证，自动继承</li>
+</ul>
+<p>每个群$\mathbb{G}$都有两个<strong>平凡子群</strong>(trivial subgroup)：$\mathbb{G}$和$\{e\}$(单位元)。</p>
+<p>若$\mathbb{H}\not = \mathbb{G}$，我们称之为<strong>真子群</strong>(strict subgroup)。</p>
+<p>令$\mathbb{G}$是一个群，$a,b,c\in \mathbb{G}$，如果$ac=bc$，则$a=b$。如果$ac=a$，则$a$是该群的单位元。</p>
+<h3 id="群的指数运算"><a href="#群的指数运算" class="headerlink" title="群的指数运算"></a>群的指数运算</h3><p>群中的元素可以多次计算：</p>
+<ul>
+<li>加法： $mg=g+g+\cdots+g$</li>
+<li>乘法： $g^m=g\cdot g\cdot \cdots\cdot g$</li>
+</ul>
+<p>以下性质仍然成立：</p>
+<ul>
+<li>$g^m\cdot g^n=g^{m+n}$</li>
+<li>$(g^m)^n=g^(mn)$</li>
+</ul>
+<p>如果该群是阿贝尔群，则还满足$g^n\cdot h^n=(gh)^n$。</p>
+<p>这些也可以相应拓展到$m$为零或者负数的情况。</p>
+<p>一般我们使用$0$表示加法中的单位元，$1$表示乘法中的单位元。</p>
+<h3 id="相关定理"><a href="#相关定理" class="headerlink" title="相关定理"></a>相关定理</h3><p>令$\mathbb{G}$是一个有限群，其阶为$m$，那么$\forall g\in \mathbb{G},g^m=1$。</p>
+<p>令$\mathbb{G}$是一个有限群，其阶为$m$，那么$\forall g\in \mathbb{G},x\in \mathbb{Z}$，我们有$g^x=g^{x\bmod m}$。</p>
+<p>设$\mathbb{G}$是一个有限群，且$|G| = m &gt; 1$。设$e &gt; 0$是一个整数，并定义函数$f_e : G \to G$，其形式为$f_e(g) = g^e$。如果$\gcd(e, m) = 1$，那么$f_e$是一个<strong>置换</strong>（即一个双射）。此外，若$d = e^{-1} \bmod m$，则 $f_d$是$f_e$的<strong>逆函数</strong>。</p>
+<p>这个构造在密码学应用中很有用。</p>
+<h2 id="群-mathbb-Z-N"><a href="#群-mathbb-Z-N" class="headerlink" title="群$\mathbb{Z}^*_N$"></a>群$\mathbb{Z}^*_N$</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><p>$\mathbb{Z}^*_N=\{b\in\{1,\cdots,N-1\}\mid \gcd(b,N)=1\}$</p>
+<h3 id="相关定理-1"><a href="#相关定理-1" class="headerlink" title="相关定理"></a>相关定理</h3><p>$\mathbb{Z}^*_N$在群运算是模$N$下的乘法，即$ab=[ab\bmod N]$，构成一个阿贝尔群。</p>
+<p>定义$\phi(N)=|\mathbb{Z}^*_N|$</p>
+<ul>
+<li>当$N$为素数时，$\phi(N)=N-1$</li>
+<li>当$N=pq$且$p,q$都是不同的质数时，$\phi(N)=(p-1)(q-1)$</li>
+</ul>
+<p>令$N=\prod_i p_i^{e^i}$，其中$p_i$都是质数，$e_i$都是正整数，那么$\phi(N)=\prod_i p_i^{e^i-1}(p_i-1)$。</p>
+<p>取任意整数$N&gt;1$和$a\in \mathbb{Z}^*_N$，有$a^{\phi(N)}=1\bmod N$。如果$N=p$是素数且$a\in\{1,\cdots,p-1\}$，有$a^{p-1}=1\bmod p$。</p>
+<p>设$N&gt;1$。对于大于零的整数$e$，定义$f_e:\mathbb{Z}^<em>_N\to \mathbb{Z}^</em>_N$，$f_e(x)=[x^e\bmod N]$。如果$e$和$\phi(N)$互质，则$f_e$是一个置换。如果$d=e^{-1}\bmod \phi(N)$，那么$f_d$是$f_e$的逆函数。</p>
+<h2 id="同构和中国剩余定理"><a href="#同构和中国剩余定理" class="headerlink" title="同构和中国剩余定理"></a>同构和中国剩余定理</h2><h3 id="同构的定义"><a href="#同构的定义" class="headerlink" title="同构的定义"></a>同构的定义</h3><p>令$\mathbb{G},\mathbb{H}$是群，其操作符号分别为$\circ<em>{\mathbb{G}},\circ</em>{\mathbb{H}}$，我们称函数$f:\mathbb{G}\to\mathbb{H}$为<strong>同构</strong>(isomorphism)，当且仅当：</p>
+<ul>
+<li>$f$是一个双射</li>
+<li>$\forall g,h\in\mathbb{G},f(g\circ<em>{\mathbb{G}}h)=f(g)\circ</em>{\mathbb{H}}f(h)$</li>
+</ul>
+<p>如果两个群之间存在这样一个函数，我们写作$\mathbb{G}\cong\mathbb{H}$</p>
+<h3 id="中国剩余定理-Chinese-Remainder-Theorem-CRT"><a href="#中国剩余定理-Chinese-Remainder-Theorem-CRT" class="headerlink" title="中国剩余定理(Chinese Remainder Theorem, CRT)"></a>中国剩余定理(Chinese Remainder Theorem, CRT)</h3><p>令$N=pq$，其中$p,q$为互质的正整数，我们有以下结论：</p>
+<script type="math/tex; mode=display">\mathbb{Z}_N\cong\mathbb{Z}_p\times\mathbb{Z}_q\text{ and }\mathbb{Z}^*_N\cong\mathbb{Z}^*_p\times\mathbb{Z}^*_q</script><p>令$f$是一个函数，定义为$f(x)=([x\bmod p],[x\bmod q])$，$f$是从$\mathbb{Z}_N$到$\mathbb{Z}_p\times\mathbb{Z}_q$的同构，同时$f$是从$\mathbb{Z}^<em>_N$到$\mathbb{Z}^</em>_p\times\mathbb{Z}^*_q$的同构。</p>
+<h3 id="CRT应用举例"><a href="#CRT应用举例" class="headerlink" title="CRT应用举例"></a>CRT应用举例</h3><p>假设我们要计算$g=g_1\circ_G g_2$，其中$g_1,g_2\in\mathbb{G}$，要么直接计算，要么：</p>
+<ol>
+<li>计算$h_1=f(g_1),h2=f(g_2)$</li>
+<li>计算$h=h_1\circ_H h_2$</li>
+<li>计算$g=f^{-1}(h)$</li>
+</ol>
+<h4 id="Example1"><a href="#Example1" class="headerlink" title="Example1"></a>Example1</h4><p>计算$14\cdot 13\bmod 15$</p>
+<ol>
+<li>$(4,2)=f(14),(3,1)=f(13)$</li>
+<li>$(4,2)\cdot (3,1)=([4\cdot 3\bmod 5],[2\cdot 1\bmod 3])=(2,2)$</li>
+<li>$f^{-1}(2,2)=2$</li>
+</ol>
+<p>$14\cdot 13\bmod 15=2\bmod 15$</p>
+<h4 id="Example2"><a href="#Example2" class="headerlink" title="Example2"></a>Example2</h4><p>计算$11^{53}\bmod 15$</p>
+<ol>
+<li>$f(11)=([11\bmod 5],[11\bmod 3])=(1,2)$</li>
+<li>$(1,2)^{53}=([1^{53}\bmod 5],[(-1)^{53}\bmod 3])=(1,2)$</li>
+<li>$f^{-1}(1,2)=11$</li>
+</ol>
+<p>$1^{53}\bmod 15=11\bmod 15$</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/16/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/" class="post-title-link" itemprop="url">【七】单向函数与硬核谓词</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-16 18:03:40" itemprop="dateCreated datePublished" datetime="2024-12-16T18:03:40+08:00">2024-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-17 16:31:43" itemprop="dateModified" datetime="2024-12-17T16:31:43+08:00">2024-12-17</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第八章Theoretical Constructions of Symmetric-Key Primitives</p>
+<p>我们已经引入了伪随机性的概念，并且定义了一些基础的密码学原语，包括伪随机生成器、伪随机函数和伪随机置换。在本章中，我们正式引入单向函数的概念——一种从非正式上讲“易于计算但难以反向计算”的函数——并展示如何在仅假设单向函数存在的情况下构造伪随机生成器、伪随机函数和伪随机置换。</p>
+<h1 id="单向函数-One-Way-Functions"><a href="#单向函数-One-Way-Functions" class="headerlink" title="单向函数 One-Way Functions"></a>单向函数 One-Way Functions</h1><p>在本节中，我们将正式定义单向函数，并简要讨论一些被认为符合该定义的函数。接下来，我们引入硬核谓词（hard-core predicates）的概念，它可以被视为封装了单向函数反向计算的难度，并将在随后的构造中被广泛使用。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>单向函数$f$，是计算简单，但是难以反向计算的函数。</p>
+<p>计算简单很容易形式化定义：即$f$是一个可以在多项式时间内计算的函数。</p>
+<p>难以反向计算可以通过以下实验进行定义：<br>The inverting experiment $Invert_{\mathcal{A},f}(n)$</p>
+<ol>
+<li>均匀选取定义域中的x，并计算$f(x)$。</li>
+<li>$\mathcal{A}$接受输入$1^n$和$y$，并输出$x’$。（这里$1^n$只是为了保证运行在关于安全参数n的多项式时间内）</li>
+<li>若$y=f(x’)$，则实验结果为1，否则为0。</li>
+</ol>
+<p>注意，这里的实验并不要求必须满足$x=x’$，只要$y=f(x’)$即可。</p>
+<p><strong>定义8.1</strong><br>$f$是一个单向函数，当且仅当满足以下两个条件：</p>
+<ol>
+<li>存在一个多项式时间算法$M_f$来计算$f$，使$M_f(x)=f(x)$。</li>
+<li>对于任意多项式时间算法$\mathcal{A}$，都存在negl使<br>$Pr[Invert_{\mathcal{A},f}(n)=1]\leq negl(n)$</li>
+</ol>
+<p>条件2还可以用以下形式表示：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/1.png?raw=true" alt="1"></p>
+<p>一个不是单向的函数并不意味着它在所有情况下（甚至“大多数情况下”）都容易求逆。</p>
+<p>任何单向函数都可以通过指数时间的暴力搜索进行求逆。换句话说，这涉及一个原则上可以解决的问题，但假定它难以高效解决。</p>
+<p>当一个函数始终满足$|f(x)|=|x|$时，我们称该函数为length-preserving的，如果在此基础上这个函数还是单射函数，那么称这个函数为one-way permutation的（单向置换）。</p>
+<p>上述单向函数和置换的定义方便地考虑了一个在无限定义域和值域上的单一函数。然而，大多数候选单向函数和置换并不完全符合这一框架。相反，它们通常是通过某种算法生成一组参数。</p>
+<p><strong>定义8.2</strong><br>$\prod=(Gen,Samp,f)$是一个概率多项式函数三元组，当其符合下面条件时被称为一个function family：</p>
+<ol>
+<li>Gen：输入$1^n$，输出参数$I$，其中$|I|\ge n$。每个$I$对应定义了集合$\mathcal{D}_I$和$\mathcal{R}_I$，分别是函数$f_I$的定义域和值域。</li>
+<li>Samp：输入$I$，输出一个随机均匀分布的元素$x\in\mathcal{D}_I$。</li>
+<li>f：一个确定性的算法，输入$I$和$x\in\mathcal{D}_I$，输出$y=f_I(x)\in\mathcal{R}_I$。</li>
+</ol>
+<p>当对于任意$I$，$\mathcal{D}_I=\mathcal{R}_I$且$f_I(x)$是双射时，我们称$\prod$是一个permutation family。</p>
+<p>我们现在可以对应更改上述实验<br>The inverting experiment $Invert_{\mathcal{A},\prod}(n)$</p>
+<ol>
+<li>运行$Gen(1^n)$，并得到参数$I$。然后运行$Samp(I)$，并得到一个随机均匀分布的元素$x\in\mathcal{D}_I$。最后计算$y=f_I(x)$。</li>
+<li>$\mathcal{A}$接受输入$I$和$y$，并输出$x’$。</li>
+<li>若$y=f_I(x’)$，则实验结果为1，否则为0。</li>
+</ol>
+<p><strong>定义8.3</strong><br>一个function/permutation family $\prod$是one-way的，如果对对于任意多项式时间算法$\mathcal{A}$，都存在negl使<br>$Pr[Invert_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
+<h2 id="潜在的单向函数"><a href="#潜在的单向函数" class="headerlink" title="潜在的单向函数"></a>潜在的单向函数</h2><h3 id="Candidate-1"><a href="#Candidate-1" class="headerlink" title="Candidate 1"></a>Candidate 1</h3><p>我们尚且不能无条件的证明单向函数的存在，所以我们目前必须假设他们的存在，这基于以下事实：一些被广泛研究的问题目前尚未能发现任何多项式时间算法能解决，比如大整数的质因数分解。这个问题难就难在<strong>将两个数相乘得到它们的积很容易，但给定一个数找到它的因数却非常困难</strong>。</p>
+<p>这给了我们灵感，我们定义$f_{mult}(x,y)=x\cdot y$，限制x，y的定义域为等长的素数。</p>
+<h3 id="Candidate-2"><a href="#Candidate-2" class="headerlink" title="Candidate 2"></a>Candidate 2</h3><p>这个单向函数的构造依赖于子集求和问题，其定义为<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/2.png?raw=true" alt="2"><br>其中$x_i$是一个n比特的字符串，解释为一个整数，$J$是一个n比特字符串，表示指定了子集$\{1,\cdots,n\}$的元素。</p>
+<p>这个函数的逆函数是一个NP-complete问题。</p>
+<h3 id="Candidate-3"><a href="#Candidate-3" class="headerlink" title="Candidate 3"></a>Candidate 3</h3><p>现在展示一个a family of permutations是单向的。其中Gen是一个概率多项式时间算法，输出一个n比特素数$p$，以及一个特殊元素$g\in \{2,\cdots,p-1\}$。Samp输出一个均匀分布的整数$x\in \{1,\cdots,p-1\}$。最后，定义$f_{p,g}(x)=g^x \bmod p$</p>
+<p>可以证明这个函数是单射，因此是一个置换。反转这个函数的困难基于离散对数问题的假设。</p>
+<h2 id="硬核谓词-Hard-core-Predicates"><a href="#硬核谓词-Hard-core-Predicates" class="headerlink" title="硬核谓词 Hard-core Predicates"></a>硬核谓词 Hard-core Predicates</h2><p>尽管根据定义单向函数很难反转，这并不意味着我们不能得到任何有用的信息。</p>
+<p>举个例子，假设$g$是一个单向函数，我们定义<br>$f(x_1,x_2)=(x_1,g(x_2))$，其中$|x_1|=|x_2|$。<br>很容易证明$f$是一个单向函数，尽管泄露了一半的输入信息。</p>
+<p>对于我们的应用，我们需要识别某些关于$x$的特定信息，但是这些信息被$f(x)$隐藏。这促使了<strong>硬核谓词</strong>的概念。</p>
+<p><strong>定义8.4</strong><br>一个函数$hc:\{0,1\}^*\rightarrow\{0,1\}$是函数$f$的硬核谓词，当且仅当$hc$可以在多项式时间内计算，并且对于任何的多项式时间算法$\mathcal{A}$，都存在negl使<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/3.png?raw=true" alt="3"></p>
+<p>注意，这里的硬核谓词是一个布尔值函数。同时，上述定义并不要求$f$是一个单向函数。但是如果$f$是一个置换函数，那么除非他是单向的，否则没有硬核谓词。</p>
+<p>硬核谓词不能简单的构造，这里给出定理，对于任何固定的谓词$hc$，总存在一个单向函数，使这个谓词不是这个单向函数的硬核谓词。</p>
+<p>当然，也存在简单的硬核谓词，比如，假设$f$是一个函数，其输出就是丢弃最后的一个比特。那么$hc(x)=x_n$就是$f$的一个硬核谓词。这里$f$是不是单向函数无关紧要。但是，这种简单的硬核谓词在我们后续的构造工作中是没有作用的。</p>
+<h1 id="从单向函数到为随机性"><a href="#从单向函数到为随机性" class="headerlink" title="从单向函数到为随机性"></a>从单向函数到为随机性</h1><p>这节我们展示如何从单向函数构造伪随机生成器，伪随机函数和置换。</p>
+<p>首先，我们说明任何是否任何一个单向函数都有一个硬核谓词，这仍然是一个开放性问题。我们可以展示一个弱一些的结论。</p>
+<p><strong>定理8.5(Goldreich–Levin theorem)</strong><br>假设存在一个单向函数$f$，那么一定存在另一个单向函数$g$和$g$的硬核谓词$gl$。</p>
+<p>我们可以通过以下方式进行构造：<br>令$g(x,r)=(f(x),r)$，其中$|x|=|r|$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/4.png?raw=true" alt="4"></p>
+<p>下一步我们展示如何从一个单项置换的硬核谓词构造一个伪随机函数。</p>
+<p><strong>定理8.6</strong><br>假设存在一个单向置换$f$，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
+<p>直觉上看，因为输入是均匀的，所以置换后看起来也是均匀的，最后连接一个看起来是随机的$hc(s)$，所以整体上看起来是随机的。</p>
+<p>当然，只能拓展一位的伪随机数生成器用处限制很大，但是幸运的是，我们可以获得任何多项式扩展因子的伪随机生成器。</p>
+<p><strong>定理8.7</strong><br>如果存在一个expansion factor是$l(n)=n+1$的伪随机数生成器，那么对于任意的多项式$poly$，都存在expansion factor是l(n)=poly(n)$的伪随机数生成器。</p>
+<p>因此，我们得出结论：可以从任何单向置换构造具有任意（多项式）扩展因子的伪随机生成器。</p>
+<p>伪随机生成器对于构造 EAV 安全的私钥加密方案是足够的。然而，对于 CPA 安全的私钥加密（更不用说消息认证码了），我们依赖于伪随机函数。以下结果表明，后者可以从前者构造出来。</p>
+<p><strong>定理8.8</strong><br>如果存在一个expansion factor是$l(n)=2n$的伪随机数生成器，则存在一个伪随机函数。</p>
+<p><strong>定理8.9</strong><br>如果存在一个伪随机函数，则存在一个伪随机置换。</p>
+<p>综合上述定理，我们发现，只要有单项置换函数，我们就可以构造出</p>
+<ul>
+<li>存在任意扩展因子的伪随机生成器、伪随机函数和强伪随机置换。</li>
+<li>存在认证加密方案和安全的消息认证码。</li>
+</ul>
+<h1 id="来自单向函数的硬核谓词"><a href="#来自单向函数的硬核谓词" class="headerlink" title="来自单向函数的硬核谓词"></a>来自单向函数的硬核谓词</h1><p>我们在这一节证明<strong>定理8.5</strong>。<br>略</p>
+<h1 id="构造伪随机数生成器"><a href="#构造伪随机数生成器" class="headerlink" title="构造伪随机数生成器"></a>构造伪随机数生成器</h1><p>我们首先展示如何在假设单向置换存在的情况下，构造将输入扩展一个比特的伪随机生成器。然后，我们再展示如何扩展这一构造，以获得任意多项式扩展因子。</p>
+<h2 id="最小扩展因子的伪随机数生成器"><a href="#最小扩展因子的伪随机数生成器" class="headerlink" title="最小扩展因子的伪随机数生成器"></a>最小扩展因子的伪随机数生成器</h2><p><strong>定理8.18</strong><br>令$f$为一个单向置换，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
+<p>证明如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/6.png?raw=true" alt="6"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/5.png?raw=true" alt="5"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">【六】哈希函数及其应用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-16 15:37:32" itemprop="dateCreated datePublished" datetime="2024-12-16T15:37:32+08:00">2024-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-17 11:47:18" itemprop="dateModified" datetime="2024-12-17T11:47:18+08:00">2024-12-17</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第六章Hash Functions and Applications</p>
+<p>我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>哈希函数是一类将任意长度的输入压缩为固定长度输出的函数。非加密哈希函数的经典用途是在数据结构中，它们可以用来构建哈希表，从而在存储一组元素时实现$O(1)$的查找。具体来说，如果哈希函数$H$的输出范围大小为$N$，那么元素x被存储在表格的第$H(x)$行。</p>
+<p>一个良好的哈希函数要尽可能的减少碰撞(collision)。抗碰撞(Collision-resistant)哈希函数的目标也是避免碰撞，但是在数据结构的应用中，较少碰撞只是优化的要求，但是在密码学背景下，避免碰撞是一个严格的要求，因为攻击者可能会故意构造发生碰撞的值来进行攻击。所以设计抗碰撞哈希函数的难度要高于设计一般的哈希函数。</p>
+<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥$s$和一个字符串$x$，输出$H_s(x)$。</p>
+<p>这里的密钥和我们过去考虑的密钥有所不同，在过去的密钥我们希望保密，但是这里哈希函数中攻击者可能知道密钥，在这个前提下，我们希望哈希函数还具有抗碰撞性。</p>
+<p><strong>DEFINITION 6.1</strong><br>一个哈希函数由一对概率多项式算法组成。</p>
+<ul>
+<li>$Gen$： 是一个概率算法，输出密钥$s$</li>
+<li>$H$： 是一个确定性算法，接受一个密钥$s$和一个字符串$x$，输出$H_s(x)$，长度为$l(n)$</li>
+</ul>
+<p>如果H只接受固定长度的字符串输入，我们称哈希函数为fixed-length，H为compression function。显然这里输出的长度必须小于输入长度。</p>
+<p>下面介绍攻击实验The collission-finding experiment $Hash-coll_{\mathcal{A},\mathcal{H}}(n)$:</p>
+<ol>
+<li>生成密钥s</li>
+<li>攻击者接受s，输出$x,x’$。</li>
+<li>如果这两个输出产生碰撞，则实验结果为1，反之为0</li>
+</ol>
+<p>$DEFINITON 6.2$<br>一个哈希函数是Collision Resistant当且仅当<br>$Pr[Hash-coll_{\mathcal{A},\mathcal{H}}(n) = 1]\leq negl(n)$</p>
+<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。</p>
+<p>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
+<h2 id="弱一些的安全定义"><a href="#弱一些的安全定义" class="headerlink" title="弱一些的安全定义"></a>弱一些的安全定义</h2><ul>
+<li>Second-preimage resistance<br>对于一个哈希函数，如果给定$s$和$x$，找不到另一个能碰撞的字符串。</li>
+<li>Preimage resistance<br>对于一个哈希函数，如果给定$s$和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
+</ul>
+<p>coliision resistant $\Rightarrow$ second-preimage resistance $\Rightarrow$ preimage resistance</p>
+<h1 id="Merkle–Damgard变换"><a href="#Merkle–Damgard变换" class="headerlink" title="Merkle–Damgård变换"></a>Merkle–Damgård变换</h1><p>许多应用需要“完全成熟”的抗碰撞哈希函数，这种哈希函数能够处理非常长的输入，甚至是任意长度的输入。然而，构造固定长度的哈希函数（即压缩函数）更为容易——这些函数只接受“短”的输入。幸运的是，Merkle–Damgård变换使我们可以将后者转换为前者。这种哈希函数域扩展的方法在实践中被频繁使用，例如MD5和SHA系列哈希函数。</p>
+<p>假设已经存在压缩函数$(Gen,h)$，能接受长度大于2n的输入并输出长度为n的输出。那么我们可以通过下面的变换得到一个能处理任意长度输入的哈希函数<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/1.png?raw=true" alt="1"></p>
+<p><strong>THEOREM 6.4</strong><br>如果$(Gen,h)$抗碰撞，那么构造的$(Gen,H)$也抗碰撞</p>
+<p>证明如下：//TODO</p>
+<h1 id="应用哈希函数进行消息认证"><a href="#应用哈希函数进行消息认证" class="headerlink" title="应用哈希函数进行消息认证"></a>应用哈希函数进行消息认证</h1><p>我们之前已经讨论了几种针对任意长度消息的消息认证码（MAC）的构造。在本节中，我们将看到另一种方法，该方法依赖于抗碰撞哈希函数。随后，我们会介绍一种被标准化并广泛使用的方案，称为 HMAC（哈希消息认证码），它可以看作是这种方法的具体实现。</p>
+<h2 id="Hash-and-MAC"><a href="#Hash-and-MAC" class="headerlink" title="Hash-and-MAC"></a>Hash-and-MAC</h2><p>抗碰撞哈希函数可以自然地用于消息认证码（MAC）的域扩展。例如，假设我们有一个固定长度的 MAC，它可以处理长度为 l(n)-比特的消息，并且有一个输出长度为 l(n)-比特的抗碰撞哈希函数。那么我们可以通过对消息 m 进行哈希计算，然后使用 MAC 对哈希值进行认证，从而对任意长度的消息 m 进行认证。（参见构造 6.5。）</p>
+<p>直观上，这种方法是安全的，因为：</p>
+<ul>
+<li>MAC 的安全性 确保攻击者无法认证任何新的哈希值。</li>
+<li>抗碰撞性 确保攻击者无法找到与已使用哈希值相同的哈希的新消息。</li>
+</ul>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/2.png?raw=true" alt="2"></p>
+<p><strong>THEOREM 6.6</strong><br>如果$\prod$是一个secure的MAC，$\mathcal{H}$是一个抗碰撞的哈希函数，那么上述构造是一个secure MAC</p>
+<p>证明如下：//TODO</p>
+<h2 id="HMAC"><a href="#HMAC" class="headerlink" title="HMAC"></a>HMAC</h2><p>在原则上，可以通过将任意抗碰撞哈希函数与第4.5节中的固定长度消息认证码（MAC）相结合，来实现上一节提到的“哈希并认证”（hash-and-MAC）方法。然而，这种方法在实际中有至少两个缺点：</p>
+<ul>
+<li>需要实现两种密码学原语</li>
+<li>哈希函数输出长度与分组密码分组长度之间的不匹配</li>
+</ul>
+<p>HMAC 的设计克服了哈希函数和分组密码之间的不匹配问题，同时通过高效的构造支持任意长度的消息。具体地，HMAC 使用了两次调用哈希函数的过程，同时结合了内置的密钥与填充操作，以确保安全性。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/3.png?raw=true" alt="3"></p>
+<p><strong>THEOREM 6.8</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/4.png?raw=true" alt="4"></p>
+<p>证明如下：//TODO</p>
+<h1 id="对哈希函数的攻击"><a href="#对哈希函数的攻击" class="headerlink" title="对哈希函数的攻击"></a>对哈希函数的攻击</h1><h2 id="Birthday-Attacks"><a href="#Birthday-Attacks" class="headerlink" title="Birthday Attacks"></a>Birthday Attacks</h2><p>最简单的攻击是在输入空间内穷举，但是复杂度高达$2^{n}$。</p>
+<p>现在考虑一个问题，一个房间里有q个人，那么存在两个人生日相同的概率是多少。<br>我们不难发现，当$q\approx 2^{l/2}$时，碰撞的概率接近0.5。</p>
+<p>所以，攻击者只需要尝试$2^{l/2}$次，就能显著提高找到碰撞对的概率。</p>
+<p>所以，要达到相同的安全水平，哈希函数输出的长度应该是2n。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1002,66 +1439,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/12/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/12/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/" class="post-title-link" itemprop="url">数论与密码学困难度假设</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-12-12 19:16:30 / 修改时间：19:38:26" itemprop="dateCreated datePublished" datetime="2024-12-12T19:16:30+08:00">2024-12-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第九章 Number Theory and Cryptographic Hardness Assumptions</p>
-<p>现代密码学系统无一例外都基于一些假设</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1311,313 +1688,6 @@
 <li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
 <li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/" class="post-title-link" itemprop="url">FLA复习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-09 22:06:54" itemprop="dateCreated datePublished" datetime="2024-12-09T22:06:54+08:00">2024-12-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-12 18:50:53" itemprop="dateModified" datetime="2024-12-12T18:50:53+08:00">2024-12-12</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h1 id="有穷自动机"><a href="#有穷自动机" class="headerlink" title="有穷自动机"></a>有穷自动机</h1><h2 id="确定性有穷自动机"><a href="#确定性有穷自动机" class="headerlink" title="确定性有穷自动机"></a>确定性有穷自动机</h2><p>五元组$(Q, \Sigma, \delta, q_0, F)$</p>
-<ul>
-<li>$Q$ 是一个有限状态集合</li>
-<li>$\Sigma$ 是一个输入字母表</li>
-<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态</li>
-<li>$q_0$ 是初始状态，$q_0\in Q$</li>
-<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
-</ul>
-<p>$\delta$是一个全函数，对于一个状态$q$和输入符号$a$，$\delta(q,a)$一定有对应的转移，如果没有，我们额外定义一个<strong>死状态</strong>。</p>
-<p>对于一个自动机来说，它的语言是从初始状态走到终止状态的所有路径的标签字符串的集合。</p>
-<h2 id="判断DFA的语言和一个自然描述的语言集合"><a href="#判断DFA的语言和一个自然描述的语言集合" class="headerlink" title="判断DFA的语言和一个自然描述的语言集合"></a>判断DFA的语言和一个自然描述的语言集合</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/FLA%E5%A4%8D%E4%B9%A0/1.png?raw=true" alt="1"></p>
-<p>先证$S\subseteq T$，使用归纳假设：</p>
-<ul>
-<li>如果$\delta(A,\omega)=A$，那么$\omega$没有连续的两个$1$并且不以$1$结尾</li>
-<li>如果$\delta(A,\omega)=B$，那么$\omega$没有连续的两个$1$并且以单个$1$结尾</li>
-</ul>
-<p>再证$T\subseteq S$，使用反证法：</p>
-<ul>
-<li>假设$\omega\in T$没有被DFA接受</li>
-</ul>
-<h2 id="正则语言"><a href="#正则语言" class="headerlink" title="正则语言"></a>正则语言</h2><ul>
-<li>证明一个语言不是正则语言（不使用泵引理）：反证法找矛盾</li>
-</ul>
-<h1 id="非确定性有穷自动机"><a href="#非确定性有穷自动机" class="headerlink" title="非确定性有穷自动机"></a>非确定性有穷自动机</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>五元组$(Q, \Sigma, \delta, q_0, F)$</p>
-<ul>
-<li>$Q$ 是一个有限状态集合</li>
-<li>$\Sigma$ 是一个输入字母表</li>
-<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态<strong>集合</strong></li>
-<li>$q_0$ 是初始状态，$q_0\in Q$</li>
-<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
-</ul>
-<h2 id="NFA和DFA的等价性"><a href="#NFA和DFA的等价性" class="headerlink" title="NFA和DFA的等价性"></a>NFA和DFA的等价性</h2><ul>
-<li>DFA-&gt;NFA 显而易见</li>
-<li>NFA-&gt;DFA <strong>子集构造法</strong></li>
-</ul>
-<h1 id="带空转移的NFA"><a href="#带空转移的NFA" class="headerlink" title="带空转移的NFA"></a>带空转移的NFA</h1><p>在NFA的基础上再允许某个状态在没有输入字符的时候就转移到另一个状态，即接受$\epsilon$输入。</p>
-<h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>引入<strong>状态闭包</strong>的概念，即可以通过任意个空转移到达的状态集合。</p>
-<h2 id="NFA和-epsilon-NFA的等价性"><a href="#NFA和-epsilon-NFA的等价性" class="headerlink" title="NFA和$\epsilon$-NFA的等价性"></a>NFA和$\epsilon$-NFA的等价性</h2><ul>
-<li>NFA-&gt;$\epsilon$-NFA 显而易见</li>
-<li>$\epsilon$-NFA-&gt;NFA 先取闭包，后转移，最后再次取闭包</li>
-</ul>
-<h2 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h2><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
-<h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
-<li><strong>并(union)</strong>：就是集合的并操作</li>
-<li><strong>拼接(concatenation)</strong>：LM</li>
-<li><strong>星闭包(Kleene closure)</strong>：L*</li>
-</ul>
-<h2 id="正则表达式与有穷自动机的等价性"><a href="#正则表达式与有穷自动机的等价性" class="headerlink" title="正则表达式与有穷自动机的等价性"></a>正则表达式与有穷自动机的等价性</h2><h3 id="正则表达式转换为-epsilon-NFA"><a href="#正则表达式转换为-epsilon-NFA" class="headerlink" title="正则表达式转换为$\epsilon$-NFA"></a>正则表达式转换为$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
-<h3 id="DFA转换为正则表达式"><a href="#DFA转换为正则表达式" class="headerlink" title="DFA转换为正则表达式"></a>DFA转换为正则表达式</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
-<h3 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h3><ul>
-<li>$R+\emptyset=R$</li>
-<li>$R\emptyset=\emptyset R=\emptyset$</li>
-<li>$\epsilon R=R\epsilon =R$</li>
-<li>$(\epsilon+R)<em>=R</em>$</li>
-<li>$R+SR=(\epsilon+S)R$</li>
-<li>$\epsilon+RR<em>=R</em>$</li>
-<li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
-</ul>
-<h2 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h2><ul>
-<li>成员资格问题：模拟运行</li>
-<li>空问题：是否有一个终止状态可达</li>
-<li>无限性问题：是否有环</li>
-<li>等价性：构造乘积DFA</li>
-<li>包含关系：构造乘积DFA</li>
-</ul>
-<h3 id="泵引理："><a href="#泵引理：" class="headerlink" title="泵引理："></a>泵引理：</h3><p>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
-<ol>
-<li>$|xy|\leq n$</li>
-<li>$|y| &gt;0$</li>
-<li>$\forall i \ge 0,xy^iz\in L$<br>判断一个语言不是正则表达式时使用泵引理，还可以利用正则语言的闭包性说明不是。还可以<strong>构造DFA</strong>来说明是正则语言。</li>
-</ol>
-<h3 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h3><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
-<p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
-<h2 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h2><ul>
-<li>并操作、拼接操作以及星闭包操作下的闭包</li>
-<li>交集、差集、补集下的闭包</li>
-<li>逆运算下的闭包</li>
-<li>同态运算下的闭包</li>
-<li>逆同态运算下的闭包</li>
-</ul>
-<h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
-<ul>
-<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
-<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
-<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
-<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
-<li><strong>头</strong>(header)是一个变量</li>
-<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
-</ul>
-</li>
-</ul>
-<h2 id="最左推导最右推导，解析树，等价性"><a href="#最左推导最右推导，解析树，等价性" class="headerlink" title="最左推导最右推导，解析树，等价性"></a>最左推导最右推导，解析树，等价性</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
-<h2 id="文法歧义，固有歧义"><a href="#文法歧义，固有歧义" class="headerlink" title="文法歧义，固有歧义"></a>文法歧义，固有歧义</h2><h2 id="上下文无关变量范式"><a href="#上下文无关变量范式" class="headerlink" title="上下文无关变量范式"></a>上下文无关变量范式</h2><p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
-<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
-<ol>
-<li>$A\rightarrow BC$</li>
-<li>$A\rightarrow a$，其中$a$是终结符。</li>
-</ol>
-<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
-<ol>
-<li>清理文法。<ol>
-<li>去除无用符号：<ol>
-<li>删除不能导出终结字符串的符号</li>
-<li>删除所有从起始符号不可达的字符串</li>
-</ol>
-</li>
-<li>去除空产生式：<ol>
-<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
-<li>最后去掉所有的空产生式</li>
-</ol>
-</li>
-<li>去除单元产生式：<ol>
-<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
-<li>基础情况：$(A,A)一定是满足要求的有序对</li>
-<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
-</ul>
-</li>
-<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
-<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
-</ol>
-<h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><h2 id="定义-3"><a href="#定义-3" class="headerlink" title="定义"></a>定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
-<ul>
-<li>$Q$为有限状态集合</li>
-<li>$\Sigma$为输入字母表</li>
-<li>$\Gamma$为栈字母表</li>
-<li>$\delta$是转移函数<ul>
-<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
-<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
-</ul>
-</li>
-<li>$q_0\in Q$为初始状态</li>
-<li>$Z_0\in\Gamma$为初始栈顶元素</li>
-<li>$F\subseteq Q$为终止状态集合</li>
-</ul>
-<p>一些字母上的约定：</p>
-<ul>
-<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
-<li>用$\cdots,X,Y,Z$表示栈符号</li>
-<li>用$w,x,y,z$表示输入符号形成的字符串</li>
-<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串<h2 id="下推自动机的语言"><a href="#下推自动机的语言" class="headerlink" title="下推自动机的语言"></a>下推自动机的语言</h2></li>
-<li>根据终止状态$L(P)$</li>
-<li>根据空栈$N(P)$</li>
-</ul>
-<p>两者在定义语言的能力上等价，意味着可以通过修改相互转换。</p>
-<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>NPDA的表达能力比DPDA要强。</p>
-<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
-<p>思路就是$P$的每一步代表最左推导中的一步。</p>
-<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
-<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">迁移系统</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-12-09 14:08:40 / 修改时间：23:33:24" itemprop="dateCreated datePublished" datetime="2024-12-09T14:08:40+08:00">2024-12-09</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>迁移系统</strong>(transition system, TS) 是一个反应式的系统，直觉上它由一个所有可能状态的集合以及一些迁移(transition)——或者说状态转换(state change)——的集合组成。</p>
-<p>我们可以用有向图来表示一个迁移系统，图中的结点表示状态，边表示迁移行为。</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>迁移系统是一个五元组$(S,S_0,T,\alpha,\beta)$:</p>
-<ul>
-<li>$S$ 是一个有限或无限的状态集合</li>
-<li>$S_0$ 是一个初始状态集合，$S_0 \subseteq S$</li>
-<li>$T$ 是一个迁移集合，$T \subseteq S \times S$</li>
-<li>$\alpha$和$\beta$是两个从$T$到$S$的映射，对于任意的$t\in T$，有$\alpha(t)$表示迁移的<strong>源状态</strong>和$\beta(t)$表示迁移的<strong>目标状态</strong>。</li>
-</ul>
-<p>若$S$和$T$是有限的，则整个迁移系统也是有限的。</p>
-<p>定义一个迁移系统$\mathcal{A}$的路径是一个迁移的序列$t_1,t_2,\dots,t_n$。</p>
-<p>如果一个状态可以由初始状态经过一条路径达到，则称这个状态是<strong>可达</strong>的。<br>如果一个状态不可以到达任何其他状态，则称这个状态是<strong>终结状态</strong>。<br>如果一个状态是可达的同时又是一个终结状态，则称这个状态是<strong>死锁状态</strong>。</p>
-<p>当然，这里$\alpha$和$\beta$的定义可以拓展到对一个路径取源和目标。</p>
-<h2 id="带标签的迁移系统"><a href="#带标签的迁移系统" class="headerlink" title="带标签的迁移系统"></a>带标签的迁移系统</h2><p>一个被字母表$A$标记的，带标签的迁移系统(labeled transition system) 是一个 6 元组$\mathcal{A} = (S,S_0,T,\alpha,\beta,\lambda)$:</p>
-<ul>
-<li>前五元组是一个迁移系统</li>
-<li>$\lambda$是一个从$T$到$A$的映射，对于任意的$t\in T$，有$\lambda(t)$表示迁移的<strong>标签</strong>。</li>
-</ul>
-<p>直觉上，一个迁移的标签意味着触发这个迁移的行为或者事件。</p>
-<p>定义一条如果$c=t_1,t_2,\cdots$是一条路径，那么触发这些迁移的行为的序列$trace(c)=\lambda(t_1),\lambda(t_2),\cdots$被称为这个路径的<strong>踪迹</strong>。</p>
-<h1 id="迁移系统的等价性"><a href="#迁移系统的等价性" class="headerlink" title="迁移系统的等价性"></a>迁移系统的等价性</h1><p>想要证明两个建模语言是等价的，我们可以用迁移系统来刻画它们的行为，然后通过证明迁移系统的等价性来证明建模语言行为的等价性。</p>
-<h2 id="强同构等价"><a href="#强同构等价" class="headerlink" title="强同构等价"></a>强同构等价</h2><p>唯一的区别就只能是状态和迁移的命名不同</p>
-<h2 id="弱同构等价"><a href="#弱同构等价" class="headerlink" title="弱同构等价"></a>弱同构等价</h2><p>如果这两个可达子迁移系统是同构的，我们称原来的两个迁移系统是 弱同构(weak isomorphic) 的。</p>
-<h2 id="双模拟等价"><a href="#双模拟等价" class="headerlink" title="双模拟等价"></a>双模拟等价</h2><p>迁移系统具有相同的行为，并在同一时刻做选择。</p>
-<h1 id="迁移系统的运算"><a href="#迁移系统的运算" class="headerlink" title="迁移系统的运算"></a>迁移系统的运算</h1><h2 id="自由积"><a href="#自由积" class="headerlink" title="自由积"></a>自由积</h2><p>将多个迁移系统的定义做一个笛卡尔积。</p>
-<p>直观上理解，各个子系统的定义不变，加入了时钟来统一驱动多个系统。使之走相同的步数。</p>
-<h2 id="同步积"><a href="#同步积" class="headerlink" title="同步积"></a>同步积</h2><p>当进程之间进行交互的时候，并不是所有可能的全局行为都是有用的，因为这些交互会受到进程通信和同步的限制。</p>
-<p>因此，描述多进程系统的迁移系统一定是各个进程对应的各自迁移系统的自由积的一个子系统，我们可以用同步积来表达这种受到通信和同步约束的全局系统。</p>
-<p>本质上就是加入了一个集合来判断自由积中哪些迁移是被允许的。换句话说，同步积只允许标签向量在同步约束中的全局迁移发生。</p>
-<h2 id="tau-迁移和共享标签"><a href="#tau-迁移和共享标签" class="headerlink" title="$\tau $迁移和共享标签"></a>$\tau $迁移和共享标签</h2><p>自由积有时钟的限制，要求所有子迁移系统必须同进退，要想消除这个限制，只需要每个状态引入一个自环转移($\tau$ transition)就行了。</p>
-<p>我们也可以使用共享标签来表示两个迁移必须同时发生，这样在表达上面会更加简洁。不过这并没有拓展同步积的表达能力就是了，只是换了一种更简便的表达方式而已。</p>
 
       
     </div>

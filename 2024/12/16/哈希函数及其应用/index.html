@@ -22,8 +22,8 @@
 
   <meta name="description" content="对应教材第六章Hash Functions and Applications 我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。 定义哈希函数是一类将任意长度的输入压缩为固定长度输出的函">
 <meta property="og:type" content="article">
-<meta property="og:title" content="哈希函数及其应用">
-<meta property="og:url" content="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:title" content="【六】哈希函数及其应用">
+<meta property="og:url" content="http://example.com/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/index.html">
 <meta property="og:site_name" content="Gisyxi7&#39;s blogs">
 <meta property="og:description" content="对应教材第六章Hash Functions and Applications 我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。 定义哈希函数是一类将任意长度的输入压缩为固定长度输出的函">
 <meta property="og:locale" content="zh_CN">
@@ -31,14 +31,14 @@
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/2.png?raw=true">
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/3.png?raw=true">
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/4.png?raw=true">
-<meta property="article:published_time" content="2024-11-22T14:37:32.000Z">
-<meta property="article:modified_time" content="2024-11-25T08:46:03.813Z">
+<meta property="article:published_time" content="2024-12-16T07:37:32.000Z">
+<meta property="article:modified_time" content="2024-12-17T03:47:18.570Z">
 <meta property="article:author" content="Gisyxi7">
 <meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/1.png?raw=true">
 
-<link rel="canonical" href="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
+<link rel="canonical" href="http://example.com/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
 
 
 <script id="page-configurations">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>哈希函数及其应用 | Gisyxi7's blogs</title>
+  <title>【六】哈希函数及其应用 | Gisyxi7's blogs</title>
   
 
 
@@ -171,7 +171,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/22/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -184,7 +184,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          哈希函数及其应用
+          【六】哈希函数及其应用
         </h1>
 
         <div class="post-meta">
@@ -194,14 +194,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-11-22 22:37:32" itemprop="dateCreated datePublished" datetime="2024-11-22T22:37:32+08:00">2024-11-22</time>
+              <time title="创建时间：2024-12-16 15:37:32" itemprop="dateCreated datePublished" datetime="2024-12-16T15:37:32+08:00">2024-12-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-25 16:46:03" itemprop="dateModified" datetime="2024-11-25T16:46:03+08:00">2024-11-25</time>
+                <time title="修改时间：2024-12-17 11:47:18" itemprop="dateModified" datetime="2024-12-17T11:47:18+08:00">2024-12-17</time>
               </span>
 
           
@@ -219,12 +219,12 @@
 <p>我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。</p>
 <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>哈希函数是一类将任意长度的输入压缩为固定长度输出的函数。非加密哈希函数的经典用途是在数据结构中，它们可以用来构建哈希表，从而在存储一组元素时实现$O(1)$的查找。具体来说，如果哈希函数$H$的输出范围大小为$N$，那么元素x被存储在表格的第$H(x)$行。</p>
 <p>一个良好的哈希函数要尽可能的减少碰撞(collision)。抗碰撞(Collision-resistant)哈希函数的目标也是避免碰撞，但是在数据结构的应用中，较少碰撞只是优化的要求，但是在密码学背景下，避免碰撞是一个严格的要求，因为攻击者可能会故意构造发生碰撞的值来进行攻击。所以设计抗碰撞哈希函数的难度要高于设计一般的哈希函数。</p>
-<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥s和一个字符串x，输出$H_s(x)$。</p>
+<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥$s$和一个字符串$x$，输出$H_s(x)$。</p>
 <p>这里的密钥和我们过去考虑的密钥有所不同，在过去的密钥我们希望保密，但是这里哈希函数中攻击者可能知道密钥，在这个前提下，我们希望哈希函数还具有抗碰撞性。</p>
 <p><strong>DEFINITION 6.1</strong><br>一个哈希函数由一对概率多项式算法组成。</p>
 <ul>
-<li>Gen： 是一个概率算法，输出密钥s</li>
-<li>H： 是一个确定性算法，接受一个密钥s和一个字符串x，输出$H_s(x)$，长度为$l(n)$</li>
+<li>$Gen$： 是一个概率算法，输出密钥$s$</li>
+<li>$H$： 是一个确定性算法，接受一个密钥$s$和一个字符串$x$，输出$H_s(x)$，长度为$l(n)$</li>
 </ul>
 <p>如果H只接受固定长度的字符串输入，我们称哈希函数为fixed-length，H为compression function。显然这里输出的长度必须小于输入长度。</p>
 <p>下面介绍攻击实验The collission-finding experiment $Hash-coll_{\mathcal{A},\mathcal{H}}(n)$:</p>
@@ -234,10 +234,11 @@
 <li>如果这两个输出产生碰撞，则实验结果为1，反之为0</li>
 </ol>
 <p>$DEFINITON 6.2$<br>一个哈希函数是Collision Resistant当且仅当<br>$Pr[Hash-coll_{\mathcal{A},\mathcal{H}}(n) = 1]\leq negl(n)$</p>
-<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。<br>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
+<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。</p>
+<p>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
 <h2 id="弱一些的安全定义"><a href="#弱一些的安全定义" class="headerlink" title="弱一些的安全定义"></a>弱一些的安全定义</h2><ul>
-<li>Second-preimage resistance<br>对于一个哈希函数，如果给定s和x，找不到另一个能碰撞的字符串。</li>
-<li>Preimage resistance<br>对于一个哈希函数，如果给定s和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
+<li>Second-preimage resistance<br>对于一个哈希函数，如果给定$s$和$x$，找不到另一个能碰撞的字符串。</li>
+<li>Preimage resistance<br>对于一个哈希函数，如果给定$s$和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
 </ul>
 <p>coliision resistant $\Rightarrow$ second-preimage resistance $\Rightarrow$ preimage resistance</p>
 <h1 id="Merkle–Damgard变换"><a href="#Merkle–Damgard变换" class="headerlink" title="Merkle–Damgård变换"></a>Merkle–Damgård变换</h1><p>许多应用需要“完全成熟”的抗碰撞哈希函数，这种哈希函数能够处理非常长的输入，甚至是任意长度的输入。然而，构造固定长度的哈希函数（即压缩函数）更为容易——这些函数只接受“短”的输入。幸运的是，Merkle–Damgård变换使我们可以将后者转换为前者。这种哈希函数域扩展的方法在实践中被频繁使用，例如MD5和SHA系列哈希函数。</p>
@@ -305,12 +306,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/11/19/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="prev" title="密码学">
-      <i class="fa fa-chevron-left"></i> 密码学
+    <a href="/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/" rel="prev" title="【五】CCA安全和认证加密">
+      <i class="fa fa-chevron-left"></i> 【五】CCA安全和认证加密
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" rel="next" title="判定性与复杂度">
-      判定性与复杂度 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/12/16/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0%E4%B8%8E%E7%A1%AC%E6%A0%B8%E8%B0%93%E8%AF%8D/" rel="next" title="【七】单向函数与硬核谓词">
+      【七】单向函数与硬核谓词 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
