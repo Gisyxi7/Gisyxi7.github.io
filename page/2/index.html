@@ -162,6 +162,274 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">【四】下推自动机</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-11 19:25:50" itemprop="dateCreated datePublished" datetime="2024-12-11T19:25:50+08:00">2024-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><p><strong>下推自动机(Pushdown Automata, PDA)</strong> 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。</p>
+<p>直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符号，还依赖于栈顶元素。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<ul>
+<li>$Q$为有限状态集合</li>
+<li>$\Sigma$为输入字母表</li>
+<li>$\Gamma$为栈字母表</li>
+<li>$\delta$是转移函数<ul>
+<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
+<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
+</ul>
+</li>
+<li>$q_0\in Q$为初始状态</li>
+<li>$Z_0\in\Gamma$为初始栈顶元素</li>
+<li>$F\subseteq Q$为终止状态集合</li>
+</ul>
+<p>一些字母上的约定：</p>
+<ul>
+<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
+<li>用$\cdots,X,Y,Z$表示栈符号</li>
+<li>用$w,x,y,z$表示输入符号形成的字符串</li>
+<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串</li>
+</ul>
+<h2 id="PDA的运行"><a href="#PDA的运行" class="headerlink" title="PDA的运行"></a>PDA的运行</h2><p>定义一个<strong>即时描述</strong>(Instantaneous Description, ID)是一个三元组$(q,w,\alpha)$：</p>
+<ul>
+<li>$q$是当前状态</li>
+<li>$w$是剩余未处理的输入符号</li>
+<li>$\alpha$是栈的内容，规定左侧为栈顶，右侧为栈底</li>
+</ul>
+<p>定义即时描述之间的转移为<strong>走向(Goes-To)</strong>，用$\vdash $表示。</p>
+<h2 id="PDA的语言"><a href="#PDA的语言" class="headerlink" title="PDA的语言"></a>PDA的语言</h2><p>我们有两种方式来定义PDA的语言。</p>
+<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>接受所有能让PDA走到终止状态的字符串，定义为$L(P)$。</p>
+<h3 id="根据空栈"><a href="#根据空栈" class="headerlink" title="根据空栈"></a>根据空栈</h3><p>接受所有能让PDA的栈为空的字符串，定义为$N(P)$。</p>
+<h3 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h3><p>$L(P)$和$N(P)$在定义语言的能力上是等价的。</p>
+<p>若$L=L(P)$，则存在另一个PDA $P’$使 $L=N(P’)$</p>
+<p>只需要到终止状态再清除栈即可。</p>
+<p>若$L=N(P)$，则存在另一个PDA $P’’$使 $L=L(P’’)$</p>
+<p>只需要发现栈被清空之后转移到终止状态即可。</p>
+<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>我们上面讨论的下推自动机都是<strong>非确定性下推自动机(Nondeterminstic Pushdown Automata, NPDA)</strong>。一般来说，没有特别说明，PDA都指NPDA。</p>
+<p>现在来关注一下<strong>确定性下推自动机(Determinstic Pushdown Automata, DPDA)</strong>，即对于确定的状态、输入符号和栈顶符号，最多只有一种移动的选择。</p>
+<p>我们直到NFA和DFA是等价的，但是在这里，NPDA的表达能力比DPDA要强。</p>
+<h1 id="下推自动机与上下文无关文法的等价性"><a href="#下推自动机与上下文无关文法的等价性" class="headerlink" title="下推自动机与上下文无关文法的等价性"></a>下推自动机与上下文无关文法的等价性</h1><p><strong>定理</strong>：<br>CFG和PDA在定义语言的表达能力上是等价的。</p>
+<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
+<p>思路就是$P$的每一步代表最左推导中的一步。</p>
+<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
+<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/" class="post-title-link" itemprop="url">【三】上下文无关文法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-11 18:06:39" itemprop="dateCreated datePublished" datetime="2024-12-11T18:06:39+08:00">2024-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 19:02:55" itemprop="dateModified" datetime="2024-12-18T19:02:55+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><p>正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。</p>
+<h2 id="直观描述"><a href="#直观描述" class="headerlink" title="直观描述"></a>直观描述</h2><p><strong>上下文无关文法</strong>(context-free grammar)是一种描述语言的记号，对于描述嵌套结构是很有用的。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
+<ul>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
+<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
+<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
+<li><strong>头</strong>(header)是一个变量</li>
+<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
+</ul>
+</li>
+</ul>
+<p>一般来说，我们在字母使用下有以下约定</p>
+<ul>
+<li>用$A,B,C\cdots,S$表示变量</li>
+<li>用$a,b,c\cdots$表示终结符</li>
+<li>用$\cdots,X,Y,Z$表示非终结符或变量</li>
+<li>用$w,x,y,z$表示只含有终结符的字符串</li>
+<li>用$\alpha,\beta,\gamma,\cdots$来表示有终结符或变量的字符串</li>
+</ul>
+<p>根据上述定义，想要定义一个语言$\{0^n1^n|n\ge 1\}$:</p>
+<script type="math/tex; mode=display">G=(\{S\},\{0,1\},\{S\rightarrow 01,S\rightarrow 0S1\},S)</script><p>定义：</p>
+<p>称$\alpha A\beta$可以<strong>推导</strong>出$\alpha \gamma \beta$，记为$\alpha A\beta\Rightarrow \alpha \gamma \beta$。如果$A\rightarrow \gamma$是一个产生式。</p>
+<p>称零步或多步推导为<strong>迭代推导</strong>，记为$\Rightarrow^*$</p>
+<p>令$G$是一个上下文无关文法，则记$G$的语言为$L(G)$，称上下文无关文法定义的语言为<strong>上下文无关语言(Context-Free Language, CFL)</strong>。</p>
+<h2 id="最左推导和最右推导"><a href="#最左推导和最右推导" class="headerlink" title="最左推导和最右推导"></a>最左推导和最右推导</h2><p>每一次推导我们都可以替换一个任意位置的变量，但是这个任意会带来很多的不确定性，为了避免不确定性，我们规定每次替换的变量为一个固定位置（最左或最右）的变量。</p>
+<p>我们使用$\Rightarrow_l$表示最左推导，$\Rightarrow_r$ 表示最右推导。</p>
+<h1 id="解析树"><a href="#解析树" class="headerlink" title="解析树"></a>解析树</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>解析树(Parse Tree)</strong>是一棵用某个特定的上下文无关文法中的符号对每个结点做标记的树。如图所示：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/1.png?raw=true" alt="1"></p>
+<h2 id="解析树，最左推导，最右推导"><a href="#解析树，最左推导，最右推导" class="headerlink" title="解析树，最左推导，最右推导"></a>解析树，最左推导，最右推导</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
+<p>由归纳法可以轻松证明。</p>
+<h2 id="文法歧义"><a href="#文法歧义" class="headerlink" title="文法歧义"></a>文法歧义</h2><p>我们称一个文法是<strong>有歧义的(ambiguous)</strong>，如果在这个文法定义的语言中，存在一个字符串可以被两个及以上个解析树产出。</p>
+<p>如果这个字符串存在多个对应的解析树，那么就意味着存在多种推导方式。</p>
+<p>当然，也存在文法，在这个文法定义的语言中，所有的字符串都只有唯一的解析树，我们称之为<strong>LL(1)文法</strong>。</p>
+<p>一般来说，LL(1)文法具有以下的特征：从左往右扫描字符串，且只看下一个符号。</p>
+<h2 id="固有歧义"><a href="#固有歧义" class="headerlink" title="固有歧义"></a>固有歧义</h2><p>有的有歧义的文法可以修改成没有歧义的文法，但是存在一些上下文无关语言本身是具有<strong>固有的歧义性(inherently ambiguous)</strong>的，意思是这个语言的所有的文法都是有歧义的。</p>
+<h1 id="上下文无关文法的范式"><a href="#上下文无关文法的范式" class="headerlink" title="上下文无关文法的范式"></a>上下文无关文法的范式</h1><h2 id="去除无用变量"><a href="#去除无用变量" class="headerlink" title="去除无用变量"></a>去除无用变量</h2><ul>
+<li>无法推导的变量：无法推导出任何终结字符串。</li>
+<li>不可达的符号：有一些变量或者终结符无论如何从起始符号推导都不会出现。</li>
+</ul>
+<p>以上的符号我们称为<strong>无用符号(unused symbols)</strong>。我们通过以下方法去除无用符号：</p>
+<ol>
+<li>删除不能导出终结字符串的符号</li>
+<li>删除所有从起始符号不可达的字符串</li>
+</ol>
+<p><strong>这个顺序不能颠倒！！！</strong></p>
+<h2 id="去除空串"><a href="#去除空串" class="headerlink" title="去除空串"></a>去除空串</h2><p>我们需要考虑不含$\epsilon$的语言，所以我们需要一个算法能够去除空串：</p>
+<ul>
+<li>找到所有空产生式：递归的找出所有能推导出空串的符号</li>
+<li>去除空产生式：<ul>
+<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
+<li>最后去掉所有的空产生式</li>
+</ul>
+</li>
+</ul>
+<h2 id="去除单元产生式"><a href="#去除单元产生式" class="headerlink" title="去除单元产生式"></a>去除单元产生式</h2><p><strong>单元产生式</strong>(unit production)指的是体只有一个变量的产生式。这些产生式也是可以去除的。</p>
+<p>算法如下：</p>
+<ul>
+<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
+<li>基础情况：$(A,A)$一定是满足要求的有序对</li>
+<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
+</ul>
+</li>
+<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
+</ul>
+<h2 id="乔姆斯基范式"><a href="#乔姆斯基范式" class="headerlink" title="乔姆斯基范式"></a>乔姆斯基范式</h2><p>如果$L$是一个上下文无关语言，那么对于$L-\{\epsilon\}$一定存在一个上下文无关文法：</p>
+<ul>
+<li>没有无用符号</li>
+<li>没有$\epsilon-$产生式</li>
+<li>没有单元产生式</li>
+</ul>
+<p>要找到这样的文法，一定<strong>遵循以下顺序操作</strong>：</p>
+<ol>
+<li>去除$\epsilon-$产生式</li>
+<li>去除单元产生式</li>
+<li>去除无用符号<ol>
+<li>去除无法推导出终结字符串的变量</li>
+<li>去除从起始符号不可达的变量</li>
+</ol>
+</li>
+</ol>
+<p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
+<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
+<ol>
+<li>$A\rightarrow BC$</li>
+<li>$A\rightarrow a$，其中$a$是终结符。</li>
+</ol>
+<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
+<ol>
+<li>清理文法：去除无用符号，去除空产生式，去除单元产生式。</li>
+<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
+<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -394,7 +662,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">迁移系统</a>
+            <a href="/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">【八】迁移系统</a>
         </h2>
 
         <div class="post-meta">
@@ -403,10 +671,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-12-09 14:08:40 / 修改时间：23:33:24" itemprop="dateCreated datePublished" datetime="2024-12-09T14:08:40+08:00">2024-12-09</time>
+              <time title="创建时间：2024-12-09 14:08:40" itemprop="dateCreated datePublished" datetime="2024-12-09T14:08:40+08:00">2024-12-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
+              </span>
 
           
 
@@ -483,7 +757,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">正则表达式</a>
+            <a href="/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">【二】正则表达式</a>
         </h2>
 
         <div class="post-meta">
@@ -500,7 +774,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-10 16:18:06" itemprop="dateModified" datetime="2024-12-10T16:18:06+08:00">2024-12-10</time>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
               </span>
 
           
@@ -621,7 +895,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">有穷自动机</a>
+            <a href="/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">【一】有穷自动机</a>
         </h2>
 
         <div class="post-meta">
@@ -638,7 +912,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-10 11:19:24" itemprop="dateModified" datetime="2024-12-10T11:19:24+08:00">2024-12-10</time>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
               </span>
 
           
@@ -797,7 +1071,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="post-title-link" itemprop="url">判定性与复杂度</a>
+            <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="post-title-link" itemprop="url">【七】判定性与复杂度</a>
         </h2>
 
         <div class="post-meta">
@@ -814,7 +1088,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:15:53" itemprop="dateModified" datetime="2024-12-09T23:15:53+08:00">2024-12-09</time>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
               </span>
 
           
@@ -1073,224 +1347,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/18/%E5%9B%BE%E7%81%B5%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/18/%E5%9B%BE%E7%81%B5%E6%9C%BA/" class="post-title-link" itemprop="url">图灵机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-18 13:57:55" itemprop="dateCreated datePublished" datetime="2024-11-18T13:57:55+08:00">2024-11-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 22:10:20" itemprop="dateModified" datetime="2024-12-09T22:10:20+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是图灵机"><a href="#什么是图灵机" class="headerlink" title="什么是图灵机"></a>什么是图灵机</h1><h2 id="直觉上"><a href="#直觉上" class="headerlink" title="直觉上"></a>直觉上</h2><p>图灵机长这样</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/1.png?raw=true" alt="1"></p>
-<p>有一条无限长的<strong>纸带</strong>，纸带里有一些方格，方格中的符号来自一个有限字母表。</p>
-<p>图灵机可以根据自己当前的状态和读写头指向的纸带符号，改变自己的状态，重写读写头指向的符号，然后将读写头移动一个方格（可以向左也可以向右）。</p>
-<p>值得注意的是，图灵机和一般的计算机都有等价的表达能力，而因为图灵机有无限内存（纸带无限长），图灵机甚至比物理上的计算机更加强大。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>一个图灵机是一个<strong>七元组</strong> $M=(Q,\sum,\Gamma,\delta,q_0,B,F)$</p>
-<ul>
-<li>$Q$是一个有限的状态集合。</li>
-<li>$\sum$是一个输入字母表。</li>
-<li>$\Gamma$是一个纸带字母表，$\Gamma \subseteq \sum$。</li>
-<li>$\delta$是转移函数。<ul>
-<li>接受两个参数，一个状态$q\in Q$和一个纸带符号$Z\in\Gamma$</li>
-<li>$\delta(q,Z)$要么没定义，要么为一个三元组$(p,Y,D)$，分别是状态，纸带符号，转换头前进方向（L或R）。</li>
-</ul>
-</li>
-<li>$q_0$是起始状态。</li>
-<li>$B$是一个空符号，$B\in \Gamma -\sum$，除了输入以外的其他纸带部分初始都为空。</li>
-<li>$F$是终止状态集合。</li>
-</ul>
-<h2 id="图灵机的即时描述和移动"><a href="#图灵机的即时描述和移动" class="headerlink" title="图灵机的即时描述和移动"></a>图灵机的即时描述和移动</h2><p>在初始时刻，图灵机接受一个有限的输入字符串，字符串两边是无限的空符号。图灵机处于初始状态并且指向最左边的输入符号。</p>
-<h3 id="即时描述-Instantaneous-Description-ID"><a href="#即时描述-Instantaneous-Description-ID" class="headerlink" title="即时描述(Instantaneous Description, ID)"></a>即时描述(Instantaneous Description, ID)</h3><p>图灵机的即时描述是一个字符串$\alpha q \beta$</p>
-<ul>
-<li>其中$\alpha\beta$是纸带上从最左边的非空符号到最右边的非空符号的部分。</li>
-<li>状态$q$放置在正在扫描的符号的左侧。<ul>
-<li>$\alpha\beta q$表示正在扫描最右侧的$B$，可以省略不写。</li>
-<li>$qB\alpha\beta$表示正在扫描最左侧的$B$，不可以省略不写。</li>
-</ul>
-</li>
-</ul>
-<h3 id="移动-move-vdash"><a href="#移动-move-vdash" class="headerlink" title="移动(move) $\vdash $"></a>移动(move) $\vdash $</h3><p>即$ID_1 \vdash ID_2$，根据转移函数进行变化。</p>
-<p>如果可以经过0次或多次移动到达新ID，表示为$ID_1 \vdash^* ID_2$</p>
-<h2 id="图灵机的语言"><a href="#图灵机的语言" class="headerlink" title="图灵机的语言"></a>图灵机的语言</h2><p>图灵机对应的语言可以通过<strong>根据终止状态的定义</strong>或<strong>停机</strong>这两种方式来定义。</p>
-<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>$L(M)=\{\omega | q_0\omega \vdash^* I\text{, where I is an ID with a final state} \}$</p>
-<h3 id="通过停机"><a href="#通过停机" class="headerlink" title="通过停机"></a>通过停机</h3><p>$H(M)=\{\omega | q_0\omega \vdash^* I\text{, and there is no move possible from ID I} \}$</p>
-<h3 id="两种表达的等价性"><a href="#两种表达的等价性" class="headerlink" title="两种表达的等价性"></a>两种表达的等价性</h3><p>能够构造出等价转换的图灵机。</p>
-<h4 id="终止状态到停机"><a href="#终止状态到停机" class="headerlink" title="终止状态到停机"></a>终止状态到停机</h4><p>如果$L=L(M)$，则存在另一个图灵机$M’$，使得$L=H(M’)$</p>
-<ol>
-<li>对于$M$的每个终止状态，删除任意移动，使得$M’$在这个状态必然停机。</li>
-<li>令所有没有定义转移函数的非终止状态都定义为向右移动。</li>
-</ol>
-<h4 id="停机到终止状态"><a href="#停机到终止状态" class="headerlink" title="停机到终止状态"></a>停机到终止状态</h4><p>如果$L=H(M)$，则存在另一个图灵机$M’’$，使得$L=L(M’’)$</p>
-<ol>
-<li>引入新状态$f$，成为唯一的终止状态，且没有移动。</li>
-<li>对于任何没有定义转移函数的二元组，都定义为转换到状态$f$。</li>
-</ol>
-<h2 id="递归可枚举语言和递归语言"><a href="#递归可枚举语言和递归语言" class="headerlink" title="递归可枚举语言和递归语言"></a>递归可枚举语言和递归语言</h2><p>我们称由图灵机定义的语言类被称为<strong>递归可枚举语言</strong>(recursively enumerable language) 。</p>
-<p>定义<strong>算法</strong>是一个图灵机，这个图灵机通过终止状态接收，并且无论接受与否，它都注定会停机。</p>
-<p>如果$L=L(M)$且图灵机$M$是一个算法，则称$L$是一个<strong>递归语言</strong>(recursive language)。</p>
-<p>每个上下文无关语言都是一个递归语言。</p>
-<h1 id="图灵机进阶"><a href="#图灵机进阶" class="headerlink" title="图灵机进阶"></a>图灵机进阶</h1><h2 id="图灵机编程技巧"><a href="#图灵机编程技巧" class="headerlink" title="图灵机编程技巧"></a>图灵机编程技巧</h2><h3 id="多道"><a href="#多道" class="headerlink" title="多道"></a>多道</h3><p>可以将纸带符号看成一个有多个分量的向量。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/2.png?raw=true" alt="2"></p>
-<h3 id="标记"><a href="#标记" class="headerlink" title="标记"></a>标记</h3><p>增加一个通道来标记特殊位置，在新增加的通道上，大多数符号都是空的，这让图灵机能很方便找到这些位置。</p>
-<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>状态也可以是一个向量，首分量用来控制状态，其余分量用来存储一些信息。</p>
-<h2 id="半无穷纸带"><a href="#半无穷纸带" class="headerlink" title="半无穷纸带"></a>半无穷纸带</h2><p>可以构造一个图灵机从来不会移动到初始读写头位置的左边。</p>
-<p>令初始时读写头的位置为0，右侧位置为1、2、……，左侧为-1，-2，……。</p>
-<p>构造一个有两个分道的图灵机，并让增加一个状态分量表示是正在扫描顶部磁道还是底部磁道。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/3.png?raw=true" alt="3"></p>
-<h2 id="更多限制"><a href="#更多限制" class="headerlink" title="更多限制"></a>更多限制</h2><p>两个栈就能模拟一个纸带。</p>
-<p>所以相较于下推自动机，只多了一个栈，但是计算能力有了本质性的提高。</p>
-<h2 id="图灵机的拓展"><a href="#图灵机的拓展" class="headerlink" title="图灵机的拓展"></a>图灵机的拓展</h2><p>扩展的图灵机在本质上表达能力没有变强，只是表示更方便了。</p>
-<h3 id="多纸带图灵机"><a href="#多纸带图灵机" class="headerlink" title="多纸带图灵机"></a>多纸带图灵机</h3><p>多纸带图灵机有多个纸带，每个纸带有自己的读写头，图灵机的移动取决于它的状态以及每个纸带上读写头下的符号。</p>
-<p>用单纸带图灵机模拟多纸带(k)图灵机：</p>
-<p>用有2k个分道的单纸带图灵机来模拟，其中对应多纸带图灵机的每个纸带，单纸带图灵机用一个分道来标记读写头，另一个分道记录纸带。</p>
-<h3 id="非确定性图灵机"><a href="#非确定性图灵机" class="headerlink" title="非确定性图灵机"></a>非确定性图灵机</h3><p>非确定性图灵机(Non-determinstic Turing Machine, NTM) 允许在一次移动的时候有不止一次可能的选择，每一个选择都是一个（状态，符号，方向）三元组，这和 确定性图灵机(Determinstic Turing Machine, DTM)中一样。</p>
-<p>用多分道图灵机来模拟广度优先搜索即可。</p>
-<h1 id="递归可枚举语言和递归语言的闭包性质"><a href="#递归可枚举语言和递归语言的闭包性质" class="headerlink" title="递归可枚举语言和递归语言的闭包性质"></a>递归可枚举语言和递归语言的闭包性质</h1><ul>
-<li>递归可枚举语言和递归语言在并集、拼接、星闭包、翻转、交集以及逆同态操作下都是封闭的。</li>
-<li>递归语言在差集、补集操作下封闭。</li>
-<li>递归可枚举语言在同态操作下是封闭的。</li>
-</ul>
-<h2 id="并集操作"><a href="#并集操作" class="headerlink" title="并集操作"></a>并集操作</h2><ul>
-<li>递归语言：只需要看在两个算法上能否停下来。</li>
-<li>递归可枚举语言：当两个图灵机有一个接受，但是可能不知道什么时候能停机。</li>
-</ul>
-<h2 id="交集操作-差集操作"><a href="#交集操作-差集操作" class="headerlink" title="交集操作/差集操作"></a>交集操作/差集操作</h2><p>类似于并集。</p>
-<h2 id="拼接操作"><a href="#拼接操作" class="headerlink" title="拼接操作"></a>拼接操作</h2><ul>
-<li>递归可枚举语言：用两个单带半无穷图灵机构造一个非确定性图灵机，如果存在一个正确分割方式，那么一定能选择正确的方式。</li>
-<li>递归语言：遍历寻找分割方式。</li>
-</ul>
-<h2 id="星闭包"><a href="#星闭包" class="headerlink" title="星闭包"></a>星闭包</h2><p>和拼接类似。</p>
-<h2 id="翻转"><a href="#翻转" class="headerlink" title="翻转"></a>翻转</h2><p>只需要用一个辅助图灵机翻转字符串。</p>
-<h2 id="逆同态操作"><a href="#逆同态操作" class="headerlink" title="逆同态操作"></a>逆同态操作</h2><p>用一个图灵机模拟同态函数$h$，将其应用于输入$\omega$，得到$h(\omega)$，然后用原本的图灵机来接收$h(\omega)$就可以了。</p>
-<h2 id="同态操作"><a href="#同态操作" class="headerlink" title="同态操作"></a>同态操作</h2><ul>
-<li>递归可枚举语言：设计非确定性图灵机</li>
-<li>递归语言：可能取值是无穷的，不适用。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/16/UE%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/16/UE%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">UE入门</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-16 10:05:05 / 修改时间：18:13:56" itemprop="dateCreated datePublished" datetime="2024-11-16T10:05:05+08:00">2024-11-16</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="游戏引擎简介"><a href="#游戏引擎简介" class="headerlink" title="游戏引擎简介"></a>游戏引擎简介</h1><h2 id="什么是游戏引擎"><a href="#什么是游戏引擎" class="headerlink" title="什么是游戏引擎"></a>什么是游戏引擎</h2><p><strong>UE引擎</strong><br>渲染品质高<br>美术资产制作管线成熟<br>c++与蓝图 性能与可视化编程并重<br>开发周期 提供各种框架<br>跨平台<br>开源<br><strong>Unity</strong><br>不开源<br><strong>CryEngine V</strong><br><strong>Open3D</strong><br><strong>Source2</strong></p>
-<p>专门为游戏而设计的工具和科技集合</p>
-<ol>
-<li>通用性和偏向性</li>
-<li>可扩展性</li>
-<li>完善工具链</li>
-</ol>
-<p>手机渲染和PC渲染的区别</p>
-<p>物理引擎<br><strong>Havok</strong><br><strong>PhysX</strong><br><strong>Bullet</strong></p>
-<p>碰撞检测动态约束布娃娃系统。。。<br><strong>Chaos in UE</strong>大规模场景破坏</p>
-<h1 id="UE介绍"><a href="#UE介绍" class="headerlink" title="UE介绍"></a>UE介绍</h1><p>历史演变</p>
-<p>安装UE5 200</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1360,7 +1416,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

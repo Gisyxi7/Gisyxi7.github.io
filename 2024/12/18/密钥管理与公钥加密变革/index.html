@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="密钥分发和密钥管理我们一直没有讨论这样一个问题，在之前的私钥加密体系中，双方最初如何共享一个密钥。 显然，如果要安全的共享密钥，就必须要有一个安全的信道来可靠的共享，但这要付出很高的代价。保存密钥、分享密钥在开放系统中是非常困难的。 总之，关于私钥加密存在以下问题：  密钥分发 管理和存储大量密钥 对开放系统的不适用性  部分解决方案：密钥分发中心一种解决的方法是使用密钥分发中心(Key-Dist">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【九】密钥管理与公钥加密变革">
+<meta property="og:url" content="http://example.com/2024/12/18/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86%E4%B8%8E%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E5%8F%98%E9%9D%A9/index.html">
+<meta property="og:site_name" content="Gisyxi7&#39;s blogs">
+<meta property="og:description" content="密钥分发和密钥管理我们一直没有讨论这样一个问题，在之前的私钥加密体系中，双方最初如何共享一个密钥。 显然，如果要安全的共享密钥，就必须要有一个安全的信道来可靠的共享，但这要付出很高的代价。保存密钥、分享密钥在开放系统中是非常困难的。 总之，关于私钥加密存在以下问题：  密钥分发 管理和存储大量密钥 对开放系统的不适用性  部分解决方案：密钥分发中心一种解决的方法是使用密钥分发中心(Key-Dist">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/1.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/2.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/3.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/4.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/5.png?raw=true">
+<meta property="article:published_time" content="2024-12-18T06:27:25.000Z">
+<meta property="article:modified_time" content="2024-12-19T17:50:56.659Z">
+<meta property="article:author" content="Gisyxi7">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/1.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2024/12/18/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86%E4%B8%8E%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E5%8F%98%E9%9D%A9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【九】密钥管理与公钥加密变革 | Gisyxi7's blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gisyxi7's blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">学不动了</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/18/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86%E4%B8%8E%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E5%8F%98%E9%9D%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【九】密钥管理与公钥加密变革
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-18 14:27:25" itemprop="dateCreated datePublished" datetime="2024-12-18T14:27:25+08:00">2024-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-20 01:50:56" itemprop="dateModified" datetime="2024-12-20T01:50:56+08:00">2024-12-20</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="密钥分发和密钥管理"><a href="#密钥分发和密钥管理" class="headerlink" title="密钥分发和密钥管理"></a>密钥分发和密钥管理</h1><p>我们一直没有讨论这样一个问题，在之前的私钥加密体系中，双方最初如何共享一个密钥。</p>
+<p>显然，如果要安全的共享密钥，就必须要有一个安全的信道来可靠的共享，但这要付出很高的代价。保存密钥、分享密钥在开放系统中是非常困难的。</p>
+<p>总之，关于私钥加密存在以下问题：</p>
+<ul>
+<li>密钥分发</li>
+<li>管理和存储大量密钥</li>
+<li>对开放系统的不适用性</li>
+</ul>
+<h1 id="部分解决方案：密钥分发中心"><a href="#部分解决方案：密钥分发中心" class="headerlink" title="部分解决方案：密钥分发中心"></a>部分解决方案：密钥分发中心</h1><p>一种解决的方法是使用密钥分发中心(Key-Distribution Center, KDC)。</p>
+<p>假设这是一个大型公司的场景，所有员工之间需要能够进行安全通信，我们可以利用所有员工都信任某个实体（比如管理员），让这个可信实体充当KDC。</p>
+<p>当新员工入职，KDC可以以安全的方式（比如面对面）交付给新员工密钥，这其中包括：</p>
+<ol>
+<li>KDC和新员工之间的共享密钥</li>
+<li>新员工和员工之间共享的密钥</li>
+</ol>
+<p>当然这个方法需要员工储存很多密钥，我们可以通过另一种方式避免，考虑员工A和B需要进行通话：</p>
+<ol>
+<li>A用$k_A$向KDC发送消息，申请和B进行通话</li>
+<li>KDC返回一个随机密钥$k$给A和B</li>
+<li>A和B使用密钥$k$进行通信，结束后密钥$k$失效。</li>
+</ol>
+<p>以上方式的优点在于：</p>
+<ul>
+<li>每位员工只需要保存一个密钥</li>
+<li>当一名员工加入组织，只需要与KDC建立密钥</li>
+</ul>
+<p>当然也存在缺点：</p>
+<ul>
+<li>对KDC的成功攻击会导致整个系统全部崩溃，也存在内部攻击的风险</li>
+<li>KDC单点故障会或频繁请求会导致通信失败，负载过高。</li>
+</ul>
+<h2 id="使用-KDC-进行密钥分发的协议"><a href="#使用-KDC-进行密钥分发的协议" class="headerlink" title="使用 KDC 进行密钥分发的协议"></a>使用 KDC 进行密钥分发的协议</h2><p>我们下面介绍<strong>Needham–Schroeder协议</strong>。</p>
+<p>当A请求和B通信：</p>
+<ol>
+<li>KDC将使用$k_A$加密的会话密钥和使用$k_B$加密的会话密钥(ticket)发送给A</li>
+<li>A将ticket转发给B</li>
+<li>双方获得会话密钥，进行通信</li>
+</ol>
+<p>以上方案的好处在于：</p>
+<ul>
+<li>减少了额外连接，KDC只需要建立一次连接</li>
+<li>支持会话的重新启动，但是事实上ticket会有有效期</li>
+</ul>
+<h1 id="密钥交换和Diffie–Hellman协议"><a href="#密钥交换和Diffie–Hellman协议" class="headerlink" title="密钥交换和Diffie–Hellman协议"></a>密钥交换和Diffie–Hellman协议</h1><p>上述的方案仍然存在最底层的问题，就是在初始分发的时候依赖一个安全信道。但是在互联网这样的开放系统中，是难以实现的。</p>
+<p>为了在没有私密信道的情况下进行私密通信，Diffie和Hellman提出了<strong>Diffie–Hellman 协议</strong>。</p>
+<p>首先我们仅讨论：</p>
+<ul>
+<li>攻击者只能窃听，无法干预信道</li>
+<li>通信双方在开始时没有任何共享信息</li>
+</ul>
+<h2 id="安全性定义"><a href="#安全性定义" class="headerlink" title="安全性定义"></a>安全性定义</h2><p>首先我们假设双方运行一个随机化协议$\prod$，能够双方独立运行后生成相同的密钥，直观上，我们希望这个协议生成的密钥和完全随机的密钥对于攻击者是不可区分的。</p>
+<p>令$\prod$是密钥交换协议，$\mathcal{A}$是攻击者，$n$是安全参数。<br>定义以下密钥交换实验$KE^{eav}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>双方都以$1^n$为参数运行$\prod$，得到$k$和$trans$（全部通信记录）</li>
+<li>随机选择$b\in\{0,1\}$，如果$b=0$，则$\hat{k}=k$，否则随机选择$\hat{k}\in\{0,1\}^n$</li>
+<li>$\mathcal{A}$接受trans和$\hat{k}$，并返回一个布尔值$b’$</li>
+<li>如果$\mathcal{A}$返回$b’=b$，则实验结果为1，否则为0</li>
+</ol>
+<p>我们根据这个实验可以定义一个密钥交换协议$\prod$是安全的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/1.png?raw=true" alt="1"></p>
+<h2 id="Diffie–Hellman-密钥交换协议"><a href="#Diffie–Hellman-密钥交换协议" class="headerlink" title="Diffie–Hellman 密钥交换协议"></a>Diffie–Hellman 密钥交换协议</h2><p>令$\mathcal{G}$是一个多项式概率性算法，其接受$1^n$作为输入，输出一个循环群$\mathcal{G}$，其阶$q$，其生成元$g\in\mathcal{G}$。</p>
+<h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><ul>
+<li>共同输入：$1^n$</li>
+<li>协议<ol>
+<li>A运行$\mathcal{G}(1^m)$获得$(\mathbb{G},q,g)$</li>
+<li>A随机均匀选择$x\in \mathbb{Z}_q$，计算$h_A:=g^x$</li>
+<li>A将$(\mathcal{G},q,g,h_A)$发给B</li>
+<li>B接受到$(\mathcal{G},q,g,h_A)$，随机均匀选取$y\in\mathbb{Z}_q$，计算$h_B:=g^y$，B将$h_B$发给A并得到密钥$k_B:=h_A^y$</li>
+<li>A接受$h_B$，得到密钥$k_A:=h_B^x$</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/2.png?raw=true" alt="2"></p>
+<p>双方的密钥都为$g^{xy}$。因此该方案的正确性得以证明。</p>
+<h3 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>这个协议是安全的，证明如下：</p>
+<p>我们首先修改了安全性实验，令$\hat{KE}^{eav}_{\mathcal{A},\prod}(n)$在$b=1$时令$\hat{k}$从$\mathbb{G}$中均匀选取。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/3.png?raw=true" alt="3"></p>
+<p>而根据DDH问题的困难性假设，我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/4.png?raw=true" alt="4"></p>
+<p>综上有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/5.png?raw=true" alt="5"></p>
+<p>于是我们完成了证明。</p>
+<h3 id="安全性评估"><a href="#安全性评估" class="headerlink" title="安全性评估"></a>安全性评估</h3><p>我们只考虑了攻击者仅窃听情况下的安全性，但是我们仍然要考虑：</p>
+<ul>
+<li>攻击者冒充一方</li>
+<li>攻击者拦截并修改信息</li>
+</ul>
+<p>显然上述方案对这两种攻击不能防护。但是上述方案首次在理论上展示了不对称技术可以用于解决密码学中的难题。</p>
+<h1 id="公钥加密变革"><a href="#公钥加密变革" class="headerlink" title="公钥加密变革"></a>公钥加密变革</h1><p>除了密钥交换，Diffie和Hellman还提出了公钥密码学的概念。</p>
+<p>在公钥密码学中，希望进行安全通信的一方会生成一对密钥，一个公钥用于广泛传播，另一个私钥则保持秘密。这种方案也被称为非对称加密。我们可以通过公钥加密方案来保证消息的保密性，用数字签名保证消息的完整性。</p>
+<p>公钥密码学的出现使得：</p>
+<ol>
+<li>允许通过公共信道进行密钥分发</li>
+<li>减少了用户存储大量密钥的需求</li>
+<li>更适合开放环境</li>
+</ol>
+<p>很显然，公钥密码学比对称密码学更强大，但是对称密码学更高效。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我喝奶茶吗QAQ</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Gisyxi7 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Gisyxi7 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/17/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/" rel="prev" title="【八】数论与密码学困难度假设">
+      <i class="fa fa-chevron-left"></i> 【八】数论与密码学困难度假设
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/" rel="next" title="公钥加密">
+      公钥加密 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E5%88%86%E5%8F%91%E5%92%8C%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">密钥分发和密钥管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E5%88%86%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%9A%E5%AF%86%E9%92%A5%E5%88%86%E5%8F%91%E4%B8%AD%E5%BF%83"><span class="nav-number">2.</span> <span class="nav-text">部分解决方案：密钥分发中心</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-KDC-%E8%BF%9B%E8%A1%8C%E5%AF%86%E9%92%A5%E5%88%86%E5%8F%91%E7%9A%84%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.</span> <span class="nav-text">使用 KDC 进行密钥分发的协议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E5%92%8CDiffie%E2%80%93Hellman%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">密钥交换和Diffie–Hellman协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">安全性定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Diffie%E2%80%93Hellman-%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.2.</span> <span class="nav-text">Diffie–Hellman 密钥交换协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">3.2.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E8%AF%81%E6%98%8E"><span class="nav-number">3.2.2.</span> <span class="nav-text">安全性证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E8%AF%84%E4%BC%B0"><span class="nav-number">3.2.3.</span> <span class="nav-text">安全性评估</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E5%8F%98%E9%9D%A9"><span class="nav-number">4.</span> <span class="nav-text">公钥加密变革</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Gisyxi7</p>
+  <div class="site-description" itemprop="description">nju cs</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gisyxi7</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

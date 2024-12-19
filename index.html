@@ -162,6 +162,223 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">公钥加密</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-20 01:51:57" itemprop="dateCreated datePublished" datetime="2024-12-20T01:51:57+08:00">2024-12-20</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/18/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86%E4%B8%8E%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E5%8F%98%E9%9D%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/18/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86%E4%B8%8E%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E5%8F%98%E9%9D%A9/" class="post-title-link" itemprop="url">【九】密钥管理与公钥加密变革</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-18 14:27:25" itemprop="dateCreated datePublished" datetime="2024-12-18T14:27:25+08:00">2024-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-20 01:50:56" itemprop="dateModified" datetime="2024-12-20T01:50:56+08:00">2024-12-20</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="密钥分发和密钥管理"><a href="#密钥分发和密钥管理" class="headerlink" title="密钥分发和密钥管理"></a>密钥分发和密钥管理</h1><p>我们一直没有讨论这样一个问题，在之前的私钥加密体系中，双方最初如何共享一个密钥。</p>
+<p>显然，如果要安全的共享密钥，就必须要有一个安全的信道来可靠的共享，但这要付出很高的代价。保存密钥、分享密钥在开放系统中是非常困难的。</p>
+<p>总之，关于私钥加密存在以下问题：</p>
+<ul>
+<li>密钥分发</li>
+<li>管理和存储大量密钥</li>
+<li>对开放系统的不适用性</li>
+</ul>
+<h1 id="部分解决方案：密钥分发中心"><a href="#部分解决方案：密钥分发中心" class="headerlink" title="部分解决方案：密钥分发中心"></a>部分解决方案：密钥分发中心</h1><p>一种解决的方法是使用密钥分发中心(Key-Distribution Center, KDC)。</p>
+<p>假设这是一个大型公司的场景，所有员工之间需要能够进行安全通信，我们可以利用所有员工都信任某个实体（比如管理员），让这个可信实体充当KDC。</p>
+<p>当新员工入职，KDC可以以安全的方式（比如面对面）交付给新员工密钥，这其中包括：</p>
+<ol>
+<li>KDC和新员工之间的共享密钥</li>
+<li>新员工和员工之间共享的密钥</li>
+</ol>
+<p>当然这个方法需要员工储存很多密钥，我们可以通过另一种方式避免，考虑员工A和B需要进行通话：</p>
+<ol>
+<li>A用$k_A$向KDC发送消息，申请和B进行通话</li>
+<li>KDC返回一个随机密钥$k$给A和B</li>
+<li>A和B使用密钥$k$进行通信，结束后密钥$k$失效。</li>
+</ol>
+<p>以上方式的优点在于：</p>
+<ul>
+<li>每位员工只需要保存一个密钥</li>
+<li>当一名员工加入组织，只需要与KDC建立密钥</li>
+</ul>
+<p>当然也存在缺点：</p>
+<ul>
+<li>对KDC的成功攻击会导致整个系统全部崩溃，也存在内部攻击的风险</li>
+<li>KDC单点故障会或频繁请求会导致通信失败，负载过高。</li>
+</ul>
+<h2 id="使用-KDC-进行密钥分发的协议"><a href="#使用-KDC-进行密钥分发的协议" class="headerlink" title="使用 KDC 进行密钥分发的协议"></a>使用 KDC 进行密钥分发的协议</h2><p>我们下面介绍<strong>Needham–Schroeder协议</strong>。</p>
+<p>当A请求和B通信：</p>
+<ol>
+<li>KDC将使用$k_A$加密的会话密钥和使用$k_B$加密的会话密钥(ticket)发送给A</li>
+<li>A将ticket转发给B</li>
+<li>双方获得会话密钥，进行通信</li>
+</ol>
+<p>以上方案的好处在于：</p>
+<ul>
+<li>减少了额外连接，KDC只需要建立一次连接</li>
+<li>支持会话的重新启动，但是事实上ticket会有有效期</li>
+</ul>
+<h1 id="密钥交换和Diffie–Hellman协议"><a href="#密钥交换和Diffie–Hellman协议" class="headerlink" title="密钥交换和Diffie–Hellman协议"></a>密钥交换和Diffie–Hellman协议</h1><p>上述的方案仍然存在最底层的问题，就是在初始分发的时候依赖一个安全信道。但是在互联网这样的开放系统中，是难以实现的。</p>
+<p>为了在没有私密信道的情况下进行私密通信，Diffie和Hellman提出了<strong>Diffie–Hellman 协议</strong>。</p>
+<p>首先我们仅讨论：</p>
+<ul>
+<li>攻击者只能窃听，无法干预信道</li>
+<li>通信双方在开始时没有任何共享信息</li>
+</ul>
+<h2 id="安全性定义"><a href="#安全性定义" class="headerlink" title="安全性定义"></a>安全性定义</h2><p>首先我们假设双方运行一个随机化协议$\prod$，能够双方独立运行后生成相同的密钥，直观上，我们希望这个协议生成的密钥和完全随机的密钥对于攻击者是不可区分的。</p>
+<p>令$\prod$是密钥交换协议，$\mathcal{A}$是攻击者，$n$是安全参数。<br>定义以下密钥交换实验$KE^{eav}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>双方都以$1^n$为参数运行$\prod$，得到$k$和$trans$（全部通信记录）</li>
+<li>随机选择$b\in\{0,1\}$，如果$b=0$，则$\hat{k}=k$，否则随机选择$\hat{k}\in\{0,1\}^n$</li>
+<li>$\mathcal{A}$接受trans和$\hat{k}$，并返回一个布尔值$b’$</li>
+<li>如果$\mathcal{A}$返回$b’=b$，则实验结果为1，否则为0</li>
+</ol>
+<p>我们根据这个实验可以定义一个密钥交换协议$\prod$是安全的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/1.png?raw=true" alt="1"></p>
+<h2 id="Diffie–Hellman-密钥交换协议"><a href="#Diffie–Hellman-密钥交换协议" class="headerlink" title="Diffie–Hellman 密钥交换协议"></a>Diffie–Hellman 密钥交换协议</h2><p>令$\mathcal{G}$是一个多项式概率性算法，其接受$1^n$作为输入，输出一个循环群$\mathcal{G}$，其阶$q$，其生成元$g\in\mathcal{G}$。</p>
+<h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><ul>
+<li>共同输入：$1^n$</li>
+<li>协议<ol>
+<li>A运行$\mathcal{G}(1^m)$获得$(\mathbb{G},q,g)$</li>
+<li>A随机均匀选择$x\in \mathbb{Z}_q$，计算$h_A:=g^x$</li>
+<li>A将$(\mathcal{G},q,g,h_A)$发给B</li>
+<li>B接受到$(\mathcal{G},q,g,h_A)$，随机均匀选取$y\in\mathbb{Z}_q$，计算$h_B:=g^y$，B将$h_B$发给A并得到密钥$k_B:=h_A^y$</li>
+<li>A接受$h_B$，得到密钥$k_A:=h_B^x$</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/2.png?raw=true" alt="2"></p>
+<p>双方的密钥都为$g^{xy}$。因此该方案的正确性得以证明。</p>
+<h3 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>这个协议是安全的，证明如下：</p>
+<p>我们首先修改了安全性实验，令$\hat{KE}^{eav}_{\mathcal{A},\prod}(n)$在$b=1$时令$\hat{k}$从$\mathbb{G}$中均匀选取。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/3.png?raw=true" alt="3"></p>
+<p>而根据DDH问题的困难性假设，我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/4.png?raw=true" alt="4"></p>
+<p>综上有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86/5.png?raw=true" alt="5"></p>
+<p>于是我们完成了证明。</p>
+<h3 id="安全性评估"><a href="#安全性评估" class="headerlink" title="安全性评估"></a>安全性评估</h3><p>我们只考虑了攻击者仅窃听情况下的安全性，但是我们仍然要考虑：</p>
+<ul>
+<li>攻击者冒充一方</li>
+<li>攻击者拦截并修改信息</li>
+</ul>
+<p>显然上述方案对这两种攻击不能防护。但是上述方案首次在理论上展示了不对称技术可以用于解决密码学中的难题。</p>
+<h1 id="公钥加密变革"><a href="#公钥加密变革" class="headerlink" title="公钥加密变革"></a>公钥加密变革</h1><p>除了密钥交换，Diffie和Hellman还提出了公钥密码学的概念。</p>
+<p>在公钥密码学中，希望进行安全通信的一方会生成一对密钥，一个公钥用于广泛传播，另一个私钥则保持秘密。这种方案也被称为非对称加密。我们可以通过公钥加密方案来保证消息的保密性，用数字签名保证消息的完整性。</p>
+<p>公钥密码学的出现使得：</p>
+<ol>
+<li>允许通过公共信道进行密钥分发</li>
+<li>减少了用户存储大量密钥的需求</li>
+<li>更适合开放环境</li>
+</ol>
+<p>很显然，公钥密码学比对称密码学更强大，但是对称密码学更高效。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/17/%E6%95%B0%E8%AE%BA%E4%B8%8E%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%B0%E9%9A%BE%E5%BA%A6%E5%81%87%E8%AE%BE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -193,7 +410,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 01:09:57" itemprop="dateModified" datetime="2024-12-18T01:09:57+08:00">2024-12-18</time>
+                <time title="修改时间：2024-12-19 16:50:33" itemprop="dateModified" datetime="2024-12-19T16:50:33+08:00">2024-12-19</time>
               </span>
 
           
@@ -328,6 +545,49 @@
 <li>$f^{-1}(1,2)=11$</li>
 </ol>
 <p>$1^{53}\bmod 15=11\bmod 15$</p>
+<h4 id="Example3"><a href="#Example3" class="headerlink" title="Example3"></a>Example3</h4><p>我们很容易求$f(x)=([x\bmod p],[x\bmod q])$，但如何求逆？</p>
+<p>$(x_p,x_q)=x_p\cdot(1,0)++x_q\cdot(0,1)=x_p\cdot f^{-1}(1,0)+x_q\cdot f^{-1}(0,1)$</p>
+<p>问题转变为求$1_p=f^{-1}(1,0)$和$1_q=f^{-1}(0,1)$</p>
+<p>我们找$X,Y$使$Xp+Yq=1$</p>
+<p>$1_q=[X_p\bmod N],1_p=[Yq\bmod N]$</p>
+<h1 id="一些难问题假设"><a href="#一些难问题假设" class="headerlink" title="一些难问题假设"></a>一些难问题假设</h1><h2 id="Factoring"><a href="#Factoring" class="headerlink" title="Factoring"></a>Factoring</h2><p>令$GenModulus$是一个多项式时间算法，输入为$1^n$，输出为$(N,p,q)$，其中$N=pq$，$p,q$是长度为$n$比特的素数。该算法以可忽略的概率失败。</p>
+<p>定义以下实验$Factor_{\mathcal{A},GenModulus}(n)$：</p>
+<ol>
+<li>运行$GenModulus(1^n)$，得到$(N,p,q)$</li>
+<li>$\mathcal{A}$获得$N$，并输出$p’,q’$</li>
+<li>如果$N=p’\cdot q’$，实验结果为$1$，否则为$0$</li>
+</ol>
+<p>因数分解是困难的，我们有以下结论，对于任何PPT算法$\mathcal{A}$，都存在$negl$使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E8%AE%BA/1.png?raw=true" alt="1"></p>
+<h2 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h2><p>令$GenRSA$是一个多项式时间算法，输入为$1^n$，输出为$(N,e,d)$，其中$N$是两个长度为$n$比特的素数的乘积，并且$\gcd(e,\phi(N))=1,ed=1\bmod \phi(N)$。该算法以可忽略的概率失败。</p>
+<p>定义以下实验$RSA-inv_{\mathcal{A},GenRSA}(n)$：</p>
+<ol>
+<li>运行$GenRSA(1^n)$，得到$(N,e,d)$</li>
+<li>随机均匀选择$y\in\mathbb{Z}^*_N$</li>
+<li>$\mathcal{A}$获得$N,e,y$，并输出$x\in\mathbb{Z}^*_N$</li>
+<li>如果$x^e=y\bmod N$，实验结果为$1$，否则为$0$</li>
+</ol>
+<p>对于任何PPT算法$\mathcal{A}$，都存在$negl$使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E8%AE%BA/2.png?raw=true" alt="2"></p>
+<h1 id="循环群中的密码学假设"><a href="#循环群中的密码学假设" class="headerlink" title="循环群中的密码学假设"></a>循环群中的密码学假设</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>令$\mathbb{G}$是一个阶为$m$的有限群，对于任意$g\in \mathbb{G}$，我们考虑以下集合：</p>
+<script type="math/tex; mode=display">< g >=\{g_0,g_1,\cdots\}</script><p>根据之前的结论，我们有$g^m=1$，现在我们令$i$为最小的正整数使$g^i=1$，所以</p>
+<script type="math/tex; mode=display">< g >=\{ g^0,g^1,\cdots,g^{i-1}\}</script><p>不难证明$&lt; g &gt;$是$\mathbb{G}$的子群。我们称$g$是$\mathbb{G}$的生成元(generator)。</p>
+<p>我们定义在有限群$\mathbb{G}$中的一个元素$g$的阶是$i$，$g^i=1$。对于任意$g\in \mathbb{G}$，有$g^x=g^{[x\bmod i]}$。有以下推论：$g^x=g^y$当且仅当$x=y\bmod i$。<br>令$\mathbb{G}$是一个有限群，阶为$m$，对于$g\in\mathbb{G}$，其阶为$i$，我们有$i\mid m$。</p>
+<p>令$\mathbb{G}$是一个有限群，阶为$m$是一个质数，我们称之为循环群(cuclic)，其中除了单位元之外的所有元素都是$\mathbb{G}$的生成元。</p>
+<p>如果$p$是一个质数，那么$\mathbb{Z}_P^*$是一个阶为$p-1$的循环群。</p>
+<h2 id="难问题假设"><a href="#难问题假设" class="headerlink" title="难问题假设"></a>难问题假设</h2><p>现在引入一些针对循环群的计算问题，这些问题被视为是难解的。</p>
+<h3 id="The-discrete-logarithm-problem-and-assumption"><a href="#The-discrete-logarithm-problem-and-assumption" class="headerlink" title="The discrete-logarithm problem and assumption"></a>The discrete-logarithm problem and assumption</h3><p>离散对数问题是计算循环群中均匀选择的元素的离散对数，可以用以下实验来描述$DLog_{\mathcal{A},\mathcal{G}}$，其中$\mathcal{G}$是一个群生成算法：</p>
+<ol>
+<li>运行$\mathcal{G}(1^n)$，得到$(\mathbb{G},q,g)$，其中$\mathbb{G}$是一个循环群，阶为$q$是一个素数，$g$是$\mathbb{G}$的生成元</li>
+<li>随机均匀选择$h\in \mathbb{G}$</li>
+<li>$\mathcal{A}$获得$(\mathbb{G},q,g,h)$，并输出$x\in\mathbb{Z}_q$</li>
+<li>如果$g^x=h$，则实验结果为1，否则为0</li>
+</ol>
+<p>这个问题目前被视为难问题，也就是说，对于任何PPT算法$\mathcal{A}$，都存在$negl$使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E8%AE%BA/3.png?raw=true" alt="3"></p>
+<h3 id="The-Diffie-Hellman-problems-and-assumptions"><a href="#The-Diffie-Hellman-problems-and-assumptions" class="headerlink" title="The Diffie-Hellman problems and assumptions"></a>The Diffie-Hellman problems and assumptions</h3><p>这包含两个问题：</p>
+<ul>
+<li>CDH problem：给定$g,g^x,g^y$，计算$g^{xy}$</li>
+<li>DDH problem：给定$g,g^x,g^y,g^{xy}$，区别$g^xy$和任意选择的群中元素$g^z$</li>
+</ul>
+<p>目前这两个问题被视为难问题。</p>
 
       
     </div>
@@ -1435,274 +1695,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">下推自动机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-11 19:25:50" itemprop="dateCreated datePublished" datetime="2024-12-11T19:25:50+08:00">2024-12-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-12 18:10:43" itemprop="dateModified" datetime="2024-12-12T18:10:43+08:00">2024-12-12</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><p><strong>下推自动机(Pushdown Automata, PDA)</strong> 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。</p>
-<p>直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符号，还依赖于栈顶元素。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
-<ul>
-<li>$Q$为有限状态集合</li>
-<li>$\Sigma$为输入字母表</li>
-<li>$\Gamma$为栈字母表</li>
-<li>$\delta$是转移函数<ul>
-<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
-<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
-</ul>
-</li>
-<li>$q_0\in Q$为初始状态</li>
-<li>$Z_0\in\Gamma$为初始栈顶元素</li>
-<li>$F\subseteq Q$为终止状态集合</li>
-</ul>
-<p>一些字母上的约定：</p>
-<ul>
-<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
-<li>用$\cdots,X,Y,Z$表示栈符号</li>
-<li>用$w,x,y,z$表示输入符号形成的字符串</li>
-<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串</li>
-</ul>
-<h2 id="PDA的运行"><a href="#PDA的运行" class="headerlink" title="PDA的运行"></a>PDA的运行</h2><p>定义一个<strong>即时描述</strong>(Instantaneous Description, ID)是一个三元组$(q,w,\alpha)$：</p>
-<ul>
-<li>$q$是当前状态</li>
-<li>$w$是剩余未处理的输入符号</li>
-<li>$\alpha$是栈的内容，规定左侧为栈顶，右侧为栈底</li>
-</ul>
-<p>定义即时描述之间的转移为<strong>走向(Goes-To)</strong>，用$\vdash $表示。</p>
-<h2 id="PDA的语言"><a href="#PDA的语言" class="headerlink" title="PDA的语言"></a>PDA的语言</h2><p>我们有两种方式来定义PDA的语言。</p>
-<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>接受所有能让PDA走到终止状态的字符串，定义为$L(P)$。</p>
-<h3 id="根据空栈"><a href="#根据空栈" class="headerlink" title="根据空栈"></a>根据空栈</h3><p>接受所有能让PDA的栈为空的字符串，定义为$N(P)$。</p>
-<h3 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h3><p>$L(P)$和$N(P)$在定义语言的能力上是等价的。</p>
-<p>若$L=L(P)$，则存在另一个PDA $P’$使 $L=N(P’)$</p>
-<p>只需要到终止状态再清除栈即可。</p>
-<p>若$L=N(P)$，则存在另一个PDA $P’’$使 $L=L(P’’)$</p>
-<p>只需要发现栈被清空之后转移到终止状态即可。</p>
-<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>我们上面讨论的下推自动机都是<strong>非确定性下推自动机(Nondeterminstic Pushdown Automata, NPDA)</strong>。一般来说，没有特别说明，PDA都指NPDA。</p>
-<p>现在来关注一下<strong>确定性下推自动机(Determinstic Pushdown Automata, DPDA)</strong>，即对于确定的状态、输入符号和栈顶符号，最多只有一种移动的选择。</p>
-<p>我们直到NFA和DFA是等价的，但是在这里，NPDA的表达能力比DPDA要强。</p>
-<h1 id="下推自动机与上下文无关文法的等价性"><a href="#下推自动机与上下文无关文法的等价性" class="headerlink" title="下推自动机与上下文无关文法的等价性"></a>下推自动机与上下文无关文法的等价性</h1><p><strong>定理</strong>：<br>CFG和PDA在定义语言的表达能力上是等价的。</p>
-<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
-<p>思路就是$P$的每一步代表最左推导中的一步。</p>
-<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
-<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/" class="post-title-link" itemprop="url">上下文无关文法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-11 18:06:39" itemprop="dateCreated datePublished" datetime="2024-12-11T18:06:39+08:00">2024-12-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-12 18:05:11" itemprop="dateModified" datetime="2024-12-12T18:05:11+08:00">2024-12-12</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><p>正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。</p>
-<h2 id="直观描述"><a href="#直观描述" class="headerlink" title="直观描述"></a>直观描述</h2><p><strong>上下文无关文法</strong>(context-free grammar)是一种描述语言的记号，对于描述嵌套结构是很有用的。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
-<ul>
-<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
-<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
-<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
-<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
-<li><strong>头</strong>(header)是一个变量</li>
-<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
-</ul>
-</li>
-</ul>
-<p>一般来说，我们在字母使用下有以下约定</p>
-<ul>
-<li>用$A,B,C\cdots,S$表示变量</li>
-<li>用$a,b,c\cdots$表示终结符</li>
-<li>用$\cdots,X,Y,Z$表示非终结符或变量</li>
-<li>用$w,x,y,z$表示只含有终结符的字符串</li>
-<li>用$\alpha,\beta,\gamma,\cdots$来表示有终结符或变量的字符串</li>
-</ul>
-<p>根据上述定义，想要定义一个语言$\{0^n1^n|n\ge 1\}$:</p>
-<script type="math/tex; mode=display">G=(\{S\},\{0,1\},\{S\rightarrow 01,S\rightarrow 0S1\},S)</script><p>定义：</p>
-<p>称$\alpha A\beta$可以<strong>推导</strong>出$\alpha \gamma \beta$，记为$\alpha A\beta\Rightarrow \alpha \gamma \beta$。如果$A\rightarrow \gamma$是一个产生式。</p>
-<p>称零步或多步推导为<strong>迭代推导</strong>，记为$\Rightarrow^*$</p>
-<p>令$G$是一个上下文无关文法，则记$G$的语言为$L(G)$，称上下文无关文法定义的语言为<strong>上下文无关语言(Context-Free Language, CFL)</strong>。</p>
-<h2 id="最左推导和最右推导"><a href="#最左推导和最右推导" class="headerlink" title="最左推导和最右推导"></a>最左推导和最右推导</h2><p>每一次推导我们都可以替换一个任意位置的变量，但是这个任意会带来很多的不确定性，为了避免不确定性，我们规定每次替换的变量为一个固定位置（最左或最右）的变量。</p>
-<p>我们使用$\Rightarrow_l$表示最左推导，$\Rightarrow_r$ 表示最右推导。</p>
-<h1 id="解析树"><a href="#解析树" class="headerlink" title="解析树"></a>解析树</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>解析树(Parse Tree)</strong>是一棵用某个特定的上下文无关文法中的符号对每个结点做标记的树。如图所示：</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/1.png?raw=true" alt="1"></p>
-<h2 id="解析树，最左推导，最右推导"><a href="#解析树，最左推导，最右推导" class="headerlink" title="解析树，最左推导，最右推导"></a>解析树，最左推导，最右推导</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
-<p>由归纳法可以轻松证明。</p>
-<h2 id="文法歧义"><a href="#文法歧义" class="headerlink" title="文法歧义"></a>文法歧义</h2><p>我们称一个文法是<strong>有歧义的(ambiguous)</strong>，如果在这个文法定义的语言中，存在一个字符串可以被两个及以上个解析树产出。</p>
-<p>如果这个字符串存在多个对应的解析树，那么就意味着存在多种推导方式。</p>
-<p>当然，也存在文法，在这个文法定义的语言中，所有的字符串都只有唯一的解析树，我们称之为<strong>LL(1)文法</strong>。</p>
-<p>一般来说，LL(1)文法具有以下的特征：从左往右扫描字符串，且只看下一个符号。</p>
-<h2 id="固有歧义"><a href="#固有歧义" class="headerlink" title="固有歧义"></a>固有歧义</h2><p>有的有歧义的文法可以修改成没有歧义的文法，但是存在一些上下文无关语言本身是具有<strong>固有的歧义性(inherently ambiguous)</strong>的，意思是这个语言的所有的文法都是有歧义的。</p>
-<h1 id="上下文无关文法的范式"><a href="#上下文无关文法的范式" class="headerlink" title="上下文无关文法的范式"></a>上下文无关文法的范式</h1><h2 id="去除无用变量"><a href="#去除无用变量" class="headerlink" title="去除无用变量"></a>去除无用变量</h2><ul>
-<li>无法推导的变量：无法推导出任何终结字符串。</li>
-<li>不可达的符号：有一些变量或者终结符无论如何从起始符号推导都不会出现。</li>
-</ul>
-<p>以上的符号我们称为<strong>无用符号(unused symbols)</strong>。我们通过以下方法去除无用符号：</p>
-<ol>
-<li>删除不能导出终结字符串的符号</li>
-<li>删除所有从起始符号不可达的字符串</li>
-</ol>
-<p><strong>这个顺序不能颠倒！！！</strong></p>
-<h2 id="去除空串"><a href="#去除空串" class="headerlink" title="去除空串"></a>去除空串</h2><p>我们需要考虑不含$\epsilon$的语言，所以我们需要一个算法能够去除空串：</p>
-<ul>
-<li>找到所有空产生式：递归的找出所有能推导出空串的符号</li>
-<li>去除空产生式：<ul>
-<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
-<li>最后去掉所有的空产生式</li>
-</ul>
-</li>
-</ul>
-<h2 id="去除单元产生式"><a href="#去除单元产生式" class="headerlink" title="去除单元产生式"></a>去除单元产生式</h2><p><strong>单元产生式</strong>(unit production)指的是体只有一个变量的产生式。这些产生式也是可以去除的。</p>
-<p>算法如下：</p>
-<ul>
-<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
-<li>基础情况：$(A,A)一定是满足要求的有序对</li>
-<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
-</ul>
-</li>
-<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
-</ul>
-<h2 id="乔姆斯基范式"><a href="#乔姆斯基范式" class="headerlink" title="乔姆斯基范式"></a>乔姆斯基范式</h2><p>如果$L$是一个上下文无关语言，那么对于$L-\{\epsilon\}$一定存在一个上下文无关文法：</p>
-<ul>
-<li>没有无用符号</li>
-<li>没有$\epsilon-$产生式</li>
-<li>没有单元产生式</li>
-</ul>
-<p>要找到这样的文法，一定<strong>遵循以下顺序操作</strong>：</p>
-<ol>
-<li>去除$\epsilon-$产生式</li>
-<li>去除单元产生式</li>
-<li>去除无用符号<ol>
-<li>去除无法推导出终结字符串的变量</li>
-<li>去除从起始符号不可达的变量</li>
-</ol>
-</li>
-</ol>
-<p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
-<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
-<ol>
-<li>$A\rightarrow BC$</li>
-<li>$A\rightarrow a$，其中$a$是终结符。</li>
-</ol>
-<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
-<ol>
-<li>清理文法：去除无用符号，去除空产生式，去除单元产生式。</li>
-<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
-<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1772,7 +1764,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
