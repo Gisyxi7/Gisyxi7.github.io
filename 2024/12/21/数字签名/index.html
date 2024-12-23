@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="概述在公钥加密体系中，我们用数字签名实现完整性验证，对应私钥加密中的MAC。 数字签名允许资格签名者使用自己的私钥对消息进行签名，而他人通过签名者的公钥来进行验证。 数字签名相较于消息认证码有以下优势：  可公开验证 可转移性 不可否认性  与公钥和对称密钥加密的情况类似，消息认证码的生成和验证比数字签名更高效，效率通常高 2-3 个数量级。此外，消息认证码的长度也更短。因此，在无需公开验证、可转">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【十一】数字签名">
+<meta property="og:url" content="http://example.com/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/index.html">
+<meta property="og:site_name" content="Gisyxi7&#39;s blogs">
+<meta property="og:description" content="概述在公钥加密体系中，我们用数字签名实现完整性验证，对应私钥加密中的MAC。 数字签名允许资格签名者使用自己的私钥对消息进行签名，而他人通过签名者的公钥来进行验证。 数字签名相较于消息认证码有以下优势：  可公开验证 可转移性 不可否认性  与公钥和对称密钥加密的情况类似，消息认证码的生成和验证比数字签名更高效，效率通常高 2-3 个数量级。此外，消息认证码的长度也更短。因此，在无需公开验证、可转">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/1.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/2.png?raw=true">
+<meta property="article:published_time" content="2024-12-21T03:18:00.000Z">
+<meta property="article:modified_time" content="2024-12-22T16:19:03.334Z">
+<meta property="article:author" content="Gisyxi7">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/1.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【十一】数字签名 | Gisyxi7's blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gisyxi7's blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">学不动了</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【十一】数字签名
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-21 11:18:00" itemprop="dateCreated datePublished" datetime="2024-12-21T11:18:00+08:00">2024-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-23 00:19:03" itemprop="dateModified" datetime="2024-12-23T00:19:03+08:00">2024-12-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在公钥加密体系中，我们用数字签名实现完整性验证，对应私钥加密中的MAC。</p>
+<p>数字签名允许资格签名者使用自己的私钥对消息进行签名，而他人通过签名者的公钥来进行验证。</p>
+<p>数字签名相较于消息认证码有以下优势：</p>
+<ul>
+<li>可公开验证</li>
+<li>可转移性</li>
+<li>不可否认性</li>
+</ul>
+<p>与公钥和对称密钥加密的情况类似，消息认证码的生成和验证比数字签名更高效，效率通常高 2-3 个数量级。此外，消息认证码的长度也更短。因此，在无需公开验证、可转移性和/或不可否认性的场景下，且发送方主要与单一接收方通信（并能与其共享一个秘密密钥）时，应优先使用消息认证码。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>一个数字签名方案是一个三元组$(Gen,Sign,Vrfy)$：</p>
+<ul>
+<li>$Gen(1^n)$生成一对公钥$pk$和私钥$sk$，其中$pk$和$sk$的长度均为$n$</li>
+<li>$Sign(sk,m)$接受一个消息$m$，用私钥$sk$对$m$进行签名，并返回一个签名$\sigma\leftarrow Sign_{sk}(m)$</li>
+<li>$Vrfy(pk,\sigma,m)$接受一个签名$\sigma$，一个消息$m$和一个公钥$pk$，并返回一个布尔值，表示签名$\sigma$是否与消息$m$匹配，$b:=Vrfy_{pk}(m,\sigma)$</li>
+</ul>
+<p>除非以可忽略的概率，$Vrfy<em>{pk}(m,Sign</em>{sk}(m))=1$。</p>
+<p>签名方案的安全性意味着无法生成对一个新消息伪造签名，我们定义安全性实验$Sig-forge_{\mathcal{A},\prod}$：</p>
+<ol>
+<li>允许$Gen(1^n)$生成一对公钥$pk$和私钥$sk$</li>
+<li>攻击者$\mathcal{A}$获得$pk$和签名查询机$Sign_{sk}(\cdot)$，最终输出$(m,\sigma)$</li>
+<li>当且仅当 $Vrfy_{pk}(m,\sigma)=1$且这里的消息在之前没有被查询过时，实验结果为$1$，否则为$0$ </li>
+</ol>
+<p>我们定义一个数字签名方案是在选择消息攻击中不可伪造的当且仅当对于任何PPT攻击者$\mathcal{A}$，存在可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/1.png?raw=true" alt="1"></p>
+<h1 id="Hash-and-Sign"><a href="#Hash-and-Sign" class="headerlink" title="Hash-and-Sign"></a>Hash-and-Sign</h1><p>对于长消息，直接使用数字签名很麻烦，我们可以将其先使用哈希函数映射到短消息，再进行数字签名。</p>
+<p>而这种方法也是安全的，安全性基于哈希函数的抗碰撞性。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/2.png?raw=true" alt="2"></p>
+<h1 id="基于RSA的数字签名"><a href="#基于RSA的数字签名" class="headerlink" title="基于RSA的数字签名"></a>基于RSA的数字签名</h1><h2 id="Plain-RSA"><a href="#Plain-RSA" class="headerlink" title="Plain RSA"></a>Plain RSA</h2><h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><p>构造如下：</p>
+<ul>
+<li>$Gen$：运行$GenRSA(1^n)$生成$(N,e,d)$，公钥为$(N,e)$，私钥为$(N,d)$</li>
+<li>$Sign$：接受私钥$(N,d)$和消息$m$，返回签名$\sigma=[m^d\bmod N]$</li>
+<li>$Vrfy$：接受公钥$(N,e)$，签名$\sigma$，和消息$m$，返回$1$当且仅当$m=[\sigma^e\bmod N]$</li>
+</ul>
+<h3 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h3><h4 id="无消息攻击"><a href="#无消息攻击" class="headerlink" title="无消息攻击"></a>无消息攻击</h4><p>步骤如下：</p>
+<ul>
+<li>给定公钥$pk=(N,e)$，选择一个均匀分布的$\sigma\in \mathbb{Z}_N^*$</li>
+<li>计算$m:=[\sigma^e\bmod N]$</li>
+<li>输出伪造签名$(m,\sigma)$</li>
+</ul>
+<h4 id="对任意消息的签名伪造"><a href="#对任意消息的签名伪造" class="headerlink" title="对任意消息的签名伪造"></a>对任意消息的签名伪造</h4><ul>
+<li>选择任意$m_1,m_2\in \mathbb{Z}_N^*$，满足$m=m_1\cdot m_2 \bmod N$</li>
+<li>攻击者获得$m_1,m_2$的标签$\sigma_1,\sigma_2$</li>
+<li>计算$\sigma:=[\sigma_1\cdot \sigma_2\bmod N]$</li>
+<li>输出伪造签名$(m,\sigma)$</li>
+</ul>
+<h2 id="RSA-FDH"><a href="#RSA-FDH" class="headerlink" title="RSA-FDH"></a>RSA-FDH</h2><h3 id="构造-1"><a href="#构造-1" class="headerlink" title="构造"></a>构造</h3><p>令$H(\cdot)$是一个函数满足以下要求：</p>
+<ul>
+<li>这是一个单向函数或者很难求逆</li>
+<li>这是一个不可操作的函数</li>
+<li>这是一个抗碰撞函数</li>
+</ul>
+<p>构造如下：</p>
+<ul>
+<li>$Gen$：运行$GenRSA(1^n)$生成$(N,e,d)$，公钥为$(N,e)$，私钥为$(N,d)$</li>
+<li>$Sign$：$\sigma:=[H(m)^d\bmod N]$</li>
+<li>$Vrfy$：当且仅当$\sigma^e=H(m)\bmod N$时为$1$</li>
+</ul>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>这个方案是安全的。</p>
+<h1 id="基于Discrete-Logarithm-Problem的签名方案"><a href="#基于Discrete-Logarithm-Problem的签名方案" class="headerlink" title="基于Discrete-Logarithm Problem的签名方案"></a>基于Discrete-Logarithm Problem的签名方案</h1><h2 id="身份验证方案和签名"><a href="#身份验证方案和签名" class="headerlink" title="身份验证方案和签名"></a>身份验证方案和签名</h2><h3 id="身份验证"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证</h3><p>我们需要在交互的时候向另一方自证身份。在身份验证方案中，我们称验证自己身份的一方是Prover，验证对方身份的一方是Verifier。我们只考虑公钥加密的情况，双方并未事先交换任何信息。验证者只知道证明者的公钥。身份验证协议的成功执行可以让验证者确信，它正在与预期的证明者而非冒名顶替者通信。</p>
+<p>我们仅考虑一种特定形式的三轮身份验证方案，其中证明者由两个算法$P_1,P_2$指定，验证者由算法$V$指定。</p>
+<ol>
+<li>证明者运行$P_1(sk)$获得初始消息$I$和状态信息$st$，将$I$发送给验证者。</li>
+<li>验证者从证明者公钥$pk$定义的$\Omega_{pk}$中均匀挑选一个$r$，发送给证明者。</li>
+<li>证明者运行$P_2(sk,r,st)$，得到响应$s$，将$s$发送给验证者。</li>
+<li>验证者运行$V(pk,r,s)$，并接受当且仅当结果与初始消息$I$一致。</li>
+</ol>
+<h1 id="证书与公钥基础设施"><a href="#证书与公钥基础设施" class="headerlink" title="证书与公钥基础设施"></a>证书与公钥基础设施</h1><p>我们要展示如何利用公钥密码学本身安全分发公钥。</p>
+<p>我们要证明，如果一个可信方的公钥能够以安全的方式分发，该密钥可以用来引导其他任意数量公钥的安全分发，所以这从原则上讲，安全密钥分发的问题只需要解决一次。</p>
+<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><p>数字证书是将一个实体与一个公钥绑定在一起的签名。假设一方Charlie对某个安全的数字签名方案生成了密钥对$(pk<em>C,sk_C)$，这时另一方Bob也生成了密钥对$(pk_B,sk_B)$，Charlie可以为$pk_B$计算签名$cert</em>{C\to B}=Sign_{sk_C}$，然后将签名提供给Bob。</p>
+<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>假设Bob想和知道$pk<em>C$的另一方Alica通信。Bob可以将$(pk_B,cert</em>{C\to B})$发送给Alice，Alice可以验证，如果信任Charlie，可以接受$pk_B$作为Bob的合法公钥。</p>
+<p>指定所有完整的细节就构成了一个公钥基础设施(Public-key Infrastructure,PKI)</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我喝奶茶吗QAQ</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Gisyxi7 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Gisyxi7 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/" rel="prev" title="【十】公钥加密">
+      <i class="fa fa-chevron-left"></i> 【十】公钥加密
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hash-and-Sign"><span class="nav-number">3.</span> <span class="nav-text">Hash-and-Sign</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ERSA%E7%9A%84%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-number">4.</span> <span class="nav-text">基于RSA的数字签名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Plain-RSA"><span class="nav-number">4.1.</span> <span class="nav-text">Plain RSA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">4.1.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BB%E5%87%BB"><span class="nav-number">4.1.2.</span> <span class="nav-text">攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E6%B6%88%E6%81%AF%E6%94%BB%E5%87%BB"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">无消息攻击</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E4%BB%BB%E6%84%8F%E6%B6%88%E6%81%AF%E7%9A%84%E7%AD%BE%E5%90%8D%E4%BC%AA%E9%80%A0"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">对任意消息的签名伪造</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RSA-FDH"><span class="nav-number">4.2.</span> <span class="nav-text">RSA-FDH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.2.2.</span> <span class="nav-text">安全性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EDiscrete-Logarithm-Problem%E7%9A%84%E7%AD%BE%E5%90%8D%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">基于Discrete-Logarithm Problem的签名方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E6%96%B9%E6%A1%88%E5%92%8C%E7%AD%BE%E5%90%8D"><span class="nav-number">5.1.</span> <span class="nav-text">身份验证方案和签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">5.1.1.</span> <span class="nav-text">身份验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E4%B8%8E%E5%85%AC%E9%92%A5%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">证书与公钥基础设施</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="nav-number">6.1.</span> <span class="nav-text">数字证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">6.2.</span> <span class="nav-text">证书的使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Gisyxi7</p>
+  <div class="site-description" itemprop="description">nju cs</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gisyxi7</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

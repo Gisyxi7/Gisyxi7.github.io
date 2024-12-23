@@ -162,6 +162,140 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" class="post-title-link" itemprop="url">【十一】数字签名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-21 11:18:00" itemprop="dateCreated datePublished" datetime="2024-12-21T11:18:00+08:00">2024-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-23 00:19:03" itemprop="dateModified" datetime="2024-12-23T00:19:03+08:00">2024-12-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在公钥加密体系中，我们用数字签名实现完整性验证，对应私钥加密中的MAC。</p>
+<p>数字签名允许资格签名者使用自己的私钥对消息进行签名，而他人通过签名者的公钥来进行验证。</p>
+<p>数字签名相较于消息认证码有以下优势：</p>
+<ul>
+<li>可公开验证</li>
+<li>可转移性</li>
+<li>不可否认性</li>
+</ul>
+<p>与公钥和对称密钥加密的情况类似，消息认证码的生成和验证比数字签名更高效，效率通常高 2-3 个数量级。此外，消息认证码的长度也更短。因此，在无需公开验证、可转移性和/或不可否认性的场景下，且发送方主要与单一接收方通信（并能与其共享一个秘密密钥）时，应优先使用消息认证码。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>一个数字签名方案是一个三元组$(Gen,Sign,Vrfy)$：</p>
+<ul>
+<li>$Gen(1^n)$生成一对公钥$pk$和私钥$sk$，其中$pk$和$sk$的长度均为$n$</li>
+<li>$Sign(sk,m)$接受一个消息$m$，用私钥$sk$对$m$进行签名，并返回一个签名$\sigma\leftarrow Sign_{sk}(m)$</li>
+<li>$Vrfy(pk,\sigma,m)$接受一个签名$\sigma$，一个消息$m$和一个公钥$pk$，并返回一个布尔值，表示签名$\sigma$是否与消息$m$匹配，$b:=Vrfy_{pk}(m,\sigma)$</li>
+</ul>
+<p>除非以可忽略的概率，$Vrfy<em>{pk}(m,Sign</em>{sk}(m))=1$。</p>
+<p>签名方案的安全性意味着无法生成对一个新消息伪造签名，我们定义安全性实验$Sig-forge_{\mathcal{A},\prod}$：</p>
+<ol>
+<li>允许$Gen(1^n)$生成一对公钥$pk$和私钥$sk$</li>
+<li>攻击者$\mathcal{A}$获得$pk$和签名查询机$Sign_{sk}(\cdot)$，最终输出$(m,\sigma)$</li>
+<li>当且仅当 $Vrfy_{pk}(m,\sigma)=1$且这里的消息在之前没有被查询过时，实验结果为$1$，否则为$0$ </li>
+</ol>
+<p>我们定义一个数字签名方案是在选择消息攻击中不可伪造的当且仅当对于任何PPT攻击者$\mathcal{A}$，存在可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/1.png?raw=true" alt="1"></p>
+<h1 id="Hash-and-Sign"><a href="#Hash-and-Sign" class="headerlink" title="Hash-and-Sign"></a>Hash-and-Sign</h1><p>对于长消息，直接使用数字签名很麻烦，我们可以将其先使用哈希函数映射到短消息，再进行数字签名。</p>
+<p>而这种方法也是安全的，安全性基于哈希函数的抗碰撞性。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/2.png?raw=true" alt="2"></p>
+<h1 id="基于RSA的数字签名"><a href="#基于RSA的数字签名" class="headerlink" title="基于RSA的数字签名"></a>基于RSA的数字签名</h1><h2 id="Plain-RSA"><a href="#Plain-RSA" class="headerlink" title="Plain RSA"></a>Plain RSA</h2><h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><p>构造如下：</p>
+<ul>
+<li>$Gen$：运行$GenRSA(1^n)$生成$(N,e,d)$，公钥为$(N,e)$，私钥为$(N,d)$</li>
+<li>$Sign$：接受私钥$(N,d)$和消息$m$，返回签名$\sigma=[m^d\bmod N]$</li>
+<li>$Vrfy$：接受公钥$(N,e)$，签名$\sigma$，和消息$m$，返回$1$当且仅当$m=[\sigma^e\bmod N]$</li>
+</ul>
+<h3 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h3><h4 id="无消息攻击"><a href="#无消息攻击" class="headerlink" title="无消息攻击"></a>无消息攻击</h4><p>步骤如下：</p>
+<ul>
+<li>给定公钥$pk=(N,e)$，选择一个均匀分布的$\sigma\in \mathbb{Z}_N^*$</li>
+<li>计算$m:=[\sigma^e\bmod N]$</li>
+<li>输出伪造签名$(m,\sigma)$</li>
+</ul>
+<h4 id="对任意消息的签名伪造"><a href="#对任意消息的签名伪造" class="headerlink" title="对任意消息的签名伪造"></a>对任意消息的签名伪造</h4><ul>
+<li>选择任意$m_1,m_2\in \mathbb{Z}_N^*$，满足$m=m_1\cdot m_2 \bmod N$</li>
+<li>攻击者获得$m_1,m_2$的标签$\sigma_1,\sigma_2$</li>
+<li>计算$\sigma:=[\sigma_1\cdot \sigma_2\bmod N]$</li>
+<li>输出伪造签名$(m,\sigma)$</li>
+</ul>
+<h2 id="RSA-FDH"><a href="#RSA-FDH" class="headerlink" title="RSA-FDH"></a>RSA-FDH</h2><h3 id="构造-1"><a href="#构造-1" class="headerlink" title="构造"></a>构造</h3><p>令$H(\cdot)$是一个函数满足以下要求：</p>
+<ul>
+<li>这是一个单向函数或者很难求逆</li>
+<li>这是一个不可操作的函数</li>
+<li>这是一个抗碰撞函数</li>
+</ul>
+<p>构造如下：</p>
+<ul>
+<li>$Gen$：运行$GenRSA(1^n)$生成$(N,e,d)$，公钥为$(N,e)$，私钥为$(N,d)$</li>
+<li>$Sign$：$\sigma:=[H(m)^d\bmod N]$</li>
+<li>$Vrfy$：当且仅当$\sigma^e=H(m)\bmod N$时为$1$</li>
+</ul>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>这个方案是安全的。</p>
+<h1 id="基于Discrete-Logarithm-Problem的签名方案"><a href="#基于Discrete-Logarithm-Problem的签名方案" class="headerlink" title="基于Discrete-Logarithm Problem的签名方案"></a>基于Discrete-Logarithm Problem的签名方案</h1><h2 id="身份验证方案和签名"><a href="#身份验证方案和签名" class="headerlink" title="身份验证方案和签名"></a>身份验证方案和签名</h2><h3 id="身份验证"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证</h3><p>我们需要在交互的时候向另一方自证身份。在身份验证方案中，我们称验证自己身份的一方是Prover，验证对方身份的一方是Verifier。我们只考虑公钥加密的情况，双方并未事先交换任何信息。验证者只知道证明者的公钥。身份验证协议的成功执行可以让验证者确信，它正在与预期的证明者而非冒名顶替者通信。</p>
+<p>我们仅考虑一种特定形式的三轮身份验证方案，其中证明者由两个算法$P_1,P_2$指定，验证者由算法$V$指定。</p>
+<ol>
+<li>证明者运行$P_1(sk)$获得初始消息$I$和状态信息$st$，将$I$发送给验证者。</li>
+<li>验证者从证明者公钥$pk$定义的$\Omega_{pk}$中均匀挑选一个$r$，发送给证明者。</li>
+<li>证明者运行$P_2(sk,r,st)$，得到响应$s$，将$s$发送给验证者。</li>
+<li>验证者运行$V(pk,r,s)$，并接受当且仅当结果与初始消息$I$一致。</li>
+</ol>
+<h1 id="证书与公钥基础设施"><a href="#证书与公钥基础设施" class="headerlink" title="证书与公钥基础设施"></a>证书与公钥基础设施</h1><p>我们要展示如何利用公钥密码学本身安全分发公钥。</p>
+<p>我们要证明，如果一个可信方的公钥能够以安全的方式分发，该密钥可以用来引导其他任意数量公钥的安全分发，所以这从原则上讲，安全密钥分发的问题只需要解决一次。</p>
+<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><p>数字证书是将一个实体与一个公钥绑定在一起的签名。假设一方Charlie对某个安全的数字签名方案生成了密钥对$(pk<em>C,sk_C)$，这时另一方Bob也生成了密钥对$(pk_B,sk_B)$，Charlie可以为$pk_B$计算签名$cert</em>{C\to B}=Sign_{sk_C}$，然后将签名提供给Bob。</p>
+<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>假设Bob想和知道$pk<em>C$的另一方Alica通信。Bob可以将$(pk_B,cert</em>{C\to B})$发送给Alice，Alice可以验证，如果信任Charlie，可以接受$pk_B$作为Bob的合法公钥。</p>
+<p>指定所有完整的细节就构成了一个公钥基础设施(Public-key Infrastructure,PKI)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -176,7 +310,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">公钥加密</a>
+            <a href="/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">【十】公钥加密</a>
         </h2>
 
         <div class="post-meta">
@@ -188,6 +322,13 @@
 
               <time title="创建时间：2024-12-20 01:51:57" itemprop="dateCreated datePublished" datetime="2024-12-20T01:51:57+08:00">2024-12-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-21 11:17:11" itemprop="dateModified" datetime="2024-12-21T11:17:11+08:00">2024-12-21</time>
+              </span>
 
           
 
@@ -200,7 +341,97 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>公钥加密的引入是密码学领域的一场革命。</p>
+<p>对称密码学的场景中必须双方都商定一个共享密钥，而公钥加密中这是非对称的，接收方生成一对密钥$(pk,sk)$，分别是公钥和私钥，发送方使用公钥加密消息，接受方使用私钥解密密文。</p>
+<p>目标是避免双方事先见面交换任何信息，那么发送发如何获取公钥$pk$，假设A是接受方，B是发送方：</p>
+<ol>
+<li>A生成$(pk,sk)$并将$pk$发送给B，但是这里假设攻击者无法修改A发送给B的密钥，即经过认证安全的信道。</li>
+<li>A提前公开自己的公钥，使得任何一方都可以使用相同的公钥与A进行加密童话。</li>
+</ol>
+<p>我们可以看到，公钥的本质是完全公开的。</p>
+<h2 id="与对称加密的比较"><a href="#与对称加密的比较" class="headerlink" title="与对称加密的比较"></a>与对称加密的比较</h2><p>相比之下，公钥加密的优势有：</p>
+<ul>
+<li>解决密钥分发问题</li>
+<li>单个接受多个发送方时更方便</li>
+<li>支持开放系统</li>
+</ul>
+<p>公钥加密的主要缺点就是：</p>
+<ul>
+<li>效率低，速度比对称密钥加密要慢2-3个数量级。</li>
+<li>公钥加密通常会导致更大的密文扩展（即需要存储或传输更多的比特）。</li>
+<li><h2 id="公钥的安全分发"><a href="#公钥的安全分发" class="headerlink" title="公钥的安全分发"></a>公钥的安全分发</h2>如果攻击者能纂改信道，破坏传输的公钥，那么在没有事先共享信息的情况下无法做到加密通信。所以我们目前讨论的是攻击者仅能获取公钥。</li>
+</ul>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>一个公钥加密方案是一个多项式概率算法三元组$(Gen,Enc,Dec)$，其中：</p>
+<ul>
+<li>$Gen$：接受输入$1^n$，输出密钥对$(pk,sk)$，其中$pk$是公钥，$sk$是私钥。我们不妨假设两个密钥的长度都为$n$。其中公钥$pk$可以定义消息空间为$\mathcal{M}_{pk}$。</li>
+<li>$Enc$：接受$pk$和消息$m\in \mathcal{M}<em>{pk}$，输出密文$c\leftarrow Enc</em>{pk}(m)$。这里$Enc$一定是一个概率算法。</li>
+<li>$Dec$：接受$sk$和密文$c$，输出消息$m:= Dec_{sk}(c)$。可以输出错误符号$\perp$。</li>
+</ul>
+<p>这里要求，除非以可忽略的概率，$\forall m\in \mathcal{M}<em>{pk},Dev</em>{sk}(Enc_{pk}(m))=m$。</p>
+<h2 id="对于选择明文攻击的安全性-CPA"><a href="#对于选择明文攻击的安全性-CPA" class="headerlink" title="对于选择明文攻击的安全性(CPA)"></a>对于选择明文攻击的安全性(CPA)</h2><p>定义以下实验$PubK^{eav}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>运行$Gen(1^n)$获得$(pk,sk)$</li>
+<li>攻击者$\mathcal{A}$获得$pk$，输出两个等长消息$m<em>1,m_2\in \mathcal{M}</em>{pk}$</li>
+<li>随机均匀选择$b\in\{0,1\}$，计算$c\leftarrow Enc_{pk}(m_b)$，将其返回给$\mathcal{A}$</li>
+<li>$\mathcal{A}$输出$b’$，当且仅当$b=b’$，实验结果为$1$，反之为$0$</li>
+</ol>
+<p>一个公钥加密方案被认为在有窃听者的情况下是不可区分的当且仅当对于任意PPT攻击者$\mathcal{A}$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/1.png?raw=true" alt="1"></p>
+<p>攻击者知道公钥$pk$，而我们之前也说过加密方案也是不保密的，这意味着攻击者实际上得到一个加密查询机，可以进行选择明文攻击，所以上述定义的安全性等价于<strong>CPA-Security</strong>。这也就呼应了上述观点，加密算法一定是概率算法，不能为确定性算法。</p>
+<h2 id="多消息加密"><a href="#多消息加密" class="headerlink" title="多消息加密"></a>多消息加密</h2><p>对于CPA安全的公钥加密方案，其多消息加密也是CPA安全的。</p>
+<p>这也就意味着我们遇到长消息可以拆分成固定长度的块进行加密，从而实现从固定长度加密方案到任意长度的加密方案，而且修改后的方案仍然安全。</p>
+<h2 id="对于选择密文攻击的安全性-CCA"><a href="#对于选择密文攻击的安全性-CCA" class="headerlink" title="对于选择密文攻击的安全性(CCA)"></a>对于选择密文攻击的安全性(CCA)</h2><p>在选择密文攻击中，攻击者能够解密其选择的任意密文。假设窃听者观察到一个S发送给R的密文$c$，有以下两种方式进行选择密文攻击：</p>
+<ol>
+<li>伪装成S发送修改后的密文$c’$</li>
+<li>以自己的名义发送密文$c’$</li>
+</ol>
+<p>定义以下实验$PubK^{cca}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>运行$Gen(1^n)$获得$(pk,sk)$</li>
+<li>攻击者$\mathcal{A}$获得$pk$和一个解密查询机$Dec<em>{sk}(\cdot)$，输出两个等长消息$m_1,m_2\in \mathcal{M}</em>{pk}$</li>
+<li>随机均匀选择$b\in\{0,1\}$，计算$c\leftarrow Enc_{pk}(m_b)$，将其返回给$\mathcal{A}$</li>
+<li>攻击者$\mathcal{A}$可以继续查询任何除了密文$c$本身以外的密文解密，最终$\mathcal{A}$输出$b’$</li>
+<li>当且仅当$b=b’$，实验结果为$1$，反之为$0$</li>
+</ol>
+<p>一个公钥加密方案被认为在有选择密文攻击的情况下是不可区分的当且仅当对于任意PPT攻击者$\mathcal{A}$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/2.png?raw=true" alt="2"></p>
+<p>如果一个公钥加密方案是CPA安全的，那么该方案对于多消息加密也是CPA安全的，但是上一小节中所述的从定长到任意长度的修改后方案不是CPA安全的，因为可以通过调换块的位置进行解密查询。</p>
+<h1 id="混合加密与KEM-DEM范式"><a href="#混合加密与KEM-DEM范式" class="headerlink" title="混合加密与KEM/DEM范式"></a>混合加密与KEM/DEM范式</h1><p>公钥加密通常会导致更大的密文扩展（即需要存储或传输更多的比特）公钥加密通常会导致更大的密文扩展（即需要存储或传输更多的比特）公钥加密通常会导致更大的密文扩展（即需要存储或传输更多的比特）。</p>
+<p>所以提出了混合加密的方案：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/3.png?raw=true" alt="3"></p>
+<p>密钥封装机制（Key-Encapsulation Mechanism, KEM）是一种公钥原语，用于在混合加密方案中高效生成对称密钥加密所需的加密密钥$k$及其对应的密文$c$。相应地，对称密钥加密方案在此场景中被称为数据封装机制（Data-Encapsulation Mechanism, DEM）。</p>
+<h1 id="基于CDH-DDH加密"><a href="#基于CDH-DDH加密" class="headerlink" title="基于CDH/DDH加密"></a>基于CDH/DDH加密</h1><p>现在我们讨论一些构造实例。</p>
+<h2 id="El-Gamal-加密"><a href="#El-Gamal-加密" class="headerlink" title="El Gamal 加密"></a>El Gamal 加密</h2><p>这是基于Diffie-Hellman密钥交换协议。</p>
+<p>令$\mathcal{G}$是一个多项式概率性算法，其接受$1^n$作为输入，输出一个循环群$\mathcal{G}$，其阶$q$，其生成元$g\in\mathcal{G}$。</p>
+<p>构造如下：</p>
+<ul>
+<li>$Gen$：接受$1^n$，运行$\mathcal{G}(1^n)$，获得$(\mathbb{G},q,g)$，均匀随机选择$x\in\mathbb{Z}_q$，计算$h:=g^x$，公钥就是$(\mathcal{G},q,g,h)$， 私钥是$(\mathbb{G},q,g,x)$，消息空间是$\mathbb{G}$</li>
+<li>$Enc$：接受公钥$(\mathcal{G},q,g,h)$和消息$m\in mathbb{G}$，随机均匀选择$y\in\mathbb{Z}_q$，密文是$(g^y,h^y\cdot m)$</li>
+<li>$Dec$：接受私钥$(\mathbb{G},q,g,x)$和密文$(c_1,c_2)$，输出$c_2/ c_1^x$</li>
+</ul>
+<p>因为$\hat{m}=\frac{c_2}{c_1^x}=\frac{h^y\cdot m}{g^{xy}}=m$，所以这个方案是正确的。</p>
+<p>如果DDH问题是难问题，那么这个加密方案是CPA安全的。</p>
+<p>但是这个方案不是CCA安全的，因为这个加密方案是可操作的，比如我们有密文$(c_1,c_2)$，我们可以构造出$(c_1^2,c_2^2)$，其是$m^2$的密文。</p>
+<h1 id="基于RSA加密"><a href="#基于RSA加密" class="headerlink" title="基于RSA加密"></a>基于RSA加密</h1><p>这里的构造基于RSA是难问题的假设。</p>
+<h2 id="Plain-RSA"><a href="#Plain-RSA" class="headerlink" title="Plain RSA"></a>Plain RSA</h2><p>首先定义$GenRSA$，这是一个PPT算法，过程如下：</p>
+<ol>
+<li>接受输入$1^n$</li>
+<li>运行$GenModules(1^n)$，获得$(N,p,q)$</li>
+<li>计算$\phi(N)=(p-1)\cdot(q-1)$，选择$e$使$\gcd(e,\phi(N))=1$</li>
+<li>计算$d:=[e^{-1}\bmod\phi(N)]$</li>
+<li>输出$(N,e,d)$</li>
+</ol>
+<p>根据这个算法，我们有以下加密方案构造：</p>
+<ul>
+<li>$Gen$：接受$1^n$，运行$GenRSA(1^n)$，获得$(N,e,d)$，公钥是$(N,e)$，私钥是$(N,d)$，消息空间是$\mathbb{Z}_N^*$</li>
+<li>$Enc$：接受公钥$(N,e)$和消息$m\in\mathbb{Z}_N^*$，密文是$c:=[m^e\bmod N]$ </li>
+<li>$Dec$：接受私钥$(N,d)$和密文$c\in\mathbb{Z}_N^*$，输出$m:=[c^d\bmod N]$</li>
+</ul>
+<p>而这是一个确定性算法，所以不是CPA安全的。</p>
+<h2 id="Padded-RSA"><a href="#Padded-RSA" class="headerlink" title="Padded RSA"></a>Padded RSA</h2><p>主要思想是需要一个填充算法：</p>
+<ul>
+<li>将原消息随即填充至$\mathbb{Z}_N^*$中的一个长消息，将其加密</li>
+<li>解密后使用填充算法的逆算法进行换元，所以这就意味着填充必须是可逆的</li>
+</ul>
+<p>该方案的安全性依赖于具体的填充算法。</p>
+
       
     </div>
 
@@ -1603,98 +1834,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/" class="post-title-link" itemprop="url">【一】密码学引入</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-12 19:47:28" itemprop="dateCreated datePublished" datetime="2024-12-12T19:47:28+08:00">2024-12-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-13 14:44:16" itemprop="dateModified" datetime="2024-12-13T14:44:16+08:00">2024-12-13</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第一章 Introduction</p>
-<h1 id="密码学"><a href="#密码学" class="headerlink" title="密码学"></a>密码学</h1><p>在牛津词典中，密码学被定义为编写或破译密码的艺术。该定义只关注用来实现秘密通信的各类密码，但是现代密码学涵盖了更多更广的领域：确保数据完整性的机制、交换秘密密钥的技术、用户认证的协议、电子投票、加密货币等等。</p>
-<h1 id="私钥加密的设定"><a href="#私钥加密的设定" class="headerlink" title="私钥加密的设定"></a>私钥加密的设定</h1><p>古典密码学关注的是设计和使用能够使两方在信息传递过程中保持消息机密的密码（或称密文）的方法。在现代密码学中，我们称之为加密方案(encryption scheme)，所有的古典加密方案都依赖于一个事先双方共享的密钥-私钥(private-key)。</p>
-<p>在私钥加密的背景下，双方共享一把密钥，一方使用密钥进行加密获得密文，一方使用密钥进行解密获得明文。解密和加密使用相同的密钥，这被称为<strong>对称密钥</strong>(symmetric-key)。</p>
-<p>私钥密码学有两个典型应用场景：</p>
-<ul>
-<li>同一时间下不同空间的通信</li>
-<li>同一空间下不同时间的通信</li>
-</ul>
-<h2 id="加密的语法"><a href="#加密的语法" class="headerlink" title="加密的语法"></a>加密的语法</h2><p>形式化上，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
-<ul>
-<li>$Gen$： 是一个概率算法，依据某些分布生成一个密钥$k$</li>
-<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$</li>
-<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$</li>
-</ul>
-<p>对于$\forall m\in \mathcal{M},Dec_k(Enc_k(m))=m$</p>
-<p>我们用$\mathcal{K}$来表示密钥空间，用$\mathcal{C}$来表示密文空间。</p>
-<h2 id="克克霍夫原则（Kerckhoffs’-principle）"><a href="#克克霍夫原则（Kerckhoffs’-principle）" class="headerlink" title="克克霍夫原则（Kerckhoffs’ principle）"></a>克克霍夫原则（Kerckhoffs’ principle）</h2><p>密码方法不应依赖于保密，甚至在其落入敌手后也不应造成不便。</p>
-<p>也就是说，即使对手知道方案的所有细节，只要对手不知道所用的密钥，加密方案仍应保持安全性。换句话说，安全性不应建立在加密方案本身的保密之上；克克霍夫原则要求安全性仅依赖于密钥的保密。</p>
-<h1 id="古典密码"><a href="#古典密码" class="headerlink" title="古典密码"></a>古典密码</h1><h2 id="凯撒密码"><a href="#凯撒密码" class="headerlink" title="凯撒密码"></a>凯撒密码</h2><p>经典的移位密码，把每个字母统一往后移动$k$位，只需要尝试最多25次就可以破解，所以这也暗示了一个安全的加密方案应该要能够抵抗暴力破解，至少密钥空间要足够大。</p>
-<h2 id="单字母替换密码"><a href="#单字母替换密码" class="headerlink" title="单字母替换密码"></a>单字母替换密码</h2><p>这里使用一个字母表的双射来函数来实现加密，显然密钥空间很大(26!)。</p>
-<p>可以通过词频分析来进行有效率的攻击。</p>
-<h1 id="现代密码学原则"><a href="#现代密码学原则" class="headerlink" title="现代密码学原则"></a>现代密码学原则</h1><p>古典密码学依赖的更多是经验和直觉。如今，人们以更为系统化的方式设计和分析密码方案，最终目标是对给定构造是否安全给出严格的证明。为了实现这一点，我们首先需要形式化的定义，以精确界定“安全”的含义；这些定义本身就很有价值和趣味性。事实证明，大多数密码学证明都依赖于目前尚未证实的假设，即关于某些数学问题的算法求解难度的假设；因此我们必须明确并精确地陈述这些假设。</p>
-<h2 id="原则1-形式化定义"><a href="#原则1-形式化定义" class="headerlink" title="原则1-形式化定义"></a>原则1-形式化定义</h2><p>明确的定义有助于指导密码学方案的设计。定义还为对具体构造进行评估和分析提供了途径。</p>
-<h2 id="原则2-精确假设"><a href="#原则2-精确假设" class="headerlink" title="原则2-精确假设"></a>原则2-精确假设</h2><p>大多数现代密码学构造无法无条件地证明其安全性；要给出无条件的证明意味着要解决计算复杂性理论中当前仍远未能解答的问题。</p>
-<p>现代密码学要求任何此类假设都必须明确、精确地加以阐述。最基本的原因是，安全性证明本身需要精确的假设。</p>
-<p>人们通常倾向于使用“更简单”的假设——也就是对某个简洁明了的数学问题的难度假设，而非对一个复杂方案满足复杂安全定义的假设。</p>
-<h2 id="原则3-安全性证明"><a href="#原则3-安全性证明" class="headerlink" title="原则3-安全性证明"></a>原则3-安全性证明</h2><p>借助前面讨论的两个原则（明确的定义与精确定义的假设），我们即可实现目标：在给定的假设条件下，严格证明某个构造满足相应的安全性定义。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1764,7 +1903,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
