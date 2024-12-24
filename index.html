@@ -327,7 +327,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-21 11:17:11" itemprop="dateModified" datetime="2024-12-21T11:17:11+08:00">2024-12-21</time>
+                <time title="修改时间：2024-12-23 23:45:25" itemprop="dateModified" datetime="2024-12-23T23:45:25+08:00">2024-12-23</time>
               </span>
 
           
@@ -359,8 +359,8 @@
 <ul>
 <li>效率低，速度比对称密钥加密要慢2-3个数量级。</li>
 <li>公钥加密通常会导致更大的密文扩展（即需要存储或传输更多的比特）。</li>
-<li><h2 id="公钥的安全分发"><a href="#公钥的安全分发" class="headerlink" title="公钥的安全分发"></a>公钥的安全分发</h2>如果攻击者能纂改信道，破坏传输的公钥，那么在没有事先共享信息的情况下无法做到加密通信。所以我们目前讨论的是攻击者仅能获取公钥。</li>
 </ul>
+<h2 id="公钥的安全分发"><a href="#公钥的安全分发" class="headerlink" title="公钥的安全分发"></a>公钥的安全分发</h2><p>如果攻击者能纂改信道，破坏传输的公钥，那么在没有事先共享信息的情况下无法做到加密通信。所以我们目前讨论的是攻击者仅能获取公钥。</p>
 <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>一个公钥加密方案是一个多项式概率算法三元组$(Gen,Enc,Dec)$，其中：</p>
 <ul>
 <li>$Gen$：接受输入$1^n$，输出密钥对$(pk,sk)$，其中$pk$是公钥，$sk$是私钥。我们不妨假设两个密钥的长度都为$n$。其中公钥$pk$可以定义消息空间为$\mathcal{M}_{pk}$。</li>
@@ -403,7 +403,7 @@
 <p>构造如下：</p>
 <ul>
 <li>$Gen$：接受$1^n$，运行$\mathcal{G}(1^n)$，获得$(\mathbb{G},q,g)$，均匀随机选择$x\in\mathbb{Z}_q$，计算$h:=g^x$，公钥就是$(\mathcal{G},q,g,h)$， 私钥是$(\mathbb{G},q,g,x)$，消息空间是$\mathbb{G}$</li>
-<li>$Enc$：接受公钥$(\mathcal{G},q,g,h)$和消息$m\in mathbb{G}$，随机均匀选择$y\in\mathbb{Z}_q$，密文是$(g^y,h^y\cdot m)$</li>
+<li>$Enc$：接受公钥$(\mathcal{G},q,g,h)$和消息$m\in \mathbb{G}$，随机均匀选择$y\in\mathbb{Z}_q$，密文是$(g^y,h^y\cdot m)$</li>
 <li>$Dec$：接受私钥$(\mathbb{G},q,g,x)$和密文$(c_1,c_2)$，输出$c_2/ c_1^x$</li>
 </ul>
 <p>因为$\hat{m}=\frac{c_2}{c_1^x}=\frac{h^y\cdot m}{g^{xy}}=m$，所以这个方案是正确的。</p>
@@ -641,7 +641,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-19 16:50:33" itemprop="dateModified" datetime="2024-12-19T16:50:33+08:00">2024-12-19</time>
+                <time title="修改时间：2024-12-23 18:58:56" itemprop="dateModified" datetime="2024-12-23T18:58:56+08:00">2024-12-23</time>
               </span>
 
           
@@ -686,7 +686,7 @@
 <p>显然对于除法，同余是不可传递的。但是我们可以定义一种有意义的除法。</p>
 <p>如果对于给定的整数$b$，存在一个整数$c$使得$bc=1\bmod N$，我们称$b$在模$N$的意义下是<strong>可逆的</strong>(invertible)，并称$c$是$b$在模$N$下的逆元。</p>
 <p>$0$是不可逆的。如果$c$是$b$在模$N$下的逆元，那么$c\bmod N$也是。</p>
-<p>当$b$是可逆的时候，我们记$b^{-1}$为唯一的在$\{1,\cdots,N-1\}$范围那内的乘法逆元。</p>
+<p>当$b$是可逆的时候，我们记$b^{-1}$为唯一的在$\{1,\cdots,N-1\}$范围内的乘法逆元。</p>
 <p>当$b$是可逆时，我们定义除以$b$等价于乘$b^{-1}$，即$[\frac{a}{b}\bmod N]=[ab^{-1}\bmod N]$。</p>
 <p>那么问题的关键就是哪些整数在模$N$下是可逆的。我们有以下结论：令$b\ge 1,N&gt;1$是整数，那么$b$在模$N$下是可逆的当且仅当$gcd(b,N)=1$。</p>
 <p>要求$b$在模$N$下的逆元，先找出$X,Y$使得$bX+NY=1\bmod N$，然后计算$b^{-1}=[X\bmod N]$</p>
@@ -736,7 +736,7 @@
 <p>一般我们使用$0$表示加法中的单位元，$1$表示乘法中的单位元。</p>
 <h3 id="相关定理"><a href="#相关定理" class="headerlink" title="相关定理"></a>相关定理</h3><p>令$\mathbb{G}$是一个有限群，其阶为$m$，那么$\forall g\in \mathbb{G},g^m=1$。</p>
 <p>令$\mathbb{G}$是一个有限群，其阶为$m$，那么$\forall g\in \mathbb{G},x\in \mathbb{Z}$，我们有$g^x=g^{x\bmod m}$。</p>
-<p>设$\mathbb{G}$是一个有限群，且$|G| = m &gt; 1$。设$e &gt; 0$是一个整数，并定义函数$f_e : G \to G$，其形式为$f_e(g) = g^e$。如果$\gcd(e, m) = 1$，那么$f_e$是一个<strong>置换</strong>（即一个双射）。此外，若$d = e^{-1} \bmod m$，则 $f_d$是$f_e$的<strong>逆函数</strong>。</p>
+<p>设$\mathbb{G}$是一个有限群，且$|\mathbb{G}| = m &gt; 1$。设$e &gt; 0$是一个整数，并定义函数$f_e : \mathbb{G} \to \mathbb{G}$，其形式为$f_e(g) = g^e$。如果$\gcd(e, m) = 1$，那么$f_e$是一个<strong>置换</strong>（即一个双射）。此外，若$d = e^{-1} \bmod m$，则 $f_d$是$f_e$的<strong>逆函数</strong>。</p>
 <p>这个构造在密码学应用中很有用。</p>
 <h2 id="群-mathbb-Z-N"><a href="#群-mathbb-Z-N" class="headerlink" title="群$\mathbb{Z}^*_N$"></a>群$\mathbb{Z}^*_N$</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><p>$\mathbb{Z}^*_N=\{b\in\{1,\cdots,N-1\}\mid \gcd(b,N)=1\}$</p>
 <h3 id="相关定理-1"><a href="#相关定理-1" class="headerlink" title="相关定理"></a>相关定理</h3><p>$\mathbb{Z}^*_N$在群运算是模$N$下的乘法，即$ab=[ab\bmod N]$，构成一个阿贝尔群。</p>
@@ -801,8 +801,10 @@
 <h1 id="循环群中的密码学假设"><a href="#循环群中的密码学假设" class="headerlink" title="循环群中的密码学假设"></a>循环群中的密码学假设</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>令$\mathbb{G}$是一个阶为$m$的有限群，对于任意$g\in \mathbb{G}$，我们考虑以下集合：</p>
 <script type="math/tex; mode=display">< g >=\{g_0,g_1,\cdots\}</script><p>根据之前的结论，我们有$g^m=1$，现在我们令$i$为最小的正整数使$g^i=1$，所以</p>
 <script type="math/tex; mode=display">< g >=\{ g^0,g^1,\cdots,g^{i-1}\}</script><p>不难证明$&lt; g &gt;$是$\mathbb{G}$的子群。我们称$g$是$\mathbb{G}$的生成元(generator)。</p>
-<p>我们定义在有限群$\mathbb{G}$中的一个元素$g$的阶是$i$，$g^i=1$。对于任意$g\in \mathbb{G}$，有$g^x=g^{[x\bmod i]}$。有以下推论：$g^x=g^y$当且仅当$x=y\bmod i$。<br>令$\mathbb{G}$是一个有限群，阶为$m$，对于$g\in\mathbb{G}$，其阶为$i$，我们有$i\mid m$。</p>
-<p>令$\mathbb{G}$是一个有限群，阶为$m$是一个质数，我们称之为循环群(cuclic)，其中除了单位元之外的所有元素都是$\mathbb{G}$的生成元。</p>
+<p>我们定义在有限群$\mathbb{G}$中的一个元素$g$的阶是$i$，$g^i=1$。对于任意$g\in \mathbb{G}$，有$g^x=g^{[x\bmod i]}$。有以下推论：$g^x=g^y$当且仅当$x=y\bmod i$。</p>
+<p>令$\mathbb{G}$是一个有限群，阶为$m$，如果存在一个元素$g\in\mathbb{G}$，使$&lt; g &gt; =\mathbb{G}$，则称$\mathbb{G}$是一个循环群(cyclic)，$g$称为该群的生成元$generator$。注意一个循环群可能有多个生成元。</p>
+<p>令$\mathbb{G}$是一个有限群，阶为$m$，对于$g\in\mathbb{G}$，其阶为$i$，我们有$i\mid m$。</p>
+<p>令$\mathbb{G}$是一个有限群，阶为$m$是一个质数，那么这是一个循环群，其中除了单位元之外的所有元素都是$\mathbb{G}$的生成元。</p>
 <p>如果$p$是一个质数，那么$\mathbb{Z}_P^*$是一个阶为$p-1$的循环群。</p>
 <h2 id="难问题假设"><a href="#难问题假设" class="headerlink" title="难问题假设"></a>难问题假设</h2><p>现在引入一些针对循环群的计算问题，这些问题被视为是难解的。</p>
 <h3 id="The-discrete-logarithm-problem-and-assumption"><a href="#The-discrete-logarithm-problem-and-assumption" class="headerlink" title="The discrete-logarithm problem and assumption"></a>The discrete-logarithm problem and assumption</h3><p>离散对数问题是计算循环群中均匀选择的元素的离散对数，可以用以下实验来描述$DLog_{\mathcal{A},\mathcal{G}}$，其中$\mathcal{G}$是一个群生成算法：</p>
@@ -816,7 +818,7 @@
 <h3 id="The-Diffie-Hellman-problems-and-assumptions"><a href="#The-Diffie-Hellman-problems-and-assumptions" class="headerlink" title="The Diffie-Hellman problems and assumptions"></a>The Diffie-Hellman problems and assumptions</h3><p>这包含两个问题：</p>
 <ul>
 <li>CDH problem：给定$g,g^x,g^y$，计算$g^{xy}$</li>
-<li>DDH problem：给定$g,g^x,g^y,g^{xy}$，区别$g^xy$和任意选择的群中元素$g^z$</li>
+<li>DDH problem：给定$g,g^x,g^y,g^{xy}$，区别$g^{xy}$和任意选择的群中元素$g^z$</li>
 </ul>
 <p>目前这两个问题被视为难问题。</p>
 
@@ -869,7 +871,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-17 16:31:43" itemprop="dateModified" datetime="2024-12-17T16:31:43+08:00">2024-12-17</time>
+                <time title="修改时间：2024-12-24 01:01:54" itemprop="dateModified" datetime="2024-12-24T01:01:54+08:00">2024-12-24</time>
               </span>
 
           
@@ -932,7 +934,7 @@
 <p>注意，这里的硬核谓词是一个布尔值函数。同时，上述定义并不要求$f$是一个单向函数。但是如果$f$是一个置换函数，那么除非他是单向的，否则没有硬核谓词。</p>
 <p>硬核谓词不能简单的构造，这里给出定理，对于任何固定的谓词$hc$，总存在一个单向函数，使这个谓词不是这个单向函数的硬核谓词。</p>
 <p>当然，也存在简单的硬核谓词，比如，假设$f$是一个函数，其输出就是丢弃最后的一个比特。那么$hc(x)=x_n$就是$f$的一个硬核谓词。这里$f$是不是单向函数无关紧要。但是，这种简单的硬核谓词在我们后续的构造工作中是没有作用的。</p>
-<h1 id="从单向函数到为随机性"><a href="#从单向函数到为随机性" class="headerlink" title="从单向函数到为随机性"></a>从单向函数到为随机性</h1><p>这节我们展示如何从单向函数构造伪随机生成器，伪随机函数和置换。</p>
+<h1 id="从单向函数到伪随机性"><a href="#从单向函数到伪随机性" class="headerlink" title="从单向函数到伪随机性"></a>从单向函数到伪随机性</h1><p>这节我们展示如何从单向函数构造伪随机生成器，伪随机函数和置换。</p>
 <p>首先，我们说明任何是否任何一个单向函数都有一个硬核谓词，这仍然是一个开放性问题。我们可以展示一个弱一些的结论。</p>
 <p><strong>定理8.5(Goldreich–Levin theorem)</strong><br>假设存在一个单向函数$f$，那么一定存在另一个单向函数$g$和$g$的硬核谓词$gl$。</p>
 <p>我们可以通过以下方式进行构造：<br>令$g(x,r)=(f(x),r)$，其中$|x|=|r|$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/4.png?raw=true" alt="4"></p>
@@ -954,6 +956,8 @@
 <h1 id="构造伪随机数生成器"><a href="#构造伪随机数生成器" class="headerlink" title="构造伪随机数生成器"></a>构造伪随机数生成器</h1><p>我们首先展示如何在假设单向置换存在的情况下，构造将输入扩展一个比特的伪随机生成器。然后，我们再展示如何扩展这一构造，以获得任意多项式扩展因子。</p>
 <h2 id="最小扩展因子的伪随机数生成器"><a href="#最小扩展因子的伪随机数生成器" class="headerlink" title="最小扩展因子的伪随机数生成器"></a>最小扩展因子的伪随机数生成器</h2><p><strong>定理8.18</strong><br>令$f$为一个单向置换，其硬核谓词为$hc$，那么我们可以构造以下的伪随机数生成器，其中expansion factor是$l(n)=n+1$。<br>$G(s)=f(s)||hc(s)$</p>
 <p>证明如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/6.png?raw=true" alt="6"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/5.png?raw=true" alt="5"></p>
+<h2 id="多项式扩展因子的伪随机数生成器"><a href="#多项式扩展因子的伪随机数生成器" class="headerlink" title="多项式扩展因子的伪随机数生成器"></a>多项式扩展因子的伪随机数生成器</h2><p>如果存在扩展因子为$n+1$的伪随机数生成器，那么存在任意多项式扩展因子的伪随机数生成器。</p>
+<p>原理如下图：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E5%8D%95%E5%90%91%E5%87%BD%E6%95%B0/7.png?raw=true" alt="7"></p>
 
       
     </div>
@@ -1263,10 +1267,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-12-16 12:40:55 / 修改时间：15:42:25" itemprop="dateCreated datePublished" datetime="2024-12-16T12:40:55+08:00">2024-12-16</time>
+              <time title="创建时间：2024-12-16 12:40:55" itemprop="dateCreated datePublished" datetime="2024-12-16T12:40:55+08:00">2024-12-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-24 10:51:05" itemprop="dateModified" datetime="2024-12-24T10:51:05+08:00">2024-12-24</time>
+              </span>
 
           
 
@@ -1306,7 +1316,7 @@
 <li>$Mac$：接受$k,m$作为输入，输出$t$。因为这可能是一个概率算法，所以写作$t\leftarrow Mac_k(m)$</li>
 <li>$Vrfy$：接受$k,m,t$作为输入，输出$1$或$0$。这是一个确定性算法，结果代表消息是否有效。</li>
 </ol>
-<p>$Vrfy(m,Mac_k(m),t)=1$</p>
+<p>$Vrfy_k(m,Mac_k(m))=1$</p>
 <p>如果存在一个函数$l$，使得算法$Mac_k$仅对长度位$l(n)$的消息定义，那么该方案为固定长度MAC。</p>
 <p>与对称密钥加密类似，一般Gen算法均匀选取key，所以一般省去对Gen的描述。</p>
 <p><strong>标准认证(Canonical Verification)</strong>：对于确定性消息验证码，即MAC是确定性算法，只需再计算一遍tag比较是否相同即可验证。</p>
@@ -1903,14 +1913,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
