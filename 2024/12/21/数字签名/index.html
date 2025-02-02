@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/1.png?raw=true">
 <meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/2.png?raw=true">
 <meta property="article:published_time" content="2024-12-21T03:18:00.000Z">
-<meta property="article:modified_time" content="2024-12-22T16:19:03.334Z">
+<meta property="article:modified_time" content="2024-12-25T08:51:32.065Z">
 <meta property="article:author" content="Gisyxi7">
 <meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-23 00:19:03" itemprop="dateModified" datetime="2024-12-23T00:19:03+08:00">2024-12-23</time>
+                <time title="修改时间：2024-12-25 16:51:32" itemprop="dateModified" datetime="2024-12-25T16:51:32+08:00">2024-12-25</time>
               </span>
 
           
@@ -278,10 +278,31 @@
 <li>证明者运行$P_2(sk,r,st)$，得到响应$s$，将$s$发送给验证者。</li>
 <li>验证者运行$V(pk,r,s)$，并接受当且仅当结果与初始消息$I$一致。</li>
 </ol>
+<p>我们考虑基于discrete logarithm的签名方案。现在公钥是$y=g^x$，prover要证明自己知道x$。</p>
+<p>如果prover直接将$x$发送给验证者验证，会丧失私钥的保密性。</p>
+<p>我们考虑以下方案：</p>
+<ol>
+<li>prover随机选择$b\in \mathbb{Z}_p$，计算$I=g^b$，将$I$发送给验证者</li>
+<li>verifier随机选择$a\in \mathbb{Z}_p$，发给prover</li>
+<li>prover发送$X=[ax+b\bmod q]$给verifier</li>
+<li>verifier验证是否$y^a\cdot I=g^x$</li>
+</ol>
+<p>这个方案是安全的，基于离散对数问题是困难的假设。</p>
+<p>我们可以通过以下思路证明安全性：</p>
+<ol>
+<li>构造一个模拟器$S$，该模拟器在不知道私钥$x$的情况下，能够模拟窃听者在方案中所看到的视图或交互记录（即，窃听到的消息）。</li>
+<li>证明没有多项式时间的攻击者能够区分模拟视图与真实视图：换句话说，任何 PPT 攻击者都无法分辨模拟器生成的视图和方案中真实交互生成的视图之间的区别。</li>
+</ol>
+<h2 id="Schnorr签名方案"><a href="#Schnorr签名方案" class="headerlink" title="Schnorr签名方案"></a>Schnorr签名方案</h2><p>构造如下，令$\mathcal{G}$是一个循环群生成算法，$H:\{0,1\}^* \to \mathbb{Z}_q$是一个哈希函数：</p>
+<ul>
+<li>$Gen$：运行$\mathcal{G}(1^n)$生成$(\mathbb{G},q,g)$，随机选择$x\in\mathbb{Z}_q$，计算$y=g^x$，公钥为$(\mathbb{G},q,g,y)$，私钥为$x$</li>
+<li>$Sign$：接受私钥$x$和消息$m$，随机选择$b\in\mathbb{Z}_q$，计算$I=g^b$，计算$a=H(I,m),X=[ax+b\bmod q]$，输出签名$(a,X)$</li>
+<li>Vrfy：接受公钥$(\mathbb{G},q,g,y)$，签名$(a,X)$，和消息$m$，计算$I’=g^X\cdot y^{-a}$，输出$1$当且仅当$H(I’,m)=a$。</li>
+</ul>
 <h1 id="证书与公钥基础设施"><a href="#证书与公钥基础设施" class="headerlink" title="证书与公钥基础设施"></a>证书与公钥基础设施</h1><p>我们要展示如何利用公钥密码学本身安全分发公钥。</p>
 <p>我们要证明，如果一个可信方的公钥能够以安全的方式分发，该密钥可以用来引导其他任意数量公钥的安全分发，所以这从原则上讲，安全密钥分发的问题只需要解决一次。</p>
-<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><p>数字证书是将一个实体与一个公钥绑定在一起的签名。假设一方Charlie对某个安全的数字签名方案生成了密钥对$(pk<em>C,sk_C)$，这时另一方Bob也生成了密钥对$(pk_B,sk_B)$，Charlie可以为$pk_B$计算签名$cert</em>{C\to B}=Sign_{sk_C}$，然后将签名提供给Bob。</p>
-<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>假设Bob想和知道$pk<em>C$的另一方Alica通信。Bob可以将$(pk_B,cert</em>{C\to B})$发送给Alice，Alice可以验证，如果信任Charlie，可以接受$pk_B$作为Bob的合法公钥。</p>
+<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><p>数字证书是将一个实体与一个公钥绑定在一起的签名。假设一方Charlie对某个安全的数字签名方案生成了密钥对$(pk<em>C,sk_C)$，这时另一方Bob也生成了密钥对$(pk_B,sk_B)$，Charlie可以为$pk_B$计算签名$cert</em>{C\to B}=Sign_{sk_C}(Bob’s key is pk_B)$，然后将签名提供给Bob。</p>
+<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>假设Bob想和知道$pk<em>C$的另一方Alice通信。Bob可以将$(pk_B,cert</em>{C\to B})$发送给Alice，Alice可以验证，如果信任Charlie，可以接受$pk_B$作为Bob的合法公钥。</p>
 <p>指定所有完整的细节就构成了一个公钥基础设施(Public-key Infrastructure,PKI)</p>
 
     </div>
@@ -324,7 +345,10 @@
     <a href="/2024/12/20/%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86/" rel="prev" title="【十】公钥加密">
       <i class="fa fa-chevron-left"></i> 【十】公钥加密
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/12/29/Petri%E7%BD%91/" rel="next" title="【九】Petri网">
+      【九】Petri网 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -383,7 +407,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hash-and-Sign"><span class="nav-number">3.</span> <span class="nav-text">Hash-and-Sign</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ERSA%E7%9A%84%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-number">4.</span> <span class="nav-text">基于RSA的数字签名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Plain-RSA"><span class="nav-number">4.1.</span> <span class="nav-text">Plain RSA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">4.1.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BB%E5%87%BB"><span class="nav-number">4.1.2.</span> <span class="nav-text">攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E6%B6%88%E6%81%AF%E6%94%BB%E5%87%BB"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">无消息攻击</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E4%BB%BB%E6%84%8F%E6%B6%88%E6%81%AF%E7%9A%84%E7%AD%BE%E5%90%8D%E4%BC%AA%E9%80%A0"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">对任意消息的签名伪造</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RSA-FDH"><span class="nav-number">4.2.</span> <span class="nav-text">RSA-FDH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.2.2.</span> <span class="nav-text">安全性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EDiscrete-Logarithm-Problem%E7%9A%84%E7%AD%BE%E5%90%8D%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">基于Discrete-Logarithm Problem的签名方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E6%96%B9%E6%A1%88%E5%92%8C%E7%AD%BE%E5%90%8D"><span class="nav-number">5.1.</span> <span class="nav-text">身份验证方案和签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">5.1.1.</span> <span class="nav-text">身份验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E4%B8%8E%E5%85%AC%E9%92%A5%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">证书与公钥基础设施</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="nav-number">6.1.</span> <span class="nav-text">数字证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">6.2.</span> <span class="nav-text">证书的使用</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hash-and-Sign"><span class="nav-number">3.</span> <span class="nav-text">Hash-and-Sign</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ERSA%E7%9A%84%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-number">4.</span> <span class="nav-text">基于RSA的数字签名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Plain-RSA"><span class="nav-number">4.1.</span> <span class="nav-text">Plain RSA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">4.1.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BB%E5%87%BB"><span class="nav-number">4.1.2.</span> <span class="nav-text">攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E6%B6%88%E6%81%AF%E6%94%BB%E5%87%BB"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">无消息攻击</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E4%BB%BB%E6%84%8F%E6%B6%88%E6%81%AF%E7%9A%84%E7%AD%BE%E5%90%8D%E4%BC%AA%E9%80%A0"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">对任意消息的签名伪造</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RSA-FDH"><span class="nav-number">4.2.</span> <span class="nav-text">RSA-FDH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.2.2.</span> <span class="nav-text">安全性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EDiscrete-Logarithm-Problem%E7%9A%84%E7%AD%BE%E5%90%8D%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">基于Discrete-Logarithm Problem的签名方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E6%96%B9%E6%A1%88%E5%92%8C%E7%AD%BE%E5%90%8D"><span class="nav-number">5.1.</span> <span class="nav-text">身份验证方案和签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">5.1.1.</span> <span class="nav-text">身份验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Schnorr%E7%AD%BE%E5%90%8D%E6%96%B9%E6%A1%88"><span class="nav-number">5.2.</span> <span class="nav-text">Schnorr签名方案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E4%B8%8E%E5%85%AC%E9%92%A5%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">证书与公钥基础设施</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="nav-number">6.1.</span> <span class="nav-text">数字证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">6.2.</span> <span class="nav-text">证书的使用</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -397,14 +421,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -431,7 +455,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="基本概念迁移系统(transition system, TS) 是一个反应式的系统，直觉上它由一个所有可能状态的集合以及一些迁移(transition)——或者说状态转换(state change)——的集合组成。 我们可以用有向图来表示一个迁移系统，图中的结点表示状态，边表示迁移行为。 定义迁移系统是一个五元组$(S,S_0,T,\alpha,\beta)$:  $S$ 是一个有限或无限的状态集">
+  <meta name="description" content="引入到现在为止，我们接触的很多建模工具都是触发式的，状态变化必须由某个外部事件的产生而触发。但是现实生活中，存在系统会随着时间推移而自动改变状态，即在自动机的基础上加上了时间的维度。 Peterson算法12345678910111213141516171819Process 0:while (true) &#123;    &lt;noncritical section&gt;;    flag">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【八】迁移系统">
-<meta property="og:url" content="http://example.com/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:title" content="【十】时间自动机">
+<meta property="og:url" content="http://example.com/2024/12/29/%E6%97%B6%E9%97%B4%E8%87%AA%E5%8A%A8%E6%9C%BA/index.html">
 <meta property="og:site_name" content="Gisyxi7&#39;s blogs">
-<meta property="og:description" content="基本概念迁移系统(transition system, TS) 是一个反应式的系统，直觉上它由一个所有可能状态的集合以及一些迁移(transition)——或者说状态转换(state change)——的集合组成。 我们可以用有向图来表示一个迁移系统，图中的结点表示状态，边表示迁移行为。 定义迁移系统是一个五元组$(S,S_0,T,\alpha,\beta)$:  $S$ 是一个有限或无限的状态集">
+<meta property="og:description" content="引入到现在为止，我们接触的很多建模工具都是触发式的，状态变化必须由某个外部事件的产生而触发。但是现实生活中，存在系统会随着时间推移而自动改变状态，即在自动机的基础上加上了时间的维度。 Peterson算法12345678910111213141516171819Process 0:while (true) &#123;    &lt;noncritical section&gt;;    flag">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-12-09T06:08:40.000Z">
-<meta property="article:modified_time" content="2024-12-18T10:53:27.364Z">
+<meta property="article:published_time" content="2024-12-29T09:00:09.000Z">
+<meta property="article:modified_time" content="2024-12-29T09:41:12.814Z">
 <meta property="article:author" content="Gisyxi7">
 <meta property="article:tag" content="形式语言与自动机">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/">
+<link rel="canonical" href="http://example.com/2024/12/29/%E6%97%B6%E9%97%B4%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>【八】迁移系统 | Gisyxi7's blogs</title>
+  <title>【十】时间自动机 | Gisyxi7's blogs</title>
   
 
 
@@ -166,7 +166,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/29/%E6%97%B6%E9%97%B4%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +179,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          【八】迁移系统
+          【十】时间自动机
         </h1>
 
         <div class="post-meta">
@@ -188,16 +188,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2024-12-09 14:08:40" itemprop="dateCreated datePublished" datetime="2024-12-09T14:08:40+08:00">2024-12-09</time>
+              <time title="创建时间：2024-12-29 17:00:09 / 修改时间：17:41:12" itemprop="dateCreated datePublished" datetime="2024-12-29T17:00:09+08:00">2024-12-29</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
-              </span>
 
           
 
@@ -210,37 +204,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>迁移系统</strong>(transition system, TS) 是一个反应式的系统，直觉上它由一个所有可能状态的集合以及一些迁移(transition)——或者说状态转换(state change)——的集合组成。</p>
-<p>我们可以用有向图来表示一个迁移系统，图中的结点表示状态，边表示迁移行为。</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>迁移系统是一个五元组$(S,S_0,T,\alpha,\beta)$:</p>
+        <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>到现在为止，我们接触的很多建模工具都是触发式的，状态变化必须由某个外部事件的产生而触发。但是现实生活中，存在系统会随着时间推移而自动改变状态，即在自动机的基础上加上了时间的维度。</p>
+<h2 id="Peterson算法"><a href="#Peterson算法" class="headerlink" title="Peterson算法"></a>Peterson算法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Process 0:</span><br><span class="line">while (true) &#123;</span><br><span class="line">    &lt;noncritical section&gt;;</span><br><span class="line">    flag[0] = true;</span><br><span class="line">    turn = 1;</span><br><span class="line">    while flag[1] and turn = 1 do &#123; &#125;;</span><br><span class="line">    &lt;critical section&gt;;</span><br><span class="line">    flag[0] = false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Process 1:</span><br><span class="line">while (true) &#123;</span><br><span class="line">    &lt;noncritical section&gt;;</span><br><span class="line">    flag[1] = true;</span><br><span class="line">    turn = 0;</span><br><span class="line">    while flag[0] and turn = 0 do &#123; &#125;;</span><br><span class="line">    &lt;critical section&gt;;</span><br><span class="line">    flag[1] = false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个算法的思路是：如果进程 i 想要进入临界区，则先举起自己的小旗子，然后用 turn 变量讲机会谦让给另一个进程；当另一个进程想要进入临界区，且自己已经谦让机会的时候，就一直等待另一个进程使用临界区结束，否则自己就可以直接进入临界区。</p>
+<p>Peterson 算法的关键在于 turn 变量，哪个进程更快地谦让，则 turn 变量会被另一个进程的谦让行为给覆盖，从而使得更快谦让的进程先获得进入临界区的资格。因此 Peterson 算法制造了一种看似双方争先恐后地谦让机会，但实际上都是自私行为的现象。</p>
+<p>当然，此时该协议的行为还是离散的，我们可以通过一般的自动机进行建模。</p>
+<h2 id="Fischer协议"><a href="#Fischer协议" class="headerlink" title="Fischer协议"></a>Fischer协议</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Process i:</span><br><span class="line">while (true) &#123;</span><br><span class="line">    &lt;noncritical section&gt;</span><br><span class="line">    while id != 0 do &#123;&#125;</span><br><span class="line">    delay K1;</span><br><span class="line">    id = i;</span><br><span class="line">    delay K2;</span><br><span class="line">    if (id = i) &#123;</span><br><span class="line">        &lt;critical section&gt;</span><br><span class="line">        id = 0</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中 id 是一个共享变量，每个进程有自己的时钟用于延迟，上述算法的正确性需要 K2 &gt; K1。</p>
+<p>该算法的思路是，如果一开始有人想要用或者已经用了临界区，我就死等，否则等待 K1 的时间，再宣告自己想要用这个临界区。再等待 K2 的时间，如果没有人提出异议，即 id = i，则进入临界区。</p>
+<p>由于 K2 &gt; K1，所以如果进入了临界区就说嘛没有人提出异议，从而这个并发控制是安全的。</p>
+<p>对这个算法进行建模就需要时间自动机。</p>
+<h2 id="建模实时系统"><a href="#建模实时系统" class="headerlink" title="建模实时系统"></a>建模实时系统</h2><p>我们对于时间有两种模型：</p>
 <ul>
-<li>$S$ 是一个有限或无限的状态集合</li>
-<li>$S_0$ 是一个初始状态集合，$S_0 \subseteq S$</li>
-<li>$T$ 是一个迁移集合，$T \subseteq S \times S$</li>
-<li>$\alpha$和$\beta$是两个从$T$到$S$的映射，对于任意的$t\in T$，有$\alpha(t)$表示迁移的<strong>源状态</strong>和$\beta(t)$表示迁移的<strong>目标状态</strong>。</li>
+<li>离散时间域(discrete time domain)</li>
+<li>连续时间域(continuous time domain)</li>
 </ul>
-<p>若$S$和$T$是有限的，则整个迁移系统也是有限的。</p>
-<p>定义一个迁移系统$\mathcal{A}$的路径是一个迁移的序列$t_1,t_2,\dots,t_n$。</p>
-<p>如果一个状态可以由初始状态经过一条路径达到，则称这个状态是<strong>可达</strong>的。<br>如果一个状态不可以到达任何其他状态，则称这个状态是<strong>终结状态</strong>。<br>如果一个状态是可达的同时又是一个终结状态，则称这个状态是<strong>死锁状态</strong>。</p>
-<p>当然，这里$\alpha$和$\beta$的定义可以拓展到对一个路径取源和目标。</p>
-<h2 id="带标签的迁移系统"><a href="#带标签的迁移系统" class="headerlink" title="带标签的迁移系统"></a>带标签的迁移系统</h2><p>一个被字母表$A$标记的，带标签的迁移系统(labeled transition system) 是一个 6 元组$\mathcal{A} = (S,S_0,T,\alpha,\beta,\lambda)$:</p>
+<h3 id="离散时间域"><a href="#离散时间域" class="headerlink" title="离散时间域"></a>离散时间域</h3><p>时间被分割为固定的间隔。</p>
+<p>本质上来说，这仍然是一个离散系统，只需要将原本的状态加上一个整数参数来表示时间。</p>
+<p>时间间隔的大小选择也很关键，如果时间间隔太小，则状态空间会非常大，而如果时间间隔太大，则无法精细刻画系统的行为。</p>
+<h3 id="连续时间域"><a href="#连续时间域" class="headerlink" title="连续时间域"></a>连续时间域</h3><p>当通过一条边，时钟可以被重置，但是只允许将时钟重置到为$0$。</p>
+<p>状态上也可以加入不变式(invariants)进行约束，从而禁止系统在一个状态停留时间过长。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>令$X$是一个时钟变量的集合，那么时钟约束(time constraints)的集合$C(X)$由以下文法定义：</p>
+<script type="math/tex; mode=display">\empty=x\leq k\mid k\leq x\mid x<k\mid k<x\mid\empty\wedge \empty</script><p>其中$x\in X,k\in\mathbb{N}$</p>
+<p>定义<strong>时间自动机</strong>(time automata)是一个四元组$(L,X,I_0,E)$：</p>
 <ul>
-<li>前五元组是一个迁移系统</li>
-<li>$\lambda$是一个从$T$到$A$的映射，对于任意的$t\in T$，有$\lambda(t)$表示迁移的<strong>标签</strong>。</li>
+<li>$L$是一个有限地点(location)集合</li>
+<li>$X$是一个有限时钟变量集合</li>
+<li>$I_0\in L$是一个初始地点</li>
+<li>$E\subseteq L\times C(X)\times 2^X\times L$是一个边的集合，四元组的含义为(源地点，时钟约束，重置时钟集，目标地点)</li>
 </ul>
-<p>直觉上，一个迁移的标签意味着触发这个迁移的行为或者事件。</p>
-<p>定义一条如果$c=t_1,t_2,\cdots$是一条路径，那么触发这些迁移的行为的序列$trace(c)=\lambda(t_1),\lambda(t_2),\cdots$被称为这个路径的<strong>踪迹</strong>。</p>
-<h1 id="迁移系统的等价性"><a href="#迁移系统的等价性" class="headerlink" title="迁移系统的等价性"></a>迁移系统的等价性</h1><p>想要证明两个建模语言是等价的，我们可以用迁移系统来刻画它们的行为，然后通过证明迁移系统的等价性来证明建模语言行为的等价性。</p>
-<h2 id="强同构等价"><a href="#强同构等价" class="headerlink" title="强同构等价"></a>强同构等价</h2><p>唯一的区别就只能是状态和迁移的命名不同</p>
-<h2 id="弱同构等价"><a href="#弱同构等价" class="headerlink" title="弱同构等价"></a>弱同构等价</h2><p>如果这两个可达子迁移系统是同构的，我们称原来的两个迁移系统是 弱同构(weak isomorphic) 的。</p>
-<h2 id="双模拟等价"><a href="#双模拟等价" class="headerlink" title="双模拟等价"></a>双模拟等价</h2><p>迁移系统具有相同的行为，并在同一时刻做选择。</p>
-<h1 id="迁移系统的运算"><a href="#迁移系统的运算" class="headerlink" title="迁移系统的运算"></a>迁移系统的运算</h1><h2 id="自由积"><a href="#自由积" class="headerlink" title="自由积"></a>自由积</h2><p>将多个迁移系统的定义做一个笛卡尔积。</p>
-<p>直观上理解，各个子系统的定义不变，加入了时钟来统一驱动多个系统。使之走相同的步数。</p>
-<h2 id="同步积"><a href="#同步积" class="headerlink" title="同步积"></a>同步积</h2><p>当进程之间进行交互的时候，并不是所有可能的全局行为都是有用的，因为这些交互会受到进程通信和同步的限制。</p>
-<p>因此，描述多进程系统的迁移系统一定是各个进程对应的各自迁移系统的自由积的一个子系统，我们可以用同步积来表达这种受到通信和同步约束的全局系统。</p>
-<p>本质上就是加入了一个集合来判断自由积中哪些迁移是被允许的。换句话说，同步积只允许标签向量在同步约束中的全局迁移发生。</p>
-<h2 id="tau-迁移和共享标签"><a href="#tau-迁移和共享标签" class="headerlink" title="$\tau $迁移和共享标签"></a>$\tau $迁移和共享标签</h2><p>自由积有时钟的限制，要求所有子迁移系统必须同进退，要想消除这个限制，只需要每个状态引入一个自环转移($\tau$ transition)就行了。</p>
-<p>我们也可以使用共享标签来表示两个迁移必须同时发生，这样在表达上面会更加简洁。不过这并没有拓展同步积的表达能力就是了，只是换了一种更简便的表达方式而已。</p>
+<p>时间自动机的状态是由位置和时钟值组成的二元组，时间自动机的状态转移有两种:</p>
+<ul>
+<li>等待：只有时钟值变化</li>
+<li>行动：位置变化</li>
+</ul>
 
     </div>
 
@@ -279,12 +276,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="【二】正则表达式">
-      <i class="fa fa-chevron-left"></i> 【二】正则表达式
+    <a href="/2024/12/29/Petri%E7%BD%91/" rel="prev" title="【九】Petri网">
+      <i class="fa fa-chevron-left"></i> 【九】Petri网
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/" rel="next" title="FLA复习">
-      FLA复习 <i class="fa fa-chevron-right"></i>
+    <a href="/2025/02/01/%E3%80%900%E3%80%91OpenGL/" rel="next" title="【0】OpenGL">
+      【0】OpenGL <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -344,7 +341,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E6%A0%87%E7%AD%BE%E7%9A%84%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.</span> <span class="nav-text">带标签的迁移系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">迁移系统的等价性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E5%90%8C%E6%9E%84%E7%AD%89%E4%BB%B7"><span class="nav-number">2.1.</span> <span class="nav-text">强同构等价</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%B1%E5%90%8C%E6%9E%84%E7%AD%89%E4%BB%B7"><span class="nav-number">2.2.</span> <span class="nav-text">弱同构等价</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%A8%A1%E6%8B%9F%E7%AD%89%E4%BB%B7"><span class="nav-number">2.3.</span> <span class="nav-text">双模拟等价</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">迁移系统的运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E7%94%B1%E7%A7%AF"><span class="nav-number">3.1.</span> <span class="nav-text">自由积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E7%A7%AF"><span class="nav-number">3.2.</span> <span class="nav-text">同步积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tau-%E8%BF%81%E7%A7%BB%E5%92%8C%E5%85%B1%E4%BA%AB%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.</span> <span class="nav-text">$\tau $迁移和共享标签</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Peterson%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">Peterson算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fischer%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.2.</span> <span class="nav-text">Fischer协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E6%A8%A1%E5%AE%9E%E6%97%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.3.</span> <span class="nav-text">建模实时系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%BB%E6%95%A3%E6%97%B6%E9%97%B4%E5%9F%9F"><span class="nav-number">1.3.1.</span> <span class="nav-text">离散时间域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E6%97%B6%E9%97%B4%E5%9F%9F"><span class="nav-number">1.3.2.</span> <span class="nav-text">连续时间域</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.</span> <span class="nav-text">形式化定义</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
