@@ -162,6 +162,735 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">【四】下推自动机</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-11 19:25:50" itemprop="dateCreated datePublished" datetime="2024-12-11T19:25:50+08:00">2024-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><p><strong>下推自动机(Pushdown Automata, PDA)</strong> 是一种在语言的定义能力上和 CFG 等价的自动机。不过只有非确定性下推自动机才能定义所有的上下文无关语言。但是确定性下推自动机可以为解析器建模，并且大多数的程序设计语言都有确定性的下推自动机，因为确定的才是可实现的。</p>
+<p>直观上看，PDA就是一个$\epsilon-$NFA具有额外颠倒操作一个栈的能力。其移动不仅依靠当前状态和输入符号，还依赖于栈顶元素。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<ul>
+<li>$Q$为有限状态集合</li>
+<li>$\Sigma$为输入字母表</li>
+<li>$\Gamma$为栈字母表</li>
+<li>$\delta$是转移函数<ul>
+<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
+<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
+</ul>
+</li>
+<li>$q_0\in Q$为初始状态</li>
+<li>$Z_0\in\Gamma$为初始栈顶元素</li>
+<li>$F\subseteq Q$为终止状态集合</li>
+</ul>
+<p>一些字母上的约定：</p>
+<ul>
+<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
+<li>用$\cdots,X,Y,Z$表示栈符号</li>
+<li>用$w,x,y,z$表示输入符号形成的字符串</li>
+<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串</li>
+</ul>
+<h2 id="PDA的运行"><a href="#PDA的运行" class="headerlink" title="PDA的运行"></a>PDA的运行</h2><p>定义一个<strong>即时描述</strong>(Instantaneous Description, ID)是一个三元组$(q,w,\alpha)$：</p>
+<ul>
+<li>$q$是当前状态</li>
+<li>$w$是剩余未处理的输入符号</li>
+<li>$\alpha$是栈的内容，规定左侧为栈顶，右侧为栈底</li>
+</ul>
+<p>定义即时描述之间的转移为<strong>走向(Goes-To)</strong>，用$\vdash $表示。</p>
+<h2 id="PDA的语言"><a href="#PDA的语言" class="headerlink" title="PDA的语言"></a>PDA的语言</h2><p>我们有两种方式来定义PDA的语言。</p>
+<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>接受所有能让PDA走到终止状态的字符串，定义为$L(P)$。</p>
+<h3 id="根据空栈"><a href="#根据空栈" class="headerlink" title="根据空栈"></a>根据空栈</h3><p>接受所有能让PDA的栈为空的字符串，定义为$N(P)$。</p>
+<h3 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h3><p>$L(P)$和$N(P)$在定义语言的能力上是等价的。</p>
+<p>若$L=L(P)$，则存在另一个PDA $P’$使 $L=N(P’)$</p>
+<p>只需要到终止状态再清除栈即可。</p>
+<p>若$L=N(P)$，则存在另一个PDA $P’’$使 $L=L(P’’)$</p>
+<p>只需要发现栈被清空之后转移到终止状态即可。</p>
+<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>我们上面讨论的下推自动机都是<strong>非确定性下推自动机(Nondeterminstic Pushdown Automata, NPDA)</strong>。一般来说，没有特别说明，PDA都指NPDA。</p>
+<p>现在来关注一下<strong>确定性下推自动机(Determinstic Pushdown Automata, DPDA)</strong>，即对于确定的状态、输入符号和栈顶符号，最多只有一种移动的选择。</p>
+<p>我们直到NFA和DFA是等价的，但是在这里，NPDA的表达能力比DPDA要强。</p>
+<h1 id="下推自动机与上下文无关文法的等价性"><a href="#下推自动机与上下文无关文法的等价性" class="headerlink" title="下推自动机与上下文无关文法的等价性"></a>下推自动机与上下文无关文法的等价性</h1><p><strong>定理</strong>：<br>CFG和PDA在定义语言的表达能力上是等价的。</p>
+<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
+<p>思路就是$P$的每一步代表最左推导中的一步。</p>
+<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
+<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/" class="post-title-link" itemprop="url">【三】上下文无关文法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-11 18:06:39" itemprop="dateCreated datePublished" datetime="2024-12-11T18:06:39+08:00">2024-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 19:02:55" itemprop="dateModified" datetime="2024-12-18T19:02:55+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><p>正则语言的表达能力存在局限性，比如正则语言并不能表达回文串。现在我们介绍一种表达能力更强的语言，上下文无关文法。</p>
+<h2 id="直观描述"><a href="#直观描述" class="headerlink" title="直观描述"></a>直观描述</h2><p><strong>上下文无关文法</strong>(context-free grammar)是一种描述语言的记号，对于描述嵌套结构是很有用的。</p>
+<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
+<ul>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
+<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
+<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
+<li><strong>头</strong>(header)是一个变量</li>
+<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
+</ul>
+</li>
+</ul>
+<p>一般来说，我们在字母使用下有以下约定</p>
+<ul>
+<li>用$A,B,C\cdots,S$表示变量</li>
+<li>用$a,b,c\cdots$表示终结符</li>
+<li>用$\cdots,X,Y,Z$表示非终结符或变量</li>
+<li>用$w,x,y,z$表示只含有终结符的字符串</li>
+<li>用$\alpha,\beta,\gamma,\cdots$来表示有终结符或变量的字符串</li>
+</ul>
+<p>根据上述定义，想要定义一个语言$\{0^n1^n|n\ge 1\}$:</p>
+<script type="math/tex; mode=display">G=(\{S\},\{0,1\},\{S\rightarrow 01,S\rightarrow 0S1\},S)</script><p>定义：</p>
+<p>称$\alpha A\beta$可以<strong>推导</strong>出$\alpha \gamma \beta$，记为$\alpha A\beta\Rightarrow \alpha \gamma \beta$。如果$A\rightarrow \gamma$是一个产生式。</p>
+<p>称零步或多步推导为<strong>迭代推导</strong>，记为$\Rightarrow^*$</p>
+<p>令$G$是一个上下文无关文法，则记$G$的语言为$L(G)$，称上下文无关文法定义的语言为<strong>上下文无关语言(Context-Free Language, CFL)</strong>。</p>
+<h2 id="最左推导和最右推导"><a href="#最左推导和最右推导" class="headerlink" title="最左推导和最右推导"></a>最左推导和最右推导</h2><p>每一次推导我们都可以替换一个任意位置的变量，但是这个任意会带来很多的不确定性，为了避免不确定性，我们规定每次替换的变量为一个固定位置（最左或最右）的变量。</p>
+<p>我们使用$\Rightarrow_l$表示最左推导，$\Rightarrow_r$ 表示最右推导。</p>
+<h1 id="解析树"><a href="#解析树" class="headerlink" title="解析树"></a>解析树</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>解析树(Parse Tree)</strong>是一棵用某个特定的上下文无关文法中的符号对每个结点做标记的树。如图所示：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/1.png?raw=true" alt="1"></p>
+<h2 id="解析树，最左推导，最右推导"><a href="#解析树，最左推导，最右推导" class="headerlink" title="解析树，最左推导，最右推导"></a>解析树，最左推导，最右推导</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
+<p>由归纳法可以轻松证明。</p>
+<h2 id="文法歧义"><a href="#文法歧义" class="headerlink" title="文法歧义"></a>文法歧义</h2><p>我们称一个文法是<strong>有歧义的(ambiguous)</strong>，如果在这个文法定义的语言中，存在一个字符串可以被两个及以上个解析树产出。</p>
+<p>如果这个字符串存在多个对应的解析树，那么就意味着存在多种推导方式。</p>
+<p>当然，也存在文法，在这个文法定义的语言中，所有的字符串都只有唯一的解析树，我们称之为<strong>LL(1)文法</strong>。</p>
+<p>一般来说，LL(1)文法具有以下的特征：从左往右扫描字符串，且只看下一个符号。</p>
+<h2 id="固有歧义"><a href="#固有歧义" class="headerlink" title="固有歧义"></a>固有歧义</h2><p>有的有歧义的文法可以修改成没有歧义的文法，但是存在一些上下文无关语言本身是具有<strong>固有的歧义性(inherently ambiguous)</strong>的，意思是这个语言的所有的文法都是有歧义的。</p>
+<h1 id="上下文无关文法的范式"><a href="#上下文无关文法的范式" class="headerlink" title="上下文无关文法的范式"></a>上下文无关文法的范式</h1><h2 id="去除无用变量"><a href="#去除无用变量" class="headerlink" title="去除无用变量"></a>去除无用变量</h2><ul>
+<li>无法推导的变量：无法推导出任何终结字符串。</li>
+<li>不可达的符号：有一些变量或者终结符无论如何从起始符号推导都不会出现。</li>
+</ul>
+<p>以上的符号我们称为<strong>无用符号(unused symbols)</strong>。我们通过以下方法去除无用符号：</p>
+<ol>
+<li>删除不能导出终结字符串的符号</li>
+<li>删除所有从起始符号不可达的字符串</li>
+</ol>
+<p><strong>这个顺序不能颠倒！！！</strong></p>
+<h2 id="去除空串"><a href="#去除空串" class="headerlink" title="去除空串"></a>去除空串</h2><p>我们需要考虑不含$\epsilon$的语言，所以我们需要一个算法能够去除空串：</p>
+<ul>
+<li>找到所有空产生式：递归的找出所有能推导出空串的符号</li>
+<li>去除空产生式：<ul>
+<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
+<li>最后去掉所有的空产生式</li>
+</ul>
+</li>
+</ul>
+<h2 id="去除单元产生式"><a href="#去除单元产生式" class="headerlink" title="去除单元产生式"></a>去除单元产生式</h2><p><strong>单元产生式</strong>(unit production)指的是体只有一个变量的产生式。这些产生式也是可以去除的。</p>
+<p>算法如下：</p>
+<ul>
+<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
+<li>基础情况：$(A,A)$一定是满足要求的有序对</li>
+<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
+</ul>
+</li>
+<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
+</ul>
+<h2 id="乔姆斯基范式"><a href="#乔姆斯基范式" class="headerlink" title="乔姆斯基范式"></a>乔姆斯基范式</h2><p>如果$L$是一个上下文无关语言，那么对于$L-\{\epsilon\}$一定存在一个上下文无关文法：</p>
+<ul>
+<li>没有无用符号</li>
+<li>没有$\epsilon-$产生式</li>
+<li>没有单元产生式</li>
+</ul>
+<p>要找到这样的文法，一定<strong>遵循以下顺序操作</strong>：</p>
+<ol>
+<li>去除$\epsilon-$产生式</li>
+<li>去除单元产生式</li>
+<li>去除无用符号<ol>
+<li>去除无法推导出终结字符串的变量</li>
+<li>去除从起始符号不可达的变量</li>
+</ol>
+</li>
+</ol>
+<p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
+<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
+<ol>
+<li>$A\rightarrow BC$</li>
+<li>$A\rightarrow a$，其中$a$是终结符。</li>
+</ol>
+<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
+<ol>
+<li>清理文法：去除无用符号，去除空产生式，去除单元产生式。</li>
+<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
+<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/FLA%E5%A4%8D%E4%B9%A0/" class="post-title-link" itemprop="url">FLA复习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-09 22:06:54" itemprop="dateCreated datePublished" datetime="2024-12-09T22:06:54+08:00">2024-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-30 17:24:40" itemprop="dateModified" datetime="2024-12-30T17:24:40+08:00">2024-12-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h1 id="有穷自动机"><a href="#有穷自动机" class="headerlink" title="有穷自动机"></a>有穷自动机</h1><h2 id="确定性有穷自动机"><a href="#确定性有穷自动机" class="headerlink" title="确定性有穷自动机"></a>确定性有穷自动机</h2><p>五元组$(Q, \Sigma, \delta, q_0, F)$</p>
+<ul>
+<li>$Q$ 是一个有限状态集合</li>
+<li>$\Sigma$ 是一个输入字母表</li>
+<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态</li>
+<li>$q_0$ 是初始状态，$q_0\in Q$</li>
+<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
+</ul>
+<p>$\delta$是一个全函数，对于一个状态$q$和输入符号$a$，$\delta(q,a)$一定有对应的转移，如果没有，我们额外定义一个<strong>死状态</strong>。</p>
+<p>对于一个自动机来说，它的语言是从初始状态走到终止状态的所有路径的标签字符串的集合。</p>
+<h2 id="判断DFA的语言和一个自然描述的语言集合"><a href="#判断DFA的语言和一个自然描述的语言集合" class="headerlink" title="判断DFA的语言和一个自然描述的语言集合"></a>判断DFA的语言和一个自然描述的语言集合</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/FLA%E5%A4%8D%E4%B9%A0/1.png?raw=true" alt="1"></p>
+<p>先证$S\subseteq T$，使用归纳假设：</p>
+<ul>
+<li>如果$\delta(A,\omega)=A$，那么$\omega$没有连续的两个$1$并且不以$1$结尾</li>
+<li>如果$\delta(A,\omega)=B$，那么$\omega$没有连续的两个$1$并且以单个$1$结尾</li>
+</ul>
+<p>再证$T\subseteq S$，使用反证法：</p>
+<ul>
+<li>假设$\omega\in T$没有被DFA接受</li>
+</ul>
+<h2 id="正则语言"><a href="#正则语言" class="headerlink" title="正则语言"></a>正则语言</h2><ul>
+<li>证明一个语言不是正则语言（不使用泵引理）：反证法找矛盾</li>
+</ul>
+<h1 id="非确定性有穷自动机"><a href="#非确定性有穷自动机" class="headerlink" title="非确定性有穷自动机"></a>非确定性有穷自动机</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>五元组$(Q, \Sigma, \delta, q_0, F)$</p>
+<ul>
+<li>$Q$ 是一个有限状态集合</li>
+<li>$\Sigma$ 是一个输入字母表</li>
+<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态<strong>集合</strong></li>
+<li>$q_0$ 是初始状态，$q_0\in Q$</li>
+<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
+</ul>
+<h2 id="NFA和DFA的等价性"><a href="#NFA和DFA的等价性" class="headerlink" title="NFA和DFA的等价性"></a>NFA和DFA的等价性</h2><ul>
+<li>DFA-&gt;NFA 显而易见</li>
+<li>NFA-&gt;DFA <strong>子集构造法</strong></li>
+</ul>
+<h1 id="带空转移的NFA"><a href="#带空转移的NFA" class="headerlink" title="带空转移的NFA"></a>带空转移的NFA</h1><p>在NFA的基础上再允许某个状态在没有输入字符的时候就转移到另一个状态，即接受$\epsilon$输入。</p>
+<h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>引入<strong>状态闭包</strong>的概念，即可以通过任意个空转移到达的状态集合。</p>
+<h2 id="NFA和-epsilon-NFA的等价性"><a href="#NFA和-epsilon-NFA的等价性" class="headerlink" title="NFA和$\epsilon$-NFA的等价性"></a>NFA和$\epsilon$-NFA的等价性</h2><ul>
+<li>NFA-&gt;$\epsilon$-NFA 显而易见</li>
+<li>$\epsilon$-NFA-&gt;NFA 先取闭包，后转移，最后再次取闭包</li>
+</ul>
+<h2 id="有穷自动机总结"><a href="#有穷自动机总结" class="headerlink" title="有穷自动机总结"></a>有穷自动机总结</h2><p>DFA，NFA和$\epsilon$-NFA是等价的，都只表示正则语言。<br>只有DFA能被真正实现。</p>
+<h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li><strong>并(union)</strong>：就是集合的并操作</li>
+<li><strong>拼接(concatenation)</strong>：LM</li>
+<li><strong>星闭包(Kleene closure)</strong>：L*</li>
+</ul>
+<h2 id="正则表达式与有穷自动机的等价性"><a href="#正则表达式与有穷自动机的等价性" class="headerlink" title="正则表达式与有穷自动机的等价性"></a>正则表达式与有穷自动机的等价性</h2><h3 id="正则表达式转换为-epsilon-NFA"><a href="#正则表达式转换为-epsilon-NFA" class="headerlink" title="正则表达式转换为$\epsilon$-NFA"></a>正则表达式转换为$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
+<h3 id="DFA转换为正则表达式"><a href="#DFA转换为正则表达式" class="headerlink" title="DFA转换为正则表达式"></a>DFA转换为正则表达式</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
+<h3 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h3><ul>
+<li>$R+\emptyset=R$</li>
+<li>$R\emptyset=\emptyset R=\emptyset$</li>
+<li>$\epsilon R=R\epsilon =R$</li>
+<li>$(\epsilon+R)<em>=R</em>$</li>
+<li>$R+SR=(\epsilon+S)R$</li>
+<li>$\epsilon+RR<em>=R</em>$</li>
+<li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
+</ul>
+<h2 id="正则表达式的判定性质"><a href="#正则表达式的判定性质" class="headerlink" title="正则表达式的判定性质"></a>正则表达式的判定性质</h2><ul>
+<li>成员资格问题：模拟运行</li>
+<li>空问题：是否有一个终止状态可达</li>
+<li>无限性问题：是否有环</li>
+<li>等价性：构造乘积DFA</li>
+<li>包含关系：构造乘积DFA</li>
+</ul>
+<h3 id="泵引理"><a href="#泵引理" class="headerlink" title="泵引理"></a>泵引理</h3><p>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=xyz$，满足：</p>
+<ol>
+<li>$|xy|\leq n$</li>
+<li>$|y| &gt;0$</li>
+<li>$\forall i \ge 0,xy^iz\in L$<br>判断一个语言不是正则表达式时使用泵引理，还可以利用正则语言的闭包性说明不是。还可以<strong>构造DFA</strong>来说明是正则语言。</li>
+</ol>
+<h3 id="正则语言的最小状态DFA"><a href="#正则语言的最小状态DFA" class="headerlink" title="正则语言的最小状态DFA"></a>正则语言的最小状态DFA</h3><p><strong>状态最小化(efficient state minimization)</strong> 操作。</p>
+<p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
+<h2 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h2><ul>
+<li>并操作、拼接操作以及星闭包操作下的闭包</li>
+<li>交集、差集、补集下的闭包</li>
+<li>逆运算下的闭包</li>
+<li>同态运算下的闭包</li>
+<li>逆同态运算下的闭包</li>
+</ul>
+<h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>定义<strong>上下文无关文法</strong>(context-free grammar,CFG)是一个四元组$G=(V,T,P,S)$:</p>
+<ul>
+<li>$T$为CFG要定义语言的字母表，称为<strong>终结符</strong>(Terminals)。</li>
+<li>$V$为一个有限的其他符号的集合，每个符号代表了一个语言，称为<strong>变量</strong>(Variables)或者<strong>非终结符</strong>(Nonterminals)。</li>
+<li>$S$为CFG要定义的语言变量，称为<strong>起始符号(Start Symbol)</strong>。</li>
+<li>$P$为CFG的<strong>产生式</strong>(productions)集合，形如$head\rightarrow body$。<ul>
+<li><strong>头</strong>(header)是一个变量</li>
+<li><strong>体</strong>(body)是变量和终结符组成的字符串，可以是空串</li>
+</ul>
+</li>
+</ul>
+<h2 id="最左推导最右推导，解析树，等价性"><a href="#最左推导最右推导，解析树，等价性" class="headerlink" title="最左推导最右推导，解析树，等价性"></a>最左推导最右推导，解析树，等价性</h2><p>解析树、最左推导和最右推导是可以相互转化的，它们的表达能力是等价的。</p>
+<h2 id="文法歧义，固有歧义"><a href="#文法歧义，固有歧义" class="headerlink" title="文法歧义，固有歧义"></a>文法歧义，固有歧义</h2><h2 id="上下文无关变量范式"><a href="#上下文无关变量范式" class="headerlink" title="上下文无关变量范式"></a>上下文无关变量范式</h2><p>定义<strong>乔姆斯基范式(Chomsky Normal Form, CNF)</strong>：</p>
+<p>称一个上下文无关文法符合 乔姆斯基范式(Chomsky Normal Form, CNF) ，如果每个产生式都满足下面两种形式的其中一种：</p>
+<ol>
+<li>$A\rightarrow BC$</li>
+<li>$A\rightarrow a$，其中$a$是终结符。</li>
+</ol>
+<p>下面介绍一个算法将一个上下文无关文法修改成符合乔姆斯基范式。</p>
+<ol>
+<li>清理文法。<ol>
+<li>去除无用符号：<ol>
+<li>删除不能导出终结字符串的符号</li>
+<li>删除所有从起始符号不可达的字符串</li>
+</ol>
+</li>
+<li>去除空产生式：<ol>
+<li>对于每一个产生式，如果产生式右边存在能推导出空串的符号，则每一个由可空的符号组成的子集，存在一个产生式，是将右边产生式的某个为空部分去掉得到的。</li>
+<li>最后去掉所有的空产生式</li>
+</ol>
+</li>
+<li>去除单元产生式：<ol>
+<li>发现单元产生式：归纳的找到所有有序对$(A,B)$使$A\Rightarrow^* B$为单元产生式<ul>
+<li>基础情况：$(A,A)一定是满足要求的有序对</li>
+<li>如果已经发现了$(A,B)$，且$B\rightarrow C$是一个单元产生式，则$(B,C)$也一定满足要求。</li>
+</ul>
+</li>
+<li>去除单元产生式：一系列的单元产生式加上一个非单元产生式形成的推导在新文法中可以塌缩折叠成一个产生式。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>对于所有不是单个终结符的体，让右侧变成全部是变量的形式。</li>
+<li>将体长度超过2的产生式分解成若干个体长度等于2的产生式</li>
+</ol>
+<h1 id="下推自动机"><a href="#下推自动机" class="headerlink" title="下推自动机"></a>下推自动机</h1><h2 id="定义-3"><a href="#定义-3" class="headerlink" title="定义"></a>定义</h2><p><strong>下推自动机</strong>(Pushdown Automata)为一个七元组$P=(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$：</p>
+<ul>
+<li>$Q$为有限状态集合</li>
+<li>$\Sigma$为输入字母表</li>
+<li>$\Gamma$为栈字母表</li>
+<li>$\delta$是转移函数<ul>
+<li>接受三个参数：当前状态、当前输入符号、栈顶元素</li>
+<li>$\delta(q,a,Z)=(p,\alpha)$，其中$p\in Q,\alpha\in\Gamma^*$，即转移到新状态并将栈顶符号替换为$\alpha$</li>
+</ul>
+</li>
+<li>$q_0\in Q$为初始状态</li>
+<li>$Z_0\in\Gamma$为初始栈顶元素</li>
+<li>$F\subseteq Q$为终止状态集合</li>
+</ul>
+<p>一些字母上的约定：</p>
+<ul>
+<li>用$a,b,c\cdots,\epsilon$表示输入符号</li>
+<li>用$\cdots,X,Y,Z$表示栈符号</li>
+<li>用$w,x,y,z$表示输入符号形成的字符串</li>
+<li>用$\alpha,\beta,\cdots$来表示栈符号形成的字符串<h2 id="下推自动机的语言"><a href="#下推自动机的语言" class="headerlink" title="下推自动机的语言"></a>下推自动机的语言</h2></li>
+<li>根据终止状态$L(P)$</li>
+<li>根据空栈$N(P)$</li>
+</ul>
+<p>两者在定义语言的能力上等价，意味着可以通过修改相互转换。</p>
+<h2 id="确定性下推自动机与非确定性下推自动机"><a href="#确定性下推自动机与非确定性下推自动机" class="headerlink" title="确定性下推自动机与非确定性下推自动机"></a>确定性下推自动机与非确定性下推自动机</h2><p>NPDA的表达能力比DPDA要强。</p>
+<h2 id="CFG转变为PDA"><a href="#CFG转变为PDA" class="headerlink" title="CFG转变为PDA"></a>CFG转变为PDA</h2><p>对于CFG $G$，令$L=L(G)$，我们可以构造一个PDA $P$，使$N(P)=L$。</p>
+<p>思路就是$P$的每一步代表最左推导中的一步。</p>
+<h2 id="PDA转变为CFG"><a href="#PDA转变为CFG" class="headerlink" title="PDA转变为CFG"></a>PDA转变为CFG</h2><p>对于PDA $P$，令$L=N(G)$，我们可以构造一个CGL $G$，使$L=L(G)$。</p>
+<p>思路是$G$中的每一个符号都形如$[pXq]$，对应一个输入使$P$从$p$转移到$q$，并且弹出栈顶符号$X$。</p>
+<h1 id="上下文无关语言"><a href="#上下文无关语言" class="headerlink" title="上下文无关语言"></a>上下文无关语言</h1><h1 id="时间自动机"><a href="#时间自动机" class="headerlink" title="时间自动机"></a>时间自动机</h1><h2 id="定义-4"><a href="#定义-4" class="headerlink" title="定义"></a>定义</h2><p>令$X$是一个时钟变量的集合，那么时钟约束(time constraints)的集合$C(X)$由以下文法定义：</p>
+<script type="math/tex; mode=display">\empty=x\leq k\mid k\leq x\mid x<k\mid k<x\mid\empty\wedge \empty</script><p>其中$x\in X,k\in\mathbb{N}$</p>
+<p>定义<strong>时间自动机</strong>(time automata)是一个四元组$(L,X,I_0,E)$：</p>
+<ul>
+<li>$L$是一个有限地点(location)集合</li>
+<li>$X$是一个有限时钟变量集合</li>
+<li>$I_0\in L$是一个初始地点</li>
+<li>$E\subseteq L\times C(X)\times 2^X\times L$是一个边的集合，四元组的含义为(源地点，时钟约束，重置时钟集，目标地点)</li>
+</ul>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><p>货车在车间待机，装货完成后以平均速度 1km/min 开到距离 3km 的卸货点，卸货时间 2-4min，卸货完后返回车间待机。对其进行建模。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/%E8%BF%81%E7%A7%BB%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">【八】迁移系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-09 14:08:40" itemprop="dateCreated datePublished" datetime="2024-12-09T14:08:40+08:00">2024-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>迁移系统</strong>(transition system, TS) 是一个反应式的系统，直觉上它由一个所有可能状态的集合以及一些迁移(transition)——或者说状态转换(state change)——的集合组成。</p>
+<p>我们可以用有向图来表示一个迁移系统，图中的结点表示状态，边表示迁移行为。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>迁移系统是一个五元组$(S,S_0,T,\alpha,\beta)$:</p>
+<ul>
+<li>$S$ 是一个有限或无限的状态集合</li>
+<li>$S_0$ 是一个初始状态集合，$S_0 \subseteq S$</li>
+<li>$T$ 是一个迁移集合，$T \subseteq S \times S$</li>
+<li>$\alpha$和$\beta$是两个从$T$到$S$的映射，对于任意的$t\in T$，有$\alpha(t)$表示迁移的<strong>源状态</strong>和$\beta(t)$表示迁移的<strong>目标状态</strong>。</li>
+</ul>
+<p>若$S$和$T$是有限的，则整个迁移系统也是有限的。</p>
+<p>定义一个迁移系统$\mathcal{A}$的路径是一个迁移的序列$t_1,t_2,\dots,t_n$。</p>
+<p>如果一个状态可以由初始状态经过一条路径达到，则称这个状态是<strong>可达</strong>的。<br>如果一个状态不可以到达任何其他状态，则称这个状态是<strong>终结状态</strong>。<br>如果一个状态是可达的同时又是一个终结状态，则称这个状态是<strong>死锁状态</strong>。</p>
+<p>当然，这里$\alpha$和$\beta$的定义可以拓展到对一个路径取源和目标。</p>
+<h2 id="带标签的迁移系统"><a href="#带标签的迁移系统" class="headerlink" title="带标签的迁移系统"></a>带标签的迁移系统</h2><p>一个被字母表$A$标记的，带标签的迁移系统(labeled transition system) 是一个 6 元组$\mathcal{A} = (S,S_0,T,\alpha,\beta,\lambda)$:</p>
+<ul>
+<li>前五元组是一个迁移系统</li>
+<li>$\lambda$是一个从$T$到$A$的映射，对于任意的$t\in T$，有$\lambda(t)$表示迁移的<strong>标签</strong>。</li>
+</ul>
+<p>直觉上，一个迁移的标签意味着触发这个迁移的行为或者事件。</p>
+<p>定义一条如果$c=t_1,t_2,\cdots$是一条路径，那么触发这些迁移的行为的序列$trace(c)=\lambda(t_1),\lambda(t_2),\cdots$被称为这个路径的<strong>踪迹</strong>。</p>
+<h1 id="迁移系统的等价性"><a href="#迁移系统的等价性" class="headerlink" title="迁移系统的等价性"></a>迁移系统的等价性</h1><p>想要证明两个建模语言是等价的，我们可以用迁移系统来刻画它们的行为，然后通过证明迁移系统的等价性来证明建模语言行为的等价性。</p>
+<h2 id="强同构等价"><a href="#强同构等价" class="headerlink" title="强同构等价"></a>强同构等价</h2><p>唯一的区别就只能是状态和迁移的命名不同</p>
+<h2 id="弱同构等价"><a href="#弱同构等价" class="headerlink" title="弱同构等价"></a>弱同构等价</h2><p>如果这两个可达子迁移系统是同构的，我们称原来的两个迁移系统是 弱同构(weak isomorphic) 的。</p>
+<h2 id="双模拟等价"><a href="#双模拟等价" class="headerlink" title="双模拟等价"></a>双模拟等价</h2><p>迁移系统具有相同的行为，并在同一时刻做选择。</p>
+<h1 id="迁移系统的运算"><a href="#迁移系统的运算" class="headerlink" title="迁移系统的运算"></a>迁移系统的运算</h1><h2 id="自由积"><a href="#自由积" class="headerlink" title="自由积"></a>自由积</h2><p>将多个迁移系统的定义做一个笛卡尔积。</p>
+<p>直观上理解，各个子系统的定义不变，加入了时钟来统一驱动多个系统。使之走相同的步数。</p>
+<h2 id="同步积"><a href="#同步积" class="headerlink" title="同步积"></a>同步积</h2><p>当进程之间进行交互的时候，并不是所有可能的全局行为都是有用的，因为这些交互会受到进程通信和同步的限制。</p>
+<p>因此，描述多进程系统的迁移系统一定是各个进程对应的各自迁移系统的自由积的一个子系统，我们可以用同步积来表达这种受到通信和同步约束的全局系统。</p>
+<p>本质上就是加入了一个集合来判断自由积中哪些迁移是被允许的。换句话说，同步积只允许标签向量在同步约束中的全局迁移发生。</p>
+<h2 id="tau-迁移和共享标签"><a href="#tau-迁移和共享标签" class="headerlink" title="$\tau $迁移和共享标签"></a>$\tau $迁移和共享标签</h2><p>自由积有时钟的限制，要求所有子迁移系统必须同进退，要想消除这个限制，只需要每个状态引入一个自环转移($\tau$ transition)就行了。</p>
+<p>我们也可以使用共享标签来表示两个迁移必须同时发生，这样在表达上面会更加简洁。不过这并没有拓展同步积的表达能力就是了，只是换了一种更简便的表达方式而已。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">【二】正则表达式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-09 13:21:51" itemprop="dateCreated datePublished" datetime="2024-12-09T13:21:51+08:00">2024-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>正则表达式(regular expression, RE) 通过代数式的方式来描述语言。</p>
+<p>如果$E$是一个正则表达式，记它定义的语言为$L(E)$。</p>
+<p>首先回顾一下语言的操作：</p>
+<ul>
+<li><strong>并(union)</strong>：就是集合的并操作</li>
+<li><strong>拼接(concatenation)</strong>：LM</li>
+<li><strong>星闭包(Kleene closure)</strong>：L*</li>
+</ul>
+<p><strong>定义</strong>：<br>递归地定义正则表达式如下：<br>基础情况：</p>
+<ol>
+<li>一个符号是正则表达式</li>
+<li>$\epsilon$是正则表达式</li>
+<li>$\emptyset$是正则表达式<br>递归情况：</li>
+<li>两个正则表达式的并是正则表达式，$E_1+E_2$</li>
+<li>两个正则表达式的拼接是正则表达式，$E_1E_2$</li>
+<li>一个正则表达式的星闭包是正则表达式，$E*$</li>
+</ol>
+<h2 id="操作符号优先级"><a href="#操作符号优先级" class="headerlink" title="操作符号优先级"></a>操作符号优先级</h2><p>星闭包&gt;拼接&gt;并 </p>
+<h2 id="正则表达式和有穷自动机的等价性"><a href="#正则表达式和有穷自动机的等价性" class="headerlink" title="正则表达式和有穷自动机的等价性"></a>正则表达式和有穷自动机的等价性</h2><h3 id="将正则表达式转换成-epsilon-NFA"><a href="#将正则表达式转换成-epsilon-NFA" class="headerlink" title="将正则表达式转换成$\epsilon$-NFA"></a>将正则表达式转换成$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
+<h3 id="将DFA转化为正则表达式"><a href="#将DFA转化为正则表达式" class="headerlink" title="将DFA转化为正则表达式"></a>将DFA转化为正则表达式</h3><p>定义<strong>k-路径</strong>：<br>k-路径指的是DFA状态转换图上的某一条路径，其中，这条路径经过的所有状态的标号不超过k。</p>
+<p>令$R^{k}_{ij}$表示从状态$i$走到状态$j$的k路径。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
+<h2 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h2><ul>
+<li>$R+\emptyset=R$</li>
+<li>$R\emptyset=\emptyset R=\emptyset$</li>
+<li>$\epsilon R=R\epsilon =R$</li>
+<li>$(\epsilon+R)<em>=R</em>$</li>
+<li>$R+SR=(\epsilon+S)R$</li>
+<li>$\epsilon+RR<em>=R</em>$</li>
+<li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
+</ul>
+<h1 id="正则语言的判定性质"><a href="#正则语言的判定性质" class="headerlink" title="正则语言的判定性质"></a>正则语言的判定性质</h1><p>语言类有两类重要的性质：</p>
+<ul>
+<li>判定性质<br>一类语言的<strong>判定性质(decision property)</strong>对应于一个算法，这个算法以某个语言的形式化描述(比如说一个DFA)为输入，然后告诉我们这个语言是否满足某些性质（比如说这个语言是否为空之类的）。语言的表示可以是形式化(formal)的（比如说RE，FA等等），也可以是非形式化(informal)的（比如说自然语言描述，集合描述等等）。</li>
+<li>闭包性质<br>一类语言的<strong>闭包性质(closure property)</strong>说的是给定这个语言类的一些语言，对于这些语言进行某个操作得到的另一个语言依旧在同一个语言类中。</li>
+</ul>
+<p>下面讨论一些常见的判定性质。</p>
+<h2 id="成员资格问题"><a href="#成员资格问题" class="headerlink" title="成员资格问题"></a>成员资格问题</h2><p>一个给定字符串是否属于一个给定正则语言。</p>
+<p>转换成DFA模拟运行即可。</p>
+<h2 id="空问题"><a href="#空问题" class="headerlink" title="空问题"></a>空问题</h2><p>判断一个给定的正则语言是否为空。</p>
+<p>假设语言的表示为DFA，从初始状态开始，计算所有的可达状态的集合，如果至少有一个终止状态可达，那么这个语言就非空，否则为空。</p>
+<h2 id="无限性问题"><a href="#无限性问题" class="headerlink" title="无限性问题"></a>无限性问题</h2><p>判断一个给定的正则语言的语言集合是否为无限大。</p>
+<p>只要找DFA是否出现环。</p>
+<h2 id="泵引理"><a href="#泵引理" class="headerlink" title="泵引理"></a>泵引理</h2><p>判断某个语言是不是正则语言。</p>
+<p>使用<strong>泵引理</strong>：<br>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
+<ol>
+<li>$|xy|\leq n$</li>
+<li>$|y| &gt;0$</li>
+<li>$\forall i \ge 0,xy^iz\in L$</li>
+</ol>
+<p>泵引理被用来判断一个语言不是正则语言。而不是用来判断是正则语言。</p>
+<h2 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h2><p>判断两个正则语言是否等价。</p>
+<p>构造<strong>乘积DFA</strong>：</p>
+<ul>
+<li>状态集：$Q\times R$</li>
+<li>初始状态：$[q_0,r_0]$</li>
+<li>转移函数：$\delta([q,r],a)=[\delta_L(q,a),\delta_R(r,a)]$</li>
+<li><strong>终止状态</strong>：$[q,r]$，其中只有一个是原来DFA的终止状态。</li>
+</ul>
+<p>如果这个自动机是接受的语言是空集，则说明两个正则语言等价。</p>
+<h2 id="包含关系"><a href="#包含关系" class="headerlink" title="包含关系"></a>包含关系</h2><p>判断两个正则语言是否包含。</p>
+<p>仍然构造乘积DFA，但是终止状态定义为$[q,r]$，其中$q$是原来DFA的终止状态，而$r$不是$M$的终止状态。</p>
+<p>这样乘积DFA是空集等价于$L\subseteq M$</p>
+<h2 id="一个正则语言的最小状态DFA"><a href="#一个正则语言的最小状态DFA" class="headerlink" title="一个正则语言的最小状态DFA"></a>一个正则语言的最小状态DFA</h2><p>现在考虑如何将一个DFA找到其等价的最小状态DFA。下面我们介绍一种高效的 <strong>状态最小化(efficient state minimization)</strong> 操作。</p>
+<p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
+<h1 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h1><h2 id="并操作、拼接操作以及星闭包操作下的闭包"><a href="#并操作、拼接操作以及星闭包操作下的闭包" class="headerlink" title="并操作、拼接操作以及星闭包操作下的闭包"></a>并操作、拼接操作以及星闭包操作下的闭包</h2><p>如果$L$和$M$是正则语言，那么$L\cup M$，$LM$，$L*$都是正则语言。</p>
+<h2 id="交集、差集、补集下的闭包"><a href="#交集、差集、补集下的闭包" class="headerlink" title="交集、差集、补集下的闭包"></a>交集、差集、补集下的闭包</h2><ul>
+<li>交集<br>  在交集下闭包，构造一个乘积DFA，令终止状态是两个共同的终止状态。</li>
+<li>差集<br>  在差集下闭包，构造一个乘积DFA，终止状态是包含A的但不包含B的终止状态的状态对。</li>
+<li>补集<br>  在补集下闭包。</li>
+</ul>
+<h2 id="逆运算下的闭包"><a href="#逆运算下的闭包" class="headerlink" title="逆运算下的闭包"></a>逆运算下的闭包</h2><p>递归的进行逆操作即可。</p>
+<h2 id="同态运算和逆同态运算下的闭包"><a href="#同态运算和逆同态运算下的闭包" class="headerlink" title="同态运算和逆同态运算下的闭包"></a>同态运算和逆同态运算下的闭包</h2><p>对于一个字母表的<strong>同态(homomorphism)</strong>指的是一个函数，这个函数对于字母表中的每一个字符给出了一个字符串。</p>
+<p>正则语言在同态和逆同态下是闭包的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -669,601 +1398,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/18/%E5%9B%BE%E7%81%B5%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/18/%E5%9B%BE%E7%81%B5%E6%9C%BA/" class="post-title-link" itemprop="url">【六】图灵机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-18 13:57:55" itemprop="dateCreated datePublished" datetime="2024-11-18T13:57:55+08:00">2024-11-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是图灵机"><a href="#什么是图灵机" class="headerlink" title="什么是图灵机"></a>什么是图灵机</h1><h2 id="直觉上"><a href="#直觉上" class="headerlink" title="直觉上"></a>直觉上</h2><p>图灵机长这样</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/1.png?raw=true" alt="1"></p>
-<p>有一条无限长的<strong>纸带</strong>，纸带里有一些方格，方格中的符号来自一个有限字母表。</p>
-<p>图灵机可以根据自己当前的状态和读写头指向的纸带符号，改变自己的状态，重写读写头指向的符号，然后将读写头移动一个方格（可以向左也可以向右）。</p>
-<p>值得注意的是，图灵机和一般的计算机都有等价的表达能力，而因为图灵机有无限内存（纸带无限长），图灵机甚至比物理上的计算机更加强大。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>一个图灵机是一个<strong>七元组</strong> $M=(Q,\sum,\Gamma,\delta,q_0,B,F)$</p>
-<ul>
-<li>$Q$是一个有限的状态集合。</li>
-<li>$\sum$是一个输入字母表。</li>
-<li>$\Gamma$是一个纸带字母表，$\Gamma \subseteq \sum$。</li>
-<li>$\delta$是转移函数。<ul>
-<li>接受两个参数，一个状态$q\in Q$和一个纸带符号$Z\in\Gamma$</li>
-<li>$\delta(q,Z)$要么没定义，要么为一个三元组$(p,Y,D)$，分别是状态，纸带符号，转换头前进方向（L或R）。</li>
-</ul>
-</li>
-<li>$q_0$是起始状态。</li>
-<li>$B$是一个空符号，$B\in \Gamma -\sum$，除了输入以外的其他纸带部分初始都为空。</li>
-<li>$F$是终止状态集合。</li>
-</ul>
-<h2 id="图灵机的即时描述和移动"><a href="#图灵机的即时描述和移动" class="headerlink" title="图灵机的即时描述和移动"></a>图灵机的即时描述和移动</h2><p>在初始时刻，图灵机接受一个有限的输入字符串，字符串两边是无限的空符号。图灵机处于初始状态并且指向最左边的输入符号。</p>
-<h3 id="即时描述-Instantaneous-Description-ID"><a href="#即时描述-Instantaneous-Description-ID" class="headerlink" title="即时描述(Instantaneous Description, ID)"></a>即时描述(Instantaneous Description, ID)</h3><p>图灵机的即时描述是一个字符串$\alpha q \beta$</p>
-<ul>
-<li>其中$\alpha\beta$是纸带上从最左边的非空符号到最右边的非空符号的部分。</li>
-<li>状态$q$放置在正在扫描的符号的左侧。<ul>
-<li>$\alpha\beta q$表示正在扫描最右侧的$B$，可以省略不写。</li>
-<li>$qB\alpha\beta$表示正在扫描最左侧的$B$，不可以省略不写。</li>
-</ul>
-</li>
-</ul>
-<h3 id="移动-move-vdash"><a href="#移动-move-vdash" class="headerlink" title="移动(move) $\vdash $"></a>移动(move) $\vdash $</h3><p>即$ID_1 \vdash ID_2$，根据转移函数进行变化。</p>
-<p>如果可以经过0次或多次移动到达新ID，表示为$ID_1 \vdash^* ID_2$</p>
-<h2 id="图灵机的语言"><a href="#图灵机的语言" class="headerlink" title="图灵机的语言"></a>图灵机的语言</h2><p>图灵机对应的语言可以通过<strong>根据终止状态的定义</strong>或<strong>停机</strong>这两种方式来定义。</p>
-<h3 id="根据终止状态"><a href="#根据终止状态" class="headerlink" title="根据终止状态"></a>根据终止状态</h3><p>$L(M)=\{\omega | q_0\omega \vdash^* I\text{, where I is an ID with a final state} \}$</p>
-<h3 id="通过停机"><a href="#通过停机" class="headerlink" title="通过停机"></a>通过停机</h3><p>$H(M)=\{\omega | q_0\omega \vdash^* I\text{, and there is no move possible from ID I} \}$</p>
-<h3 id="两种表达的等价性"><a href="#两种表达的等价性" class="headerlink" title="两种表达的等价性"></a>两种表达的等价性</h3><p>能够构造出等价转换的图灵机。</p>
-<h4 id="终止状态到停机"><a href="#终止状态到停机" class="headerlink" title="终止状态到停机"></a>终止状态到停机</h4><p>如果$L=L(M)$，则存在另一个图灵机$M’$，使得$L=H(M’)$</p>
-<ol>
-<li>对于$M$的每个终止状态，删除任意移动，使得$M’$在这个状态必然停机。</li>
-<li>令所有没有定义转移函数的非终止状态都定义为向右移动。</li>
-</ol>
-<h4 id="停机到终止状态"><a href="#停机到终止状态" class="headerlink" title="停机到终止状态"></a>停机到终止状态</h4><p>如果$L=H(M)$，则存在另一个图灵机$M’’$，使得$L=L(M’’)$</p>
-<ol>
-<li>引入新状态$f$，成为唯一的终止状态，且没有移动。</li>
-<li>对于任何没有定义转移函数的二元组，都定义为转换到状态$f$。</li>
-</ol>
-<h2 id="递归可枚举语言和递归语言"><a href="#递归可枚举语言和递归语言" class="headerlink" title="递归可枚举语言和递归语言"></a>递归可枚举语言和递归语言</h2><p>我们称由图灵机定义的语言类被称为<strong>递归可枚举语言</strong>(recursively enumerable language) 。</p>
-<p>定义<strong>算法</strong>是一个图灵机，这个图灵机通过终止状态接收，并且无论接受与否，它都注定会停机。</p>
-<p>如果$L=L(M)$且图灵机$M$是一个算法，则称$L$是一个<strong>递归语言</strong>(recursive language)。</p>
-<p>每个上下文无关语言都是一个递归语言。</p>
-<h1 id="图灵机进阶"><a href="#图灵机进阶" class="headerlink" title="图灵机进阶"></a>图灵机进阶</h1><h2 id="图灵机编程技巧"><a href="#图灵机编程技巧" class="headerlink" title="图灵机编程技巧"></a>图灵机编程技巧</h2><h3 id="多道"><a href="#多道" class="headerlink" title="多道"></a>多道</h3><p>可以将纸带符号看成一个有多个分量的向量。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/2.png?raw=true" alt="2"></p>
-<h3 id="标记"><a href="#标记" class="headerlink" title="标记"></a>标记</h3><p>增加一个通道来标记特殊位置，在新增加的通道上，大多数符号都是空的，这让图灵机能很方便找到这些位置。</p>
-<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>状态也可以是一个向量，首分量用来控制状态，其余分量用来存储一些信息。</p>
-<h2 id="半无穷纸带"><a href="#半无穷纸带" class="headerlink" title="半无穷纸带"></a>半无穷纸带</h2><p>可以构造一个图灵机从来不会移动到初始读写头位置的左边。</p>
-<p>令初始时读写头的位置为0，右侧位置为1、2、……，左侧为-1，-2，……。</p>
-<p>构造一个有两个分道的图灵机，并让增加一个状态分量表示是正在扫描顶部磁道还是底部磁道。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%9B%BE%E7%81%B5%E6%9C%BA/3.png?raw=true" alt="3"></p>
-<h2 id="更多限制"><a href="#更多限制" class="headerlink" title="更多限制"></a>更多限制</h2><p>两个栈就能模拟一个纸带。</p>
-<p>所以相较于下推自动机，只多了一个栈，但是计算能力有了本质性的提高。</p>
-<h2 id="图灵机的拓展"><a href="#图灵机的拓展" class="headerlink" title="图灵机的拓展"></a>图灵机的拓展</h2><p>扩展的图灵机在本质上表达能力没有变强，只是表示更方便了。</p>
-<h3 id="多纸带图灵机"><a href="#多纸带图灵机" class="headerlink" title="多纸带图灵机"></a>多纸带图灵机</h3><p>多纸带图灵机有多个纸带，每个纸带有自己的读写头，图灵机的移动取决于它的状态以及每个纸带上读写头下的符号。</p>
-<p>用单纸带图灵机模拟多纸带(k)图灵机：</p>
-<p>用有2k个分道的单纸带图灵机来模拟，其中对应多纸带图灵机的每个纸带，单纸带图灵机用一个分道来标记读写头，另一个分道记录纸带。</p>
-<h3 id="非确定性图灵机"><a href="#非确定性图灵机" class="headerlink" title="非确定性图灵机"></a>非确定性图灵机</h3><p>非确定性图灵机(Non-determinstic Turing Machine, NTM) 允许在一次移动的时候有不止一次可能的选择，每一个选择都是一个（状态，符号，方向）三元组，这和 确定性图灵机(Determinstic Turing Machine, DTM)中一样。</p>
-<p>用多分道图灵机来模拟广度优先搜索即可。</p>
-<h1 id="递归可枚举语言和递归语言的闭包性质"><a href="#递归可枚举语言和递归语言的闭包性质" class="headerlink" title="递归可枚举语言和递归语言的闭包性质"></a>递归可枚举语言和递归语言的闭包性质</h1><ul>
-<li>递归可枚举语言和递归语言在并集、拼接、星闭包、翻转、交集以及逆同态操作下都是封闭的。</li>
-<li>递归语言在差集、补集操作下封闭。</li>
-<li>递归可枚举语言在同态操作下是封闭的。</li>
-</ul>
-<h2 id="并集操作"><a href="#并集操作" class="headerlink" title="并集操作"></a>并集操作</h2><ul>
-<li>递归语言：只需要看在两个算法上能否停下来。</li>
-<li>递归可枚举语言：当两个图灵机有一个接受，但是可能不知道什么时候能停机。</li>
-</ul>
-<h2 id="交集操作-差集操作"><a href="#交集操作-差集操作" class="headerlink" title="交集操作/差集操作"></a>交集操作/差集操作</h2><p>类似于并集。</p>
-<h2 id="拼接操作"><a href="#拼接操作" class="headerlink" title="拼接操作"></a>拼接操作</h2><ul>
-<li>递归可枚举语言：用两个单带半无穷图灵机构造一个非确定性图灵机，如果存在一个正确分割方式，那么一定能选择正确的方式。</li>
-<li>递归语言：遍历寻找分割方式。</li>
-</ul>
-<h2 id="星闭包"><a href="#星闭包" class="headerlink" title="星闭包"></a>星闭包</h2><p>和拼接类似。</p>
-<h2 id="翻转"><a href="#翻转" class="headerlink" title="翻转"></a>翻转</h2><p>只需要用一个辅助图灵机翻转字符串。</p>
-<h2 id="逆同态操作"><a href="#逆同态操作" class="headerlink" title="逆同态操作"></a>逆同态操作</h2><p>用一个图灵机模拟同态函数$h$，将其应用于输入$\omega$，得到$h(\omega)$，然后用原本的图灵机来接收$h(\omega)$就可以了。</p>
-<h2 id="同态操作"><a href="#同态操作" class="headerlink" title="同态操作"></a>同态操作</h2><ul>
-<li>递归可枚举语言：设计非确定性图灵机</li>
-<li>递归语言：可能取值是无穷的，不适用。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/13/Mitsuba0.6%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/" class="post-title-link" itemprop="url">Mitsuba0.6编译指南</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-11-13 13:50:55 / 修改时间：14:56:59" itemprop="dateCreated datePublished" datetime="2024-11-13T13:50:55+08:00">2024-11-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="关于Mitsuba"><a href="#关于Mitsuba" class="headerlink" title="关于Mitsuba"></a>关于Mitsuba</h1><p><a target="_blank" rel="noopener" href="https://www.mitsuba-renderer.org/">Mitsuba</a>是一个学术界应用很广的渲染系统，基于C++编写。</p>
-<p>这里介绍Mitsuba0.6 的编译操作指南。注意，因为官方版本长期不维护，这里的来源是一个<a target="_blank" rel="noopener" href="https://github.com/VicentChen/mitsuba">第三方维护版本</a>。</p>
-<h1 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h1><p>这里我不准备编译图形化界面，所以不会涉及到QT有关内容。</p>
-<p>我将自己使用的文件直接上传到我的GitHub仓库，有需要的可以自己下载，理论上从我仓库下载按照说明进行安装就不会出现问题。如果遇到新问题欢迎在我的GitHub上提issue。</p>
-<p>请确保你的电脑已经安装好了</p>
-<ol>
-<li>Visual Studio</li>
-<li>Cmake</li>
-<li>Python 3.9</li>
-</ol>
-<h1 id="详细步骤"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤</h1><h2 id="下载mitsuba"><a href="#下载mitsuba" class="headerlink" title="下载mitsuba"></a>下载mitsuba</h2><p>从我仓库下载mitsuba源码，解压。<br>//TODO </p>
-<h2 id="下载依赖文件"><a href="#下载依赖文件" class="headerlink" title="下载依赖文件"></a>下载依赖文件</h2><p>从<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/mitsuba0.6-dep-py3.9.12">这里</a>下载。</p>
-<p>解压后将文件夹dependencies放在mts目录下。</p>
-<h2 id="设置python目录"><a href="#设置python目录" class="headerlink" title="设置python目录"></a>设置python目录</h2><p>在mts<strong>主目录</strong>下找到CmakeLists.txt。</p>
-<p>修改其中设置：</p>
-<h3 id="添加Python路径"><a href="#添加Python路径" class="headerlink" title="添加Python路径"></a>添加Python路径</h3><p>找到<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (NOT Python_ROOT_DIR)</span><br><span class="line">	set(Python_ROOT_DIR &quot;C:/ProgramData/Anaconda3&quot; CACHE STRING &quot;Python installtion path&quot; FORCE)</span><br><span class="line">	message(&quot;No Python_ROOT_DIR specified. Python_ROOT_DIR is set to default value &#x27;C:/ProgramData/Anaconda3&#x27;&quot;)</span><br><span class="line">endif(NOT Python_ROOT_DIR)</span><br><span class="line">find_package(Python COMPONENTS Interpreter Development REQUIRED)</span><br><span class="line">set(PYTHON_VERSION_WITHOUT_DOT &quot;python$&#123;Python_VERSION_MAJOR&#125;$&#123;Python_VERSION_MINOR&#125;&quot;)</span><br><span class="line">message(&quot;Found python version: $&#123;PYTHON_VERSION_WITHOUT_DOT&#125;&quot;)</span><br></pre></td></tr></table></figure><br>这里是在设置python路径，自行在上方添加自己的python路径<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set(Python_ROOT_DIR &quot;Your Path&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>注意，这里我使用的python版本为<a target="_blank" rel="noopener" href="https://www.python.org/downloads/release/python-3912/">3.9.12</a>，其他版本（anaconda）我本人遇到过报错。</p>
-<h2 id="新建cbuild"><a href="#新建cbuild" class="headerlink" title="新建cbuild"></a>新建cbuild</h2><p>在mts主目录下新建文件夹cbuild。</p>
-<h2 id="生成VS项目"><a href="#生成VS项目" class="headerlink" title="生成VS项目"></a>生成VS项目</h2><p>打开终端，切换到<strong>VS Command</strong>。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/1.png?raw=true" alt="image-1"><br>在VS终端打开刚才创建的cbuild文件夹<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;.../.../cbuild&quot;</span><br></pre></td></tr></table></figure><br>执行<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake ..</span><br></pre></td></tr></table></figure></p>
-<p>会有一些Warnings，忽略即可。</p>
-<h2 id="编译项目"><a href="#编译项目" class="headerlink" title="编译项目"></a>编译项目</h2><p>打开刚才生成好的Mitsuba.sln（在cbuild文件夹下）。</p>
-<p>一定一定一定切换到<strong>Release</strong>模式下进行编译。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/2.png?raw=true" alt="image-2"></p>
-<p>耐心等待即可。</p>
-<p>如果出现问题，请先自己浏览报错信息。并检查自己有没有擅自更改过子目录下的CmakeList.txt!!!</p>
-<p>顺利编译成功。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/3.png?raw=true" alt="image-3"></p>
-<p>这里我的电脑配置还行，编译比较快。</p>
-<p>然后我们就可以开启愉快的Mitsuba之旅啦！</p>
-<p>（我没有编译QT，所以通过命令行运行程序）</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/12/Pumping%20lemma%20%E5%92%8C%20Ogden's%20lemma/" class="post-title-link" itemprop="url">Pumping lemma 和 Ogden's lemma</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-12 14:05:34" itemprop="dateCreated datePublished" datetime="2024-11-12T14:05:34+08:00">2024-11-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:32:52" itemprop="dateModified" datetime="2024-12-09T23:32:52+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们已经讨论过了如何判断一个字符串是否属于某个上下文无关语言，使用泵引理即可。</p>
-<p>现在介绍一个判断上下文无关语言的更强的引理：<strong>Ogden’s lemma</strong>（中文翻译为鄂登引理）。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>如果一个语言$L$是上下文无关语言，那么存在整数$n$，对$\forall z\in L \wedge |z| \ge n$，我们任意选取至少$n$个位置做标记(marked)，并令$z=uvwxy$，总满足：</p>
-<ol>
-<li>$vwx$含有最多$n$个标记</li>
-<li>$vx$含有至少一个标记</li>
-<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
-</ol>
-<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>显而易见的，泵引理就是Ogden’s lemma标记字符串所有的位置时的情况，由此可见，Ogden’s lemma更加灵活，比泵引理更强，能再泵引理不足以判断的时候起到作用。下面会举个例子。</p>
-<p>关于我们用泵引理和鄂登引理到底来干什么，下面的说明会帮助产生一个清晰的认识。</p>
-<ol>
-<li>如果一个语言是上下文无关语言，那么属于这个语言的字符串<strong>一定</strong>满足泵引理</li>
-<li>如果一个语言不是上下文无关语言，那么属于这个语言的字符串仍然<strong>可能</strong>满足泵引理</li>
-<li>如果一个字符串满足泵引理，那么这个字符串代表的语言<strong>可能</strong>是上下文无关语言</li>
-<li>如果一个字符串不满足泵引理，那么这个字符串代表的语言<strong>一定不是</strong>上下文无关语言</li>
-</ol>
-<p>这说明我们一般使用泵引理来判断一个语言不是上下文无关语言（即证明里面该语言存在字符串不满足泵引理）。</p>
-<p>使用泵引理说明一个语言是上下文无关语言没有意义。</p>
-<h1 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h1><p>关于该引理的证明<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=_95IZWDRHNQ">请看这里</a><br>我觉得还是讲的很清楚的。</p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>该例子参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12613082/using-ogden-s-lemma-versus-regular-pumping-lemma-for-context-free-grammars">stackoverflow的一个问答</a></p>
-<p>考虑语言$L = \{a^ib^jc^kd^l | i=0 \text{ or }j=k=l\}$，证明其不是上下文无关语言。</p>
-<p>我们先考虑使用泵引理。</p>
-<p>令$z=uvwxy$，假设$z$包含a，我们可以令$v=a,x=\epsilon,y=\epsilon$；假设$z$不包含a，我们可以令$v=b,x=\epsilon,y=\epsilon$。都满足泵引理，因此无法通过泵引理来证明不是上下文无关语言。</p>
-<p>现在考虑用鄂登引理。</p>
-<p>令$z=ab^nc^nd^n$，标记所有的b，令$z=uvwxy$。</p>
-<p>假如v或x有超过一种（区分于一个）字符，则重复就会出现错误的顺序。</p>
-<p>所以v和x至少包含一个字符$b$，则出现以下五种情况：</p>
-<ol>
-<li>$v=\epsilon,x=b^i$</li>
-<li>$v=a,x=b^i$</li>
-<li>$v=b^i,x=c^j$</li>
-<li>$v=b^i,x=d^j$</li>
-<li>$v=b^i,x=\epsilon$<br>容易验证以上五种情况都不满足鄂登引理。因此，$L$不是上下文无关语言。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/11/CYK%E7%AE%97%E6%B3%95%E7%9A%84C++%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">CYK算法的C++实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-11 21:19:57" itemprop="dateCreated datePublished" datetime="2024-11-11T21:19:57+08:00">2024-11-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:33:17" itemprop="dateModified" datetime="2024-12-09T23:33:17+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是CYK算法"><a href="#什么是CYK算法" class="headerlink" title="什么是CYK算法"></a>什么是CYK算法</h1><p>CYK算法（英语：Cocke–Younger–Kasami algorithm，缩写为CYK algorithm）是由约翰·科克，Younger和嵩忠雄共同研究出来大约发表于1965年的一个算法，它是一个用来判定任意给定的字符串$\omega\in\sum^*$是否属于一个上下文无关文法的算法。</p>
-<p>该算法采用动态规划的思想，将复杂度降低至多项式时间$O(n^3)$，其中$n$是字符串的长度。</p>
-<p>注意，使用该算法要先将文法转换为乔姆斯基范式。</p>
-<h1 id="CYK算法思路"><a href="#CYK算法思路" class="headerlink" title="CYK算法思路"></a>CYK算法思路</h1><p>详见<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/#CYK%E7%AE%97%E6%B3%95">传送门</a></p>
-<h1 id="例"><a href="#例" class="headerlink" title="例"></a>例</h1><p>判断$\omega=ababa$是否属于$S\rightarrow AB,A\rightarrow BC|a,B\rightarrow AC|b,C\rightarrow a|b$文法定义的语言。</p>
-<p>下表中列为i，行为j。</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th></th>
-<th><strong>1</strong></th>
-<th><strong>2</strong></th>
-<th><strong>3</strong></th>
-<th><strong>4</strong></th>
-<th><strong>5</strong>  </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> <strong>1</strong></td>
-<td>{A, C}</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>2</strong></td>
-<td>{B, S}</td>
-<td>{B, C}</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>3</strong></td>
-<td>{A}</td>
-<td>{A}</td>
-<td>{A, C}</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>4</strong></td>
-<td>{B, S}</td>
-<td>{B, S}</td>
-<td>{B, S}</td>
-<td>{B, C}</td>
-<td></td>
-</tr>
-<tr>
-<td> <strong>5</strong></td>
-<td>{A}</td>
-<td>{A}</td>
-<td>{A, C}</td>
-<td>{A}</td>
-<td>{A, C} </td>
-</tr>
-</tbody>
-</table>
-</div>
-<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>使用<strong>unordered_map</strong>来存储产生式，原先没有使用过这个。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, vector&lt;string&gt;&gt; grammar;</span><br></pre></td></tr></table></figure></p>
-<p>DP过程先初始化基础情况，也就是$X_{ii}$。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">        string terminal(1, str[i]);</span><br><span class="line">        for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">            for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                if (rhs == terminal) &#123;</span><br><span class="line">                    X[i][i].insert(lhs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>再去归纳剩下的状态。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">for (int len = 2; len &lt;= n; len++) &#123;</span><br><span class="line">        for (int i = 0; i &lt;= n - len; i++) &#123;</span><br><span class="line">            int j = i + len - 1;</span><br><span class="line">            for (int k = i; k &lt; j; k++) &#123;</span><br><span class="line">                for (const auto &amp;[lhs, rhsList]: grammar) &#123;</span><br><span class="line">                    for (const string &amp;rhs: rhsList) &#123;</span><br><span class="line">                        if (rhs.size() == 2) &#123;</span><br><span class="line">                            string v1(1, rhs[0]);</span><br><span class="line">                            string v2(1, rhs[1]);</span><br><span class="line">                            if (contains(X[i][k], v1) &amp;&amp; contains(X[k + 1][j], v2)) &#123;</span><br><span class="line">                                X[i][j].insert(lhs);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">完整代码在这里</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/11/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E8%AF%AD%E8%A8%80/" class="post-title-link" itemprop="url">【五】上下文无关语言</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-11 13:00:34" itemprop="dateCreated datePublished" datetime="2024-11-11T13:00:34+08:00">2024-11-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="上下文无关语言的泵引理"><a href="#上下文无关语言的泵引理" class="headerlink" title="上下文无关语言的泵引理"></a>上下文无关语言的泵引理</h1><p>回忆一下<strong>正则语言</strong>的泵引理(Pumping Lemma)：</p>
-<p>如果这个正则语言被有限自动机识别，因为自动机的状态数是有限的，当字符串长度大于状态数时，必然有某些状态被循环重复。</p>
-<h2 id="正则语言的泵引理"><a href="#正则语言的泵引理" class="headerlink" title="正则语言的泵引理"></a>正则语言的泵引理</h2><p>对于每一个正则语言$ L$ 来说，存在一个整数$ n $，使得对于$ L $中的每一个长度$ \ge n $的字符串$ w $，我们可以写作$ w=xyz $，满足：</p>
-<ol>
-<li>$|xy|\leq n$</li>
-<li>$|y|&gt;0$</li>
-<li>$\forall i\ge 0,xy^{i}z\in L$</li>
-</ol>
-<p>对于上下文无关语言来说，我们可以找到两个部分，将它们任意泵进泵出。</p>
-<h2 id="上下文无关语言的泵引理-1"><a href="#上下文无关语言的泵引理-1" class="headerlink" title="上下文无关语言的泵引理"></a>上下文无关语言的泵引理</h2><p>对于每一个上下文无关语言$ L $，存在一个整数$ n $，使得$\forall z\in L,|z|\ge n,\exists z=uvwxy$，满足：</p>
-<ol>
-<li>$|vwx|\leq n$</li>
-<li>$|vx|&gt;0$</li>
-<li>$\forall i\ge 0,uv^iwx^iy\in L$</li>
-</ol>
-<h3 id="泵引理的证明"><a href="#泵引理的证明" class="headerlink" title="泵引理的证明"></a>泵引理的证明</h3><p>考虑$L-\left\{\epsilon\right\}$的CNF（乔姆斯基范式）一个文法，令该文法有$m$个不同的变量，取$n=2^{m}$。</p>
-<p>取$z\in L \land |z|\ge n$，有<strong>引理1</strong>：产出$z$的解析树一定存在一条长度至少为$m+2$的路径。</p>
-<p>由引理1，一定存在路径，有至少$m+1$个变量（去掉终结符）。由容斥原理，考虑一条最长的路径，在低$m+1$个非叶结点中，一定存在有两个结点，标记的是同一个变量，不妨记为$A$.</p>
-<p>而$A$一定有两条候选的推导方式，$A\Rightarrow vAx$和$A\Rightarrow w$。</p>
-<p>其中，$|vw|\not ={0}$，因为CNF文法中不含空产生式。</p>
-<p>并且，$|vwx|\leq 2^{m}=n$，因为我们选取的是低$m+1$个非叶结点，树高最多为$m+1$。</p>
-<h4 id="引理1的证明"><a href="#引理1的证明" class="headerlink" title="引理1的证明"></a>引理1的证明</h4><p>假设一个CNF文法的解析树的所有路径长度都小于等于$m+1$，则产生最长字符串长度为$2^{m-1}$，矛盾。</p>
-<h3 id="泵引理的使用"><a href="#泵引理的使用" class="headerlink" title="泵引理的使用"></a>泵引理的使用</h3><p>上下文无关语言的泵引理主要被用来证明某个语言不是上下文无关语言。<br>例如：</p>
-<h4 id="例1"><a href="#例1" class="headerlink" title="例1"></a>例1</h4><p>$z=0^{n}10^{n}10^{n}$</p>
-<p>令$z=uvwxy,|vwx|\leq n\land |vx|\ge 1$。</p>
-<p>情况一： $vx$中没有 0</p>
-<p>$vx$中一定有1，那么重复就会导致超过两个 1 ，矛盾。</p>
-<p>情况二： $vx$中至少有一个 0</p>
-<p>因为$|vwx|\leq n$，所以无法完整覆盖到所有的 0 串，所以$|uwy|$中会出现不足 n 个 0 的 0 串，矛盾。</p>
-<hr>
-<h1 id="上下文无关语言的判定性质"><a href="#上下文无关语言的判定性质" class="headerlink" title="上下文无关语言的判定性质"></a>上下文无关语言的判定性质</h1><p>本届主要介绍上下文无关语言的一些性质如何去判定。</p>
-<p>需要注意的是，有一些问题在正则语言中可以判定，但是在上下文无关语言中不能判定。比如判断两个上下文无关语言是否相同。</p>
-<h2 id="判断是否为空"><a href="#判断是否为空" class="headerlink" title="判断是否为空"></a>判断是否为空</h2><p>等价于去除无用变量。</p>
-<h2 id="判断字符串是否属于语言"><a href="#判断字符串是否属于语言" class="headerlink" title="判断字符串是否属于语言"></a>判断字符串是否属于语言</h2><p>我们想判断字符串$\omega$是否属于上下文无关文法$G$描述的语言$L$。</p>
-<p>情况一：$\omega=\epsilon$</p>
-<p>只需要简单判断起始符号是否可以为空。</p>
-<p>情况二：$\omega \not =\epsilon$<br>使用<strong>CYK</strong>算法，可以在时间复杂度$O(|\omega|^{3})$内判断。</p>
-<h3 id="CYK算法"><a href="#CYK算法" class="headerlink" title="CYK算法"></a>CYK算法</h3><p>令$\omega=a_1a_2\cdots a_n$，我们将构造一个$n\times n$的三角形变量矩阵</p>
-<p>其中，$X_{ij}=\left\{A|A\Rightarrow a_i\cdots a_j\right\}$</p>
-<p>进行归纳构造。<br>基础情况：$X_{ij}=\left\{A|A\rightarrow a_i\in P\right\}$</p>
-<p>归纳：$X_{ij}=\left\{A|A\rightarrow BC \in P\right\}$</p>
-<p>$B\in X_{ik}$</p>
-<p>$C\in X_{k+1,j}$</p>
-<p>最后只需要判断$S\in X_{1,n}$</p>
-<p>附上我自己写的<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/CYKalgorithm">一个简单的CYK算法的C++实现</a></p>
-<h2 id="判断是否无穷"><a href="#判断是否无穷" class="headerlink" title="判断是否无穷"></a>判断是否无穷</h2><p>使用泵引理常数$n$，如果该语言存在一个长度在$n$到$2n−1$之间的字符串，那么这个语言就是无穷的，否则就是有穷的。</p>
-<hr>
-<h1 id="上下文无关语言的闭包性质"><a href="#上下文无关语言的闭包性质" class="headerlink" title="上下文无关语言的闭包性质"></a>上下文无关语言的闭包性质</h1><h2 id="并集下的闭包"><a href="#并集下的闭包" class="headerlink" title="并集下的闭包"></a>并集下的闭包</h2><p>令$L$和$M$是上下文无关文法G和H的上下文无关语言，只需要假设没有共同变量，如有则重命名。</p>
-<p>$L\cup M$只需增加$S\rightarrow S_1|S_2$。</p>
-<h2 id="拼接下的闭包"><a href="#拼接下的闭包" class="headerlink" title="拼接下的闭包"></a>拼接下的闭包</h2><p>令$L$和$M$是上下文无关文法G和H的上下文无关语言，只需要假设没有共同变量，如有则重命名。</p>
-<p>$LM$只需增加$S\rightarrow S_1S_2$。</p>
-<h2 id="星闭包下的闭包"><a href="#星闭包下的闭包" class="headerlink" title="星闭包下的闭包"></a>星闭包下的闭包</h2><p>令$L$是上下文无关文法G的上下文无关语言。</p>
-<p>$L^*$只需增加$S\rightarrow S_1S|\epsilon$。</p>
-<h2 id="翻转操作下的闭包"><a href="#翻转操作下的闭包" class="headerlink" title="翻转操作下的闭包"></a>翻转操作下的闭包</h2><p>令$L$是上下文无关文法G的上下文无关语言。</p>
-<p>只需要翻转每一个产生式体来构造$L^R$的文法。</p>
-<h2 id="同态操作下的闭包"><a href="#同态操作下的闭包" class="headerlink" title="同态操作下的闭包"></a>同态操作下的闭包</h2><p>令$L$是上下文无关文法G的上下文无关语言。</p>
-<p>只需要将每个终结符$a$替换成$h(a)$来构造$h(L)$的文法。</p>
-<h2 id="交集和差集"><a href="#交集和差集" class="headerlink" title="交集和差集"></a>交集和差集</h2><p>上下文无关语言在交集操作下并不封闭。</p>
-<p>上下文无关语言在差集操作下也不封闭。</p>
-<h3 id="证明差集操作和交集操作的等价性"><a href="#证明差集操作和交集操作的等价性" class="headerlink" title="证明差集操作和交集操作的等价性"></a>证明差集操作和交集操作的等价性</h3><p>$L\cap M=L-(L-M)$<br>所以任何在差集下封闭的语言，在交集下也封闭。</p>
-<h3 id="上下文无关语言和正则语言的交集是一个上下文无关语言"><a href="#上下文无关语言和正则语言的交集是一个上下文无关语言" class="headerlink" title="上下文无关语言和正则语言的交集是一个上下文无关语言"></a>上下文无关语言和正则语言的交集是一个上下文无关语言</h3><p>这个性质的证明过程包含了将一个DFA和一个PDA同时运行，它们组合起来依旧是PDA。这里PDA是根据终止状态接收的。</p>
-<p>构造过程与乘积自动机类似但是多了一个栈。</p>
-<h3 id="逆同态下的闭包性质"><a href="#逆同态下的闭包性质" class="headerlink" title="逆同态下的闭包性质"></a>逆同态下的闭包性质</h3><p>可以通过构造新的PDA的方式来证明这个性质。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1329,7 +1467,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
