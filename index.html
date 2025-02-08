@@ -162,6 +162,152 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/04/%E3%80%900-7%E3%80%91OpenGL%E6%91%84%E5%83%8F%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/02/04/%E3%80%900-7%E3%80%91OpenGL%E6%91%84%E5%83%8F%E6%9C%BA/" class="post-title-link" itemprop="url">【0.7】OpenGL摄像机</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-02-04 23:51:35" itemprop="dateCreated datePublished" datetime="2025-02-04T23:51:35+08:00">2025-02-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-05 00:03:10" itemprop="dateModified" datetime="2025-02-05T00:03:10+08:00">2025-02-05</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="摄像机"><a href="#摄像机" class="headerlink" title="摄像机"></a>摄像机</h1><p>从本质上来说，其实并不存在摄像机这个东西，我们在做的都是改变屏幕中物体的坐标，来达成假装是摄像机视角移动的目的。</p>
+<p>一个摄像机应当有以下几个要素：摄像机位置，和对应的三个坐标方向轴。</p>
+<p>在glm库中，繁琐的计算可以被LookAt矩阵代替。只需给出一个摄像机位置，一个目标位置和一个表示世界空间中的上向量的向量，就能获得一个矩阵。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/03/%E3%80%900-6%E3%80%91OpenGL%E5%9D%90%E6%A0%87%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/02/03/%E3%80%900-6%E3%80%91OpenGL%E5%9D%90%E6%A0%87%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">【0.6】OpenGL坐标系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-02-03 23:44:11" itemprop="dateCreated datePublished" datetime="2025-02-03T23:44:11+08:00">2025-02-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-04 23:50:55" itemprop="dateModified" datetime="2025-02-04T23:50:55+08:00">2025-02-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="坐标系统"><a href="#坐标系统" class="headerlink" title="坐标系统"></a>坐标系统</h1><p>在每次顶点着色器运行后，我们必须保证所有可见顶点都是便准话设备坐标。但是在这之前显然坐标系有多种多样的选择。</p>
+<p>对我们来说，我们将讨论以下不同的坐标系统。</p>
+<ul>
+<li>局部空间(Local Space，或者称为物体空间(Object Space))</li>
+<li>世界空间(World Space)</li>
+<li>观察空间(View Space，或者称为视觉空间(Eye Space))</li>
+<li>裁剪空间(Clip Space)</li>
+<li>屏幕空间(Screen Space)</li>
+</ul>
+<h2 id="局部空间"><a href="#局部空间" class="headerlink" title="局部空间"></a>局部空间</h2><p>这很好理解，就是物体所在的空间，也可以理解为用建模软件来修改物体所在的坐标系。</p>
+<h2 id="世界空间"><a href="#世界空间" class="headerlink" title="世界空间"></a>世界空间</h2><p>就是物体相对于世界零点的位置。</p>
+<h2 id="观察空间"><a href="#观察空间" class="headerlink" title="观察空间"></a>观察空间</h2><p>此时原点变成了摄像机，方向就是摄像机的朝向。</p>
+<h2 id="裁剪空间"><a href="#裁剪空间" class="headerlink" title="裁剪空间"></a>裁剪空间</h2><p>视角的范围，OpenGL期望所有的坐标都能落在一个特定的范围内，且任何在这个范围之外的点都应该被裁剪掉(Clipped)。被裁剪掉的坐标就会被忽略，所以剩下的坐标就将变为屏幕上可见的片段。这也就是裁剪空间(Clip Space)名字的由来。</p>
+<p>一旦所有顶点被变换到裁剪空间，最终的操作——透视除法(Perspective Division)将会执行，在这个过程中我们将位置向量的x，y，z分量分别除以向量的齐次w分量；透视除法是将4D裁剪空间坐标变换为3D标准化设备坐标的过程。这一步会在每一个顶点着色器运行的最后被自动执行。</p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/LearnOpenGL/blob/main/Coordinate.cpp">传送门</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/03/%E4%B8%87%E5%90%91%E8%8A%82%E6%AD%BB%E9%94%81%E4%B8%8E%E5%9B%9B%E5%85%83%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -244,7 +390,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-02-03 20:15:47 / 修改时间：20:27:59" itemprop="dateCreated datePublished" datetime="2025-02-03T20:15:47+08:00">2025-02-03</time>
+              <time title="创建时间：2025-02-03 20:15:47 / 修改时间：23:38:37" itemprop="dateCreated datePublished" datetime="2025-02-03T20:15:47+08:00">2025-02-03</time>
             </span>
 
           
@@ -285,8 +431,9 @@
 </ul>
 <p>值得注意的部分在这里：<br>缩放：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2501/opengl0-5/1.png?raw=true" alt="1"></p>
 <p>位移：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2501/opengl0-5/2.png?raw=true" alt="2"></p>
-<p>旋转：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2501/opengl0-5/3.png?raw=true" alt="3"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2501/opengl0-5/4.png?raw=true" alt="4"><br>当然旋转可能会遇到万向节死锁问题，我将<a href="">在这里</a>详细说明。</p>
+<p>旋转：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2501/opengl0-5/3.png?raw=true" alt="3"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2501/opengl0-5/4.png?raw=true" alt="4"><br>当然旋转可能会遇到万向节死锁问题，我将<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2025/02/03/%E4%B8%87%E5%90%91%E8%8A%82%E6%AD%BB%E9%94%81%E4%B8%8E%E5%9B%9B%E5%85%83%E6%95%B0/">在这里</a>详细说明。</p>
 <p>当多个矩阵组合再一起，我们应把先进行的变换矩阵放在最右边。</p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/LearnOpenGL/blob/main/Transformations.cpp">传送门</a></p>
 
       
     </div>
@@ -825,267 +972,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/29/Petri%E7%BD%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/29/Petri%E7%BD%91/" class="post-title-link" itemprop="url">【九】Petri网</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-29 16:59:59" itemprop="dateCreated datePublished" datetime="2024-12-29T16:59:59+08:00">2024-12-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-30 19:38:35" itemprop="dateModified" datetime="2024-12-30T19:38:35+08:00">2024-12-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><h2 id="哲学家吃面问题"><a href="#哲学家吃面问题" class="headerlink" title="哲学家吃面问题"></a>哲学家吃面问题</h2><p>哲学家吃面问题指的是有若干哲学家和若干叉子交替摆放在一个圆桌上，每个哲学家必须拿起手边的两个叉子才能够吃面，吃完面后可以放下叉子。</p>
-<p>我们尝试使用迁移系统来对该问题进行建模，可以发现，当哲学家数量变多，状态的总数呈现指数级增长。使得我们建模变得复杂困难。</p>
-<h2 id="从自动机到Petri网"><a href="#从自动机到Petri网" class="headerlink" title="从自动机到Petri网"></a>从自动机到Petri网</h2><p>自动机是一个理论化的理想化的模型，它反映了一个牛顿式的世界观：</p>
-<ul>
-<li>空间和时间作为绝对参考系；</li>
-<li>过程视为该参考系下由时钟驱动。</li>
-</ul>
-<p>而Petri网中：</p>
-<ul>
-<li>状态是分布式的，迁移是本地化的；</li>
-<li>本地的因果关系取代了全局时间；</li>
-<li>子系统之间通过显示的通信进行交互。</li>
-</ul>
-<p>和状态机相比，Petri网中的状态迁移是不同步的。</p>
-<h1 id="Petri网"><a href="#Petri网" class="headerlink" title="Petri网"></a>Petri网</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Petri 网是一个图形化、数学化的建模工具，可以用来模拟并发的、非同步的、分布式的、并行的、非确定性的、随机的系统。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/Petri/1.png?raw=true" alt="1"></p>
-<p>一般来说Petri网的组成要素有以下：</p>
-<ul>
-<li>地点(Places)：通常用来建模资源或者系统的部分状态，用圆形结点表示</li>
-<li>转移(Transitions)：通常用来建模状态转换和同步，用条形结点表示</li>
-<li>弧：有向边，总是连接不同类型的结点</li>
-<li>令牌(tokens)：地点中的资源，用圆形结点里的黑点表示</li>
-</ul>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>Petri网定义为一个四元组$C=(P,T,I,O)$：</p>
-<ul>
-<li>$P$：地点集合</li>
-<li>$T$：转移集合</li>
-<li>$I$：是从迁移到输入地点的映射$T\rightarrow 2^P$</li>
-<li>$O$：是从迁移到输出地点的映射$T\rightarrow 2^P$</li>
-</ul>
-<p>定义一张Petri网的标记(marking)为向量$\mu$，$\mu=(\mu_1,\cdots,\mu_n)$，其中$\mu_i$表示地点$i$上的令牌数量。</p>
-<p>上图中的Petri网可以表示为：</p>
-<p>$C=(\{p_1,p_2,p_3,p_4\},\{t_1,t_2,t_3\},\{(t_1,\{p_1,p_2,p_3\}),(t_2,\{p_4\}),(t_3,\{p_3\})\},\{(t_1,\{p_1\}),(t_2,\{p_2\}),(t_3,\{p_4\})\})$</p>
-<p>标记为$\mu=1010$</p>
-<h2 id="点火"><a href="#点火" class="headerlink" title="点火"></a>点火</h2><p>我们称一个特定转移$t$在特定标记$\mu$下是enabled，如果对于从任意地点$p$到$t$的弧，在该标记$\mu$下$p$都存在一个令牌。</p>
-<p>一个在$\mu$下被赋能的转移$t$可以fire，导致一个新的标记$\mu’$。</p>
-<p>fire一个被enabled的转移$t$会发生两件事：</p>
-<ol>
-<li>对于每一个从地点$p$到转移$t$的弧，从地点$p$中删除一个令牌。</li>
-<li>对于每一个从转移$t$到地点$p$的弧，向地点$p$添加一个令牌。</li>
-</ol>
-<p>定义Petri网的一次运行(run)是一个标记和转移的序列，例如：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/Petri/2.png?raw=true" alt="2">)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/21/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" class="post-title-link" itemprop="url">【十一】数字签名</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-21 11:18:00" itemprop="dateCreated datePublished" datetime="2024-12-21T11:18:00+08:00">2024-12-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-25 16:51:32" itemprop="dateModified" datetime="2024-12-25T16:51:32+08:00">2024-12-25</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在公钥加密体系中，我们用数字签名实现完整性验证，对应私钥加密中的MAC。</p>
-<p>数字签名允许资格签名者使用自己的私钥对消息进行签名，而他人通过签名者的公钥来进行验证。</p>
-<p>数字签名相较于消息认证码有以下优势：</p>
-<ul>
-<li>可公开验证</li>
-<li>可转移性</li>
-<li>不可否认性</li>
-</ul>
-<p>与公钥和对称密钥加密的情况类似，消息认证码的生成和验证比数字签名更高效，效率通常高 2-3 个数量级。此外，消息认证码的长度也更短。因此，在无需公开验证、可转移性和/或不可否认性的场景下，且发送方主要与单一接收方通信（并能与其共享一个秘密密钥）时，应优先使用消息认证码。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>一个数字签名方案是一个三元组$(Gen,Sign,Vrfy)$：</p>
-<ul>
-<li>$Gen(1^n)$生成一对公钥$pk$和私钥$sk$，其中$pk$和$sk$的长度均为$n$</li>
-<li>$Sign(sk,m)$接受一个消息$m$，用私钥$sk$对$m$进行签名，并返回一个签名$\sigma\leftarrow Sign_{sk}(m)$</li>
-<li>$Vrfy(pk,\sigma,m)$接受一个签名$\sigma$，一个消息$m$和一个公钥$pk$，并返回一个布尔值，表示签名$\sigma$是否与消息$m$匹配，$b:=Vrfy_{pk}(m,\sigma)$</li>
-</ul>
-<p>除非以可忽略的概率，$Vrfy<em>{pk}(m,Sign</em>{sk}(m))=1$。</p>
-<p>签名方案的安全性意味着无法生成对一个新消息伪造签名，我们定义安全性实验$Sig-forge_{\mathcal{A},\prod}$：</p>
-<ol>
-<li>允许$Gen(1^n)$生成一对公钥$pk$和私钥$sk$</li>
-<li>攻击者$\mathcal{A}$获得$pk$和签名查询机$Sign_{sk}(\cdot)$，最终输出$(m,\sigma)$</li>
-<li>当且仅当 $Vrfy_{pk}(m,\sigma)=1$且这里的消息在之前没有被查询过时，实验结果为$1$，否则为$0$ </li>
-</ol>
-<p>我们定义一个数字签名方案是在选择消息攻击中不可伪造的当且仅当对于任何PPT攻击者$\mathcal{A}$，存在可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/1.png?raw=true" alt="1"></p>
-<h1 id="Hash-and-Sign"><a href="#Hash-and-Sign" class="headerlink" title="Hash-and-Sign"></a>Hash-and-Sign</h1><p>对于长消息，直接使用数字签名很麻烦，我们可以将其先使用哈希函数映射到短消息，再进行数字签名。</p>
-<p>而这种方法也是安全的，安全性基于哈希函数的抗碰撞性。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/2.png?raw=true" alt="2"></p>
-<h1 id="基于RSA的数字签名"><a href="#基于RSA的数字签名" class="headerlink" title="基于RSA的数字签名"></a>基于RSA的数字签名</h1><h2 id="Plain-RSA"><a href="#Plain-RSA" class="headerlink" title="Plain RSA"></a>Plain RSA</h2><h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><p>构造如下：</p>
-<ul>
-<li>$Gen$：运行$GenRSA(1^n)$生成$(N,e,d)$，公钥为$(N,e)$，私钥为$(N,d)$</li>
-<li>$Sign$：接受私钥$(N,d)$和消息$m$，返回签名$\sigma=[m^d\bmod N]$</li>
-<li>$Vrfy$：接受公钥$(N,e)$，签名$\sigma$，和消息$m$，返回$1$当且仅当$m=[\sigma^e\bmod N]$</li>
-</ul>
-<h3 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h3><h4 id="无消息攻击"><a href="#无消息攻击" class="headerlink" title="无消息攻击"></a>无消息攻击</h4><p>步骤如下：</p>
-<ul>
-<li>给定公钥$pk=(N,e)$，选择一个均匀分布的$\sigma\in \mathbb{Z}_N^*$</li>
-<li>计算$m:=[\sigma^e\bmod N]$</li>
-<li>输出伪造签名$(m,\sigma)$</li>
-</ul>
-<h4 id="对任意消息的签名伪造"><a href="#对任意消息的签名伪造" class="headerlink" title="对任意消息的签名伪造"></a>对任意消息的签名伪造</h4><ul>
-<li>选择任意$m_1,m_2\in \mathbb{Z}_N^*$，满足$m=m_1\cdot m_2 \bmod N$</li>
-<li>攻击者获得$m_1,m_2$的标签$\sigma_1,\sigma_2$</li>
-<li>计算$\sigma:=[\sigma_1\cdot \sigma_2\bmod N]$</li>
-<li>输出伪造签名$(m,\sigma)$</li>
-</ul>
-<h2 id="RSA-FDH"><a href="#RSA-FDH" class="headerlink" title="RSA-FDH"></a>RSA-FDH</h2><h3 id="构造-1"><a href="#构造-1" class="headerlink" title="构造"></a>构造</h3><p>令$H(\cdot)$是一个函数满足以下要求：</p>
-<ul>
-<li>这是一个单向函数或者很难求逆</li>
-<li>这是一个不可操作的函数</li>
-<li>这是一个抗碰撞函数</li>
-</ul>
-<p>构造如下：</p>
-<ul>
-<li>$Gen$：运行$GenRSA(1^n)$生成$(N,e,d)$，公钥为$(N,e)$，私钥为$(N,d)$</li>
-<li>$Sign$：$\sigma:=[H(m)^d\bmod N]$</li>
-<li>$Vrfy$：当且仅当$\sigma^e=H(m)\bmod N$时为$1$</li>
-</ul>
-<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>这个方案是安全的。</p>
-<h1 id="基于Discrete-Logarithm-Problem的签名方案"><a href="#基于Discrete-Logarithm-Problem的签名方案" class="headerlink" title="基于Discrete-Logarithm Problem的签名方案"></a>基于Discrete-Logarithm Problem的签名方案</h1><h2 id="身份验证方案和签名"><a href="#身份验证方案和签名" class="headerlink" title="身份验证方案和签名"></a>身份验证方案和签名</h2><h3 id="身份验证"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证</h3><p>我们需要在交互的时候向另一方自证身份。在身份验证方案中，我们称验证自己身份的一方是Prover，验证对方身份的一方是Verifier。我们只考虑公钥加密的情况，双方并未事先交换任何信息。验证者只知道证明者的公钥。身份验证协议的成功执行可以让验证者确信，它正在与预期的证明者而非冒名顶替者通信。</p>
-<p>我们仅考虑一种特定形式的三轮身份验证方案，其中证明者由两个算法$P_1,P_2$指定，验证者由算法$V$指定。</p>
-<ol>
-<li>证明者运行$P_1(sk)$获得初始消息$I$和状态信息$st$，将$I$发送给验证者。</li>
-<li>验证者从证明者公钥$pk$定义的$\Omega_{pk}$中均匀挑选一个$r$，发送给证明者。</li>
-<li>证明者运行$P_2(sk,r,st)$，得到响应$s$，将$s$发送给验证者。</li>
-<li>验证者运行$V(pk,r,s)$，并接受当且仅当结果与初始消息$I$一致。</li>
-</ol>
-<p>我们考虑基于discrete logarithm的签名方案。现在公钥是$y=g^x$，prover要证明自己知道x$。</p>
-<p>如果prover直接将$x$发送给验证者验证，会丧失私钥的保密性。</p>
-<p>我们考虑以下方案：</p>
-<ol>
-<li>prover随机选择$b\in \mathbb{Z}_p$，计算$I=g^b$，将$I$发送给验证者</li>
-<li>verifier随机选择$a\in \mathbb{Z}_p$，发给prover</li>
-<li>prover发送$X=[ax+b\bmod q]$给verifier</li>
-<li>verifier验证是否$y^a\cdot I=g^x$</li>
-</ol>
-<p>这个方案是安全的，基于离散对数问题是困难的假设。</p>
-<p>我们可以通过以下思路证明安全性：</p>
-<ol>
-<li>构造一个模拟器$S$，该模拟器在不知道私钥$x$的情况下，能够模拟窃听者在方案中所看到的视图或交互记录（即，窃听到的消息）。</li>
-<li>证明没有多项式时间的攻击者能够区分模拟视图与真实视图：换句话说，任何 PPT 攻击者都无法分辨模拟器生成的视图和方案中真实交互生成的视图之间的区别。</li>
-</ol>
-<h2 id="Schnorr签名方案"><a href="#Schnorr签名方案" class="headerlink" title="Schnorr签名方案"></a>Schnorr签名方案</h2><p>构造如下，令$\mathcal{G}$是一个循环群生成算法，$H:\{0,1\}^* \to \mathbb{Z}_q$是一个哈希函数：</p>
-<ul>
-<li>$Gen$：运行$\mathcal{G}(1^n)$生成$(\mathbb{G},q,g)$，随机选择$x\in\mathbb{Z}_q$，计算$y=g^x$，公钥为$(\mathbb{G},q,g,y)$，私钥为$x$</li>
-<li>$Sign$：接受私钥$x$和消息$m$，随机选择$b\in\mathbb{Z}_q$，计算$I=g^b$，计算$a=H(I,m),X=[ax+b\bmod q]$，输出签名$(a,X)$</li>
-<li>Vrfy：接受公钥$(\mathbb{G},q,g,y)$，签名$(a,X)$，和消息$m$，计算$I’=g^X\cdot y^{-a}$，输出$1$当且仅当$H(I’,m)=a$。</li>
-</ul>
-<h1 id="证书与公钥基础设施"><a href="#证书与公钥基础设施" class="headerlink" title="证书与公钥基础设施"></a>证书与公钥基础设施</h1><p>我们要展示如何利用公钥密码学本身安全分发公钥。</p>
-<p>我们要证明，如果一个可信方的公钥能够以安全的方式分发，该密钥可以用来引导其他任意数量公钥的安全分发，所以这从原则上讲，安全密钥分发的问题只需要解决一次。</p>
-<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><p>数字证书是将一个实体与一个公钥绑定在一起的签名。假设一方Charlie对某个安全的数字签名方案生成了密钥对$(pk<em>C,sk_C)$，这时另一方Bob也生成了密钥对$(pk_B,sk_B)$，Charlie可以为$pk_B$计算签名$cert</em>{C\to B}=Sign_{sk_C}(Bob’s key is pk_B)$，然后将签名提供给Bob。</p>
-<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>假设Bob想和知道$pk<em>C$的另一方Alice通信。Bob可以将$(pk_B,cert</em>{C\to B})$发送给Alice，Alice可以验证，如果信任Charlie，可以接受$pk_B$作为Bob的合法公钥。</p>
-<p>指定所有完整的细节就构成了一个公钥基础设施(Public-key Infrastructure,PKI)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1155,7 +1041,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

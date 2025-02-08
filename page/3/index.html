@@ -162,6 +162,207 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/" class="post-title-link" itemprop="url">【二】完美保密性</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-13 14:43:28 / 修改时间：16:19:30" itemprop="dateCreated datePublished" datetime="2024-12-13T14:43:28+08:00">2024-12-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第二章 Perfectly Secret Encryption</p>
+<p>在本章中，我们将探讨另一个极端，即研究即使面对具有无限计算能力的攻击者也能被证明安全的加密方案。这类方案被称为完美安全(perfectly secret)。</p>
+<p>为了简化讨论，我们假设可以各方都可以获得无限供应的独立无偏的随机位。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>首先回顾上一章介绍的加密语法，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，依据某些分布生成一个密钥$k$，$\mathcal{K}$表示密钥空间。</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$，$\mathcal{C}$表示密文集合<ul>
+<li>如果这是一个确定性算法，我们写作$c:=Enc_k(m)$</li>
+<li>如果这是一个概率性算法，我们写作$c\leftarrow Enc_k(m)$</li>
+</ul>
+</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$，$\mathcal{M}$表示明文集合。显然这里解密算法是一个确定性算法</li>
+</ul>
+<h2 id="完美安全性-Perfectly-Secrecy"><a href="#完美安全性-Perfectly-Secrecy" class="headerlink" title="完美安全性(Perfectly Secrecy)"></a>完美安全性(Perfectly Secrecy)</h2><p>现在假设攻击者的能力是：</p>
+<ol>
+<li>知道加密方案</li>
+<li>观察到密文</li>
+</ol>
+<p>一个完美安全的加密方案要求攻击者观察到密文对实际的发送明文的概率没有影响。换句话说，观察到密文对消息选择的先验概率和后验概率应当是相同的。</p>
+<h3 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h3><p>一个加密方案是<strong>完美安全的</strong>，如果对于消息空间$\mathcal{M}$的任意概率分布，任意消息$m\in \mathcal{M}$，任意密文$c\in \mathcal{C}$（其中$Pr[C=c]&gt;0$），有：</p>
+<script type="math/tex; mode=display">Pr[M=m|C=c]=Pr[M=m]</script><h3 id="引理"><a href="#引理" class="headerlink" title="引理"></a>引理</h3><p>一个加密方案是完美安全的，当且仅当对于任意$m,m’\in \mathcal{M}$，任意$c\in \mathcal{C}$，有：</p>
+<script type="math/tex; mode=display">Pr[C=c|M=m]=Pr[C=c|M=m']</script><h3 id="完美不可区分性"><a href="#完美不可区分性" class="headerlink" title="完美不可区分性"></a>完美不可区分性</h3><p>现在介绍一个实验：</p>
+<ol>
+<li>攻击者$\mathcal{A}$指定任意两个消息$m_0,m_1\in \mathcal{M}$</li>
+<li>$Gen$生成一个密钥$k$</li>
+<li>随机选择一个$b\in \{0,1\}$，计算密文$c\leftarrow Enc_k(m_b)$</li>
+<li>将密文$c$返回给攻击者$\mathcal{A}$</li>
+<li>攻击者给出一个猜测值$b’\in \{0,1\}$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eav}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>在攻击者完全随机猜测的情况下，实验结果为$1$的概率为$\frac{1}{2}$。完美保密性的目的就是希望攻击者任何选择的策略都不能优于随机猜测。</p>
+<p>有定义如下：<br>一个方案是<strong>完美不可区分的</strong>当且仅当对于任何攻击者$\mathcal{A}$，都有：</p>
+<script type="math/tex; mode=display">Pr[Privk^{eav}_{\mathcal{A},\prod}=1]=\frac{1}{2}</script><p>有引理如下：<br>完美保密性和完美不可区分性是等价的。</p>
+<h1 id="One-Time-Pad"><a href="#One-Time-Pad" class="headerlink" title="One-Time Pad"></a>One-Time Pad</h1><h2 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h2><p>对于固定长度$l$，我们定义该方案的明文空间、密钥空间和密文空间都为$\{0,1\}^l$：</p>
+<ul>
+<li>$Gen$：从密钥空间中均匀随机选取一个密钥</li>
+<li>$Enc$：$c:=m\oplus  k$</li>
+<li>$Dec$：$m:=c\oplus k$</li>
+</ul>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>这个方案是完美安全的。</p>
+<p>但是这个方案存在限制，密钥只能使用一次，如果多次使用就会变得不安全。这就要求每次加密都要重新生成密钥，这是很麻烦的。</p>
+<h1 id="完美安全的限制"><a href="#完美安全的限制" class="headerlink" title="完美安全的限制"></a>完美安全的限制</h1><p>我们将证明：任何完美安全的加密方案的密钥空间大小必须至少与消息空间大小相等。</p>
+<p>形式化的：</p>
+<p>对于一个完美安全的加密方案，有$|\mathcal{K}|\ge |\mathcal{M}|$</p>
+<p>证明如下：</p>
+<p>假设$|\mathcal{K}|&lt;|\mathcal{M}|$，对于一个密文，其被不同密钥解密出的明文集合大小必然等于密钥空间大小，即小于明文空间大小。这就说明存在一个密文，有对应的明文无论什么密钥都无法加密称为该密文。即：</p>
+<script type="math/tex; mode=display">\exists m',c,s.t. Pr[M=m'|C=c]=0\not =Pr[M=m']</script><p>违背了完美安全的定义。</p>
+<h1 id="香农定理"><a href="#香农定理" class="headerlink" title="香农定理"></a>香农定理</h1><p>令$(Gen,Enc,Dec)$是一个明文空间为$\mathcal{M}$的加密方案，并且$|\mathcal{M}|=|\mathcal{C}|=|\mathcal{K}|$，这个方案是完美安全的当且仅当满足以下条件：</p>
+<ol>
+<li>任意密钥被$Gen$以$\frac{1}{\mathcal{K}}$的概率选择</li>
+<li>对于任意$m\in\mathcal{M},c\in \mathcal{C}$，只存在一个唯一的$k\in \mathcal{K}$使得$c:=Enc_k(m)$</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/12/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%BC%95%E5%85%A5/" class="post-title-link" itemprop="url">【一】密码学引入</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-12 19:47:28" itemprop="dateCreated datePublished" datetime="2024-12-12T19:47:28+08:00">2024-12-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-13 14:44:16" itemprop="dateModified" datetime="2024-12-13T14:44:16+08:00">2024-12-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第一章 Introduction</p>
+<h1 id="密码学"><a href="#密码学" class="headerlink" title="密码学"></a>密码学</h1><p>在牛津词典中，密码学被定义为编写或破译密码的艺术。该定义只关注用来实现秘密通信的各类密码，但是现代密码学涵盖了更多更广的领域：确保数据完整性的机制、交换秘密密钥的技术、用户认证的协议、电子投票、加密货币等等。</p>
+<h1 id="私钥加密的设定"><a href="#私钥加密的设定" class="headerlink" title="私钥加密的设定"></a>私钥加密的设定</h1><p>古典密码学关注的是设计和使用能够使两方在信息传递过程中保持消息机密的密码（或称密文）的方法。在现代密码学中，我们称之为加密方案(encryption scheme)，所有的古典加密方案都依赖于一个事先双方共享的密钥-私钥(private-key)。</p>
+<p>在私钥加密的背景下，双方共享一把密钥，一方使用密钥进行加密获得密文，一方使用密钥进行解密获得明文。解密和加密使用相同的密钥，这被称为<strong>对称密钥</strong>(symmetric-key)。</p>
+<p>私钥密码学有两个典型应用场景：</p>
+<ul>
+<li>同一时间下不同空间的通信</li>
+<li>同一空间下不同时间的通信</li>
+</ul>
+<h2 id="加密的语法"><a href="#加密的语法" class="headerlink" title="加密的语法"></a>加密的语法</h2><p>形式化上，我们使用一个消息空间$\mathcal{M}$和一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，依据某些分布生成一个密钥$k$</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$</li>
+</ul>
+<p>对于$\forall m\in \mathcal{M},Dec_k(Enc_k(m))=m$</p>
+<p>我们用$\mathcal{K}$来表示密钥空间，用$\mathcal{C}$来表示密文空间。</p>
+<h2 id="克克霍夫原则（Kerckhoffs’-principle）"><a href="#克克霍夫原则（Kerckhoffs’-principle）" class="headerlink" title="克克霍夫原则（Kerckhoffs’ principle）"></a>克克霍夫原则（Kerckhoffs’ principle）</h2><p>密码方法不应依赖于保密，甚至在其落入敌手后也不应造成不便。</p>
+<p>也就是说，即使对手知道方案的所有细节，只要对手不知道所用的密钥，加密方案仍应保持安全性。换句话说，安全性不应建立在加密方案本身的保密之上；克克霍夫原则要求安全性仅依赖于密钥的保密。</p>
+<h1 id="古典密码"><a href="#古典密码" class="headerlink" title="古典密码"></a>古典密码</h1><h2 id="凯撒密码"><a href="#凯撒密码" class="headerlink" title="凯撒密码"></a>凯撒密码</h2><p>经典的移位密码，把每个字母统一往后移动$k$位，只需要尝试最多25次就可以破解，所以这也暗示了一个安全的加密方案应该要能够抵抗暴力破解，至少密钥空间要足够大。</p>
+<h2 id="单字母替换密码"><a href="#单字母替换密码" class="headerlink" title="单字母替换密码"></a>单字母替换密码</h2><p>这里使用一个字母表的双射来函数来实现加密，显然密钥空间很大(26!)。</p>
+<p>可以通过词频分析来进行有效率的攻击。</p>
+<h1 id="现代密码学原则"><a href="#现代密码学原则" class="headerlink" title="现代密码学原则"></a>现代密码学原则</h1><p>古典密码学依赖的更多是经验和直觉。如今，人们以更为系统化的方式设计和分析密码方案，最终目标是对给定构造是否安全给出严格的证明。为了实现这一点，我们首先需要形式化的定义，以精确界定“安全”的含义；这些定义本身就很有价值和趣味性。事实证明，大多数密码学证明都依赖于目前尚未证实的假设，即关于某些数学问题的算法求解难度的假设；因此我们必须明确并精确地陈述这些假设。</p>
+<h2 id="原则1-形式化定义"><a href="#原则1-形式化定义" class="headerlink" title="原则1-形式化定义"></a>原则1-形式化定义</h2><p>明确的定义有助于指导密码学方案的设计。定义还为对具体构造进行评估和分析提供了途径。</p>
+<h2 id="原则2-精确假设"><a href="#原则2-精确假设" class="headerlink" title="原则2-精确假设"></a>原则2-精确假设</h2><p>大多数现代密码学构造无法无条件地证明其安全性；要给出无条件的证明意味着要解决计算复杂性理论中当前仍远未能解答的问题。</p>
+<p>现代密码学要求任何此类假设都必须明确、精确地加以阐述。最基本的原因是，安全性证明本身需要精确的假设。</p>
+<p>人们通常倾向于使用“更简单”的假设——也就是对某个简洁明了的数学问题的难度假设，而非对一个复杂方案满足复杂安全定义的假设。</p>
+<h2 id="原则3-安全性证明"><a href="#原则3-安全性证明" class="headerlink" title="原则3-安全性证明"></a>原则3-安全性证明</h2><p>借助前面讨论的两个原则（明确的定义与精确定义的假设），我们即可实现目标：在给定的假设条件下，严格证明某个构造满足相应的安全性定义。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/11/%E4%B8%8B%E6%8E%A8%E8%87%AA%E5%8A%A8%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1267,137 +1468,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/19/%E5%AF%86%E7%A0%81%E5%AD%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/19/%E5%AF%86%E7%A0%81%E5%AD%A6/" class="post-title-link" itemprop="url">密码学</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-19 11:37:34" itemprop="dateCreated datePublished" datetime="2024-11-19T11:37:34+08:00">2024-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-17 16:32:59" itemprop="dateModified" datetime="2024-12-17T16:32:59+08:00">2024-12-17</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>该系列为自己整理的一些笔记<br>参考教材为<a href="(http://www.cs.umd.edu/~jkatz/imc.html">Introduction to Modern Cryptography Third Edition</a>)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/18/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/18/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">形式语言与自动机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-18 22:36:54" itemprop="dateCreated datePublished" datetime="2024-11-18T22:36:54+08:00">2024-11-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-09 23:33:14" itemprop="dateModified" datetime="2024-12-09T23:33:14+08:00">2024-12-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这个系列是我自己学习过程中对笔记的再整理。</p>
-<p>参考<a target="_blank" rel="noopener" href="https://fla.cuijiacai.com/">网站</a>，内容几乎是一致的，但是自己整理一遍会加深一些印象。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1467,7 +1537,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
