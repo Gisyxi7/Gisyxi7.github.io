@@ -162,6 +162,493 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/16/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%BA%94%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%B6%E5%AF%BC%E7%9A%84%E7%BF%BB%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/03/16/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%BA%94%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%B6%E5%AF%BC%E7%9A%84%E7%BF%BB%E8%AF%91/" class="post-title-link" itemprop="url">【编译原理五】语法制导的翻译</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-16 19:22:27" itemprop="dateCreated datePublished" datetime="2025-03-16T19:22:27+08:00">2025-03-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E5%9B%9B%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E5%9B%9B%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">【编译原理四】语法分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-02-27 19:19:36" itemprop="dateCreated datePublished" datetime="2025-02-27T19:19:36+08:00">2025-02-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-04 14:31:54" itemprop="dateModified" datetime="2025-03-04T14:31:54+08:00">2025-03-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="引论"><a href="#引论" class="headerlink" title="引论"></a>引论</h1><h2 id="语法分析器的作用"><a href="#语法分析器的作用" class="headerlink" title="语法分析器的作用"></a>语法分析器的作用</h2><p>语法分析器从词法分析器中获得一个由词法单元组成的串，并且验证这个串可以由源语言的文法生成，同时能报告语法错误。</p>
+<p>语法分析器可以被分为三种类型：</p>
+<ol>
+<li>通用的：可以对任意文法进行语法分析，效率很低，不适用于编译器产品</li>
+<li>自顶向下的：从语法分析树的顶部开始向底部构造语法分析树</li>
+<li>自底向上的：从叶子结点向根结点的防线给构造</li>
+</ol>
+<p>最高效的自顶向下和自底向上方法虽然只能处理有些文法的子类，但是其中比如LL和LR文法已经足够描述现代程序设计的大部分语言了。程序设计语言构造的语法可使用上下文无关文法 (CFG) 或BNF表示法来描述。</p>
+<h2 id="语法错误的处理"><a href="#语法错误的处理" class="headerlink" title="语法错误的处理"></a>语法错误的处理</h2><p>程序可能由不同层次的错误：</p>
+<ol>
+<li>词法错误：拼写错误或者没有正确添加引号</li>
+<li>语法错误：分号括号放错位置或者多余缺失等等</li>
+<li>语义错误：运算符和运算分量之间类型不匹配</li>
+<li>逻辑错误：程序员的错误推理，但是程序本身可能是良构的</li>
+</ol>
+<p>实现错误处理需要：</p>
+<ol>
+<li>清晰报告错误</li>
+<li>尽快从错误中恢复并继续检测</li>
+<li>减小处理的开销</li>
+</ol>
+<h2 id="错误恢复策略"><a href="#错误恢复策略" class="headerlink" title="错误恢复策略"></a>错误恢复策略</h2><h3 id="恐慌模式的恢复"><a href="#恐慌模式的恢复" class="headerlink" title="恐慌模式的恢复"></a>恐慌模式的恢复</h3><p>一旦发现错误就不断丢弃输入中的符号，直到找到同步词法单元集合中的符号（一般为分号或者大括号）。</p>
+<p>这个模式的问题是可能会跳过大量输入，不检查被跳过层次的错误。</p>
+<h3 id="短语层次的恢复"><a href="#短语层次的恢复" class="headerlink" title="短语层次的恢复"></a>短语层次的恢复</h3><p>将余下的输入的某个前缀更改成另一个串，比如将逗号替换成分号等等。但是要决定具体的替换策略，也有可能进入无限循环。</p>
+<h3 id="错误产生式"><a href="#错误产生式" class="headerlink" title="错误产生式"></a>错误产生式</h3><p>通过预测可能的常见错误，在当前语言的文法中加入错误产生式。</p>
+<h3 id="全局纠正"><a href="#全局纠正" class="headerlink" title="全局纠正"></a>全局纠正</h3><p>在理想状况下找到正确的语法，但是开销太大目前处于理论阶段。</p>
+<h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h2 id="符号约定"><a href="#符号约定" class="headerlink" title="符号约定"></a>符号约定</h2><h2 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h2><p>最左推导，最右推导</p>
+<h2 id="语法分析树"><a href="#语法分析树" class="headerlink" title="语法分析树"></a>语法分析树</h2><h2 id="二义性"><a href="#二义性" class="headerlink" title="二义性"></a>二义性</h2><p>大多数语法分析器期望的文法是无二义性的。</p>
+<h2 id="验证文法生成的语言"><a href="#验证文法生成的语言" class="headerlink" title="验证文法生成的语言"></a>验证文法生成的语言</h2><p>如何验证文法G所确定的语言L<br>– 证明G生成的每个串都在L中<br>– 证明L中的每个串都能被G生成</p>
+<h2 id="上下文无关文法和正则表达式"><a href="#上下文无关文法和正则表达式" class="headerlink" title="上下文无关文法和正则表达式"></a>上下文无关文法和正则表达式</h2><p>每个正则语言都是上下文无关语言，反之不成立。</p>
+<h1 id="设计文法"><a href="#设计文法" class="headerlink" title="设计文法"></a>设计文法</h1><h2 id="消除二义性"><a href="#消除二义性" class="headerlink" title="消除二义性"></a>消除二义性</h2><p>二义性的消除方法没有规律可循</p>
+<h2 id="左递归的消除"><a href="#左递归的消除" class="headerlink" title="左递归的消除"></a>左递归的消除</h2><p>如果一个文法中有非终结符号$A$使得$A\Rightarrow A\alpha$，那么这个文法就是左递归的。</p>
+<p>自顶向下的语法分析技术不能处理左递归的情况，因此需要消除左递归，但是自底向上的技术可以处理左递归。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/1.png?raw=true" alt="1"></p>
+<h2 id="提取左公因子"><a href="#提取左公因子" class="headerlink" title="提取左公因子"></a>提取左公因子</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/2.png?raw=true" alt="2"></p>
+<h1 id="自顶向下的语法分析"><a href="#自顶向下的语法分析" class="headerlink" title="自顶向下的语法分析"></a>自顶向下的语法分析</h1><p>即为输入串构造语法分析树，从根节点开始，深度优先的创建各个结点。也可以看作是寻找输入串的最左推导。</p>
+<h2 id="FIRST和FOLLOW"><a href="#FIRST和FOLLOW" class="headerlink" title="FIRST和FOLLOW"></a>FIRST和FOLLOW</h2><p>$FIRST(\alpha)$被定义为可以从$\alpha$推导得到串的首符号的集合。如果$\alpha\Rightarrow\epsilon$，那么$\epsilon$也在$FIRST(\alpha)$中。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/3.png?raw=true" alt="3"></p>
+<p>对于$FIRST$函数而言，必须保证对于$A\to \alpha |\beta$，$FIRST(\alpha)$和$FIRST(\beta)$不相交，使得选择具有唯一性。</p>
+<p>$FOLLOW(A)$被定义为可能在某些句型中紧跟在$A$右边的终结符的集合。<br>当$A\to\alpha,\alpha\to\epsilon$时，$FOLLOW(A)$可以帮助我们选择恰当的产生式。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/4.png?raw=true" alt="4"></p>
+<h2 id="LL-1-文法"><a href="#LL-1-文法" class="headerlink" title="LL(1)文法"></a>LL(1)文法</h2><p>对于LL(1)文法，我们可以构造出不需要回溯的递归下降语法分析器。LL(1)文法的含义是从左到右扫描输入和产生最左推导，同时每一步只需要向前看一个输入符号就可以决定语法分析动作。</p>
+<p>首先明确，左递归的文法和有二义性的文法都不是LL(1)的。</p>
+<p>一个文法是LL(1)当且仅当对于该文法中任意两个不同的产生式$A\to\alpha |\beta$满足：</p>
+<ol>
+<li>$FIRST(\alpha)$和$FIRST(\beta)$是不相交的集合。</li>
+<li>如果$\epsilon$在$FIRST(\beta)$中，那么$FIRST(\alpha)$和$FOLLOW(A)$是不相交的集合，反之同理。</li>
+</ol>
+<p>对于LL(1)文法，我们只需要构造预测分析表，能保证预测分析表中每个条目都唯一的指定了一个产生式或者表明一个语法错误，就能成功解析。<br>算法如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/5.png?raw=true" alt="5"></p>
+<h2 id="非递归的预测分析"><a href="#非递归的预测分析" class="headerlink" title="非递归的预测分析"></a>非递归的预测分析</h2><p>只需要根据预测分析表展开，并将产生式的右部倒序压入栈即可。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/6.png?raw=true" alt="6"></p>
+<h1 id="自底向上的语法分析"><a href="#自底向上的语法分析" class="headerlink" title="自底向上的语法分析"></a>自底向上的语法分析</h1><h2 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h2><p>自底向上的语法分析过程可以看作是从串归约到文法开始符号S的过程。</p>
+<p>每一次归约，就是把一个和某个产生式体相匹配的字串替换成该产生式头部的非终结符号。也就是说，一次归约就是一次推导的反向操作。</p>
+<p>因此，自底向上的语法分析目标是反向构造一个推导过程，这个推导过程实际上对应了最右推导。</p>
+<h2 id="句柄剪枝"><a href="#句柄剪枝" class="headerlink" title="句柄剪枝"></a>句柄剪枝</h2><p>通过句柄剪枝我们可以得到一个反向的最右推导。</p>
+<p>假设该串可以以以下方式最右推导出来：</p>
+<script type="math/tex; mode=display">S=\gamma_0\Rightarrow\gamma_1\Rightarrow\gamma_2 ...\Rightarrow\gamma_n=\omega</script><p>那么我们可以重复以下步骤：</p>
+<ol>
+<li>在$\gamma<em>n$中寻找句柄$\beta_n$，将$\beta_n$更改为相关产生式$A_n\to\beta_n$的头部，得到最右句型$\gamma</em>{n-1}$</li>
+<li>循环重复直到得到$S$</li>
+</ol>
+<p>这样我们就完成了规约，得到了输入串的最右推导。</p>
+<p>值得注意的是，在上面的描述中，还没有提到什么是句柄以及如何寻找句柄。我们接下来解释什么是句柄，而如何寻找句柄将在下面被介绍。</p>
+<p>句柄的正式定义：如果$S\Rightarrow<em>{rm}\alpha A\omega\Rightarrow</em>{rm}\alpha\beta\omega$，那么紧跟在$\alpha$之后的$\beta$是$A\to\beta$的一个句柄。</p>
+<ul>
+<li>在一个最右句型中，句柄右边只有终结符号</li>
+<li>如果文法是无二义性的，那么每个句型有且只有一个句柄</li>
+</ul>
+<h2 id="移入-归约语法分析技术"><a href="#移入-归约语法分析技术" class="headerlink" title="移入-归约语法分析技术"></a>移入-归约语法分析技术</h2><p>我们使用一个栈来保存归约/扫描移入的文法符号。我们将用一个表格表示完整的过程，在这之前，我们需要明确：</p>
+<ol>
+<li>开始时刻，栈中只包含$，而输入为$\omega$$；结束时刻，栈中只包含$S$$，而输入为$</li>
+<li>分析动作有以下四种：<ol>
+<li>移入：将下一个输入符号移入到栈顶</li>
+<li>归约：将句柄归约为相应的非终结符号</li>
+<li>接受：宣布分析过程成功完成</li>
+<li>报错：发现语法错误，调用错误恢复子程序</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/7.png?raw=true" alt="7"></p>
+<p>我们发现，句柄总是出现在栈的顶端，这使得我们可以放心的归约，而不需要到栈的中间去寻找，这只需要简单的分类讨论就可以证明。</p>
+<h2 id="移入-归约语法分析中的冲突"><a href="#移入-归约语法分析中的冲突" class="headerlink" title="移入-归约语法分析中的冲突"></a>移入-归约语法分析中的冲突</h2><p>当然，并非所有的文法都可以使用移入-归约语法分析，有些文法会出现以下的问题：</p>
+<ul>
+<li>知道栈的所有内容也不知道该移入还是该归约</li>
+<li>有多个可能的归约方法不知道使用哪个</li>
+</ul>
+<p>从技术上讲，这被称为非LR文法，这将在下面介绍。</p>
+<h1 id="LR语法分析技术"><a href="#LR语法分析技术" class="headerlink" title="LR语法分析技术"></a>LR语法分析技术</h1><p>目前流行的自底向上的语法分析器都基于LR(k)语法分析，其中L表示最左扫描，R表示反向构造出最右推导，k表示最多向前看k个符号。</p>
+<p>只有当k=0或k=1的时候有实践意义，当省略(k)的时候，我们假设k=1。</p>
+<h2 id="为什么使用LR语法分析器"><a href="#为什么使用LR语法分析器" class="headerlink" title="为什么使用LR语法分析器"></a>为什么使用LR语法分析器</h2><ul>
+<li>由表格驱动，可以自动化生成</li>
+<li>对于几乎所有的程序设计语言，只要写出上下文无关文法，就能够构造出识别该语言的LR语法分析器</li>
+<li>最通用的无回溯移入-归约分析技术</li>
+<li>能分析的文法比LL(k)文法更多</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%89%E3%80%91%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%89%E3%80%91%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">【编译原理三】词法分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-02-27 12:55:48 / 修改时间：15:17:20" itemprop="dateCreated datePublished" datetime="2025-02-27T12:55:48+08:00">2025-02-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本章主要讨论如何生成一个词法分析器。</p>
+<h1 id="词法分析器的作用"><a href="#词法分析器的作用" class="headerlink" title="词法分析器的作用"></a>词法分析器的作用</h1><p>词法分析使编译的第一个阶段，其读入源程序字符串，组成词素，生成并输出一个词法单元序列。这些词法单元序列会被语法分析器作为下一步的输入。同时，词法分析器还会将词素添加到符号表中。</p>
+<p>一般词法分析和语法分析是一趟，语法分析通过调用词法分析来不停获得词素。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/1.png?raw=true" alt="1"></p>
+<p>词法分析器还能负责除了识别词素以外的任务，比如：</p>
+<ol>
+<li>过滤源程序的注释和空白</li>
+<li>将编译器生成的错误信息和源程序的位置联系起来</li>
+<li>处理宏的扩展</li>
+</ol>
+<h2 id="词法单元、模式、词素"><a href="#词法单元、模式、词素" class="headerlink" title="词法单元、模式、词素"></a>词法单元、模式、词素</h2><p>下面区别以下这些术语：</p>
+<ol>
+<li>词法单元：由一个词法单元名和一个可选的属性值组成</li>
+<li>模式：描述一个词法单元的词素可能具有的形式</li>
+<li>词素：源程序的一个字符序列，和某个词法单元的模式匹配</li>
+</ol>
+<p>总的来说，词法单元是一个抽象的类型，模式是对其的描述，词素是代码中具体的匹配字符串。</p>
+<h2 id="词法错误"><a href="#词法错误" class="headerlink" title="词法错误"></a>词法错误</h2><p>在遇到词法错误的时候，词法分析器很难发现并改正错误，所以一般交给语法分析器去完成。</p>
+<p>但是如果遇到所有词法单元的模式都无法匹配剩余输入，那么词法分析器就无法继续分析，我们通常采取以下方法：</p>
+<ol>
+<li>删除一个字符</li>
+<li>试图插入一个遗漏的字符</li>
+<li>替代一个字符</li>
+<li>交换相邻的字符<br>直到能继续正确解析。</li>
+</ol>
+<h1 id="输入缓冲"><a href="#输入缓冲" class="headerlink" title="输入缓冲"></a>输入缓冲</h1><p>现在讨论如何加快源程序的读入速度。</p>
+<p>首先，最简单的方法：一个字符一个字符的读入是不合理的，因为这样很难区分-和-&gt;等情况。我们这里介绍缓冲区对和哨兵标记。</p>
+<h2 id="缓冲区对"><a href="#缓冲区对" class="headerlink" title="缓冲区对"></a>缓冲区对</h2><p>这个机制利用两个交替读入的缓冲区，每个缓冲区容量都是N个字符，通常N是一个磁盘块的大小，如果文件剩余不足N，那么会用一个特殊字符(<strong>eof</strong>)来标记文件结束。</p>
+<p>程序维护两个指针：</p>
+<ol>
+<li>lexemeBegin：指向当前词素的开始处</li>
+<li>forward：一直向前扫描直到发现某个模式被匹配，这个决定策略将在下面被讨论</li>
+</ol>
+<p>一旦确定了下一个词素，词法分析器将根据这两个指针将这个词素以及其属性值记录下来。然后使lexemeBegin指针指向下一个开始的字符。</p>
+<p>将forward指针前移的时候要检查是否到达缓冲区的末尾，如果到达末尾，就要将N个新字符读到另一个缓冲区中，并修改forward指针的指向。</p>
+<h2 id="哨兵标记"><a href="#哨兵标记" class="headerlink" title="哨兵标记"></a>哨兵标记</h2><p>我们每次向前移动forward指针都需要做两次测试：</p>
+<ol>
+<li>检查是否到达缓冲区的末尾</li>
+<li>确定读入的字符是什么</li>
+</ol>
+<p>我们只需要在每个缓冲区的末尾加入特殊字符<strong>eof</strong>就可以通过以下的算法进行处理。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/2.png?raw=true" alt="2"></p>
+<h1 id="词法单元的归约"><a href="#词法单元的归约" class="headerlink" title="词法单元的归约"></a>词法单元的归约</h1><p>正则表达式可以高效描述处理词法单元时要用到的模式类型。</p>
+<p>关于<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>不再赘述。</p>
+<h1 id="词法单元的识别"><a href="#词法单元的识别" class="headerlink" title="词法单元的识别"></a>词法单元的识别</h1><p>我们使用状态转换图来进行对词素的识别。</p>
+<h1 id="词法分析器生成工具Lex"><a href="#词法分析器生成工具Lex" class="headerlink" title="词法分析器生成工具Lex"></a>词法分析器生成工具Lex</h1><p>Lex工具接受输入的模式，转换成一个状态转换图，并生成相应的代码。</p>
+<h1 id="有穷自动机"><a href="#有穷自动机" class="headerlink" title="有穷自动机"></a>有穷自动机</h1><p><a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/">有穷自动机</a></p>
+<h2 id="不确定有穷自动机-NFA"><a href="#不确定有穷自动机-NFA" class="headerlink" title="不确定有穷自动机(NFA)"></a>不确定有穷自动机(NFA)</h2><p>以下不再赘述</p>
+<h2 id="转换表"><a href="#转换表" class="headerlink" title="转换表"></a>转换表</h2><p>以下不再赘述</p>
+<h2 id="确定的有穷自动机-DFA"><a href="#确定的有穷自动机-DFA" class="headerlink" title="确定的有穷自动机(DFA)"></a>确定的有穷自动机(DFA)</h2><p>以下不再赘述</p>
+<h1 id="从正则表达式到自动机"><a href="#从正则表达式到自动机" class="headerlink" title="从正则表达式到自动机"></a>从正则表达式到自动机</h1><h2 id="从NFA到DFA"><a href="#从NFA到DFA" class="headerlink" title="从NFA到DFA"></a>从NFA到DFA</h2><p>子集构造法。</p>
+<h2 id="NFA的模拟"><a href="#NFA的模拟" class="headerlink" title="NFA的模拟"></a>NFA的模拟</h2><p>图搜索，算法花费时间和输入串的长度和转换图的大小（结点数加上边数）的乘积成正比。</p>
+<h2 id="从正则表达式构造NFA"><a href="#从正则表达式构造NFA" class="headerlink" title="从正则表达式构造NFA"></a>从正则表达式构造NFA</h2><p>不再赘述</p>
+<h2 id="字符串处理算法的效率"><a href="#字符串处理算法的效率" class="headerlink" title="字符串处理算法的效率"></a>字符串处理算法的效率</h2><p>理论上，最坏情况下DFA的状态个数会是NFA状态个数的指数多个，但对于大部分应用，NFA和相应的DFA的状态数量大致相同。我们通常更倾向使用DFA（当输入串长度接近正则表达式长度的三次方时）。</p>
+<h1 id="词法分析器生成工具的设计"><a href="#词法分析器生成工具的设计" class="headerlink" title="词法分析器生成工具的设计"></a>词法分析器生成工具的设计</h1><h2 id="基于NFA的模式匹配"><a href="#基于NFA的模式匹配" class="headerlink" title="基于NFA的模式匹配"></a>基于NFA的模式匹配</h2><p>将每个模式的NFA合并成为一个新的NFA。</p>
+<p>从lexemeBegin指针开始，往后移动forward指针，根据NFA去匹配，直到达到一个没有后续状态的输入点，这时得到最长前缀，如果这时还有多个匹配，根据Lex中规定的靠前的模式决定接受状态。</p>
+<h2 id="词法分析器使用的DFA"><a href="#词法分析器使用的DFA" class="headerlink" title="词法分析器使用的DFA"></a>词法分析器使用的DFA</h2><p>将NFA转换为DFA，如果DFA的状态包含一个或多个NFA的接受状态，根据优先级决定模式的输出。</p>
+<h1 id="基于DFA的模式匹配器的优化"><a href="#基于DFA的模式匹配器的优化" class="headerlink" title="基于DFA的模式匹配器的优化"></a>基于DFA的模式匹配器的优化</h1><p>有三个算法：</p>
+<ol>
+<li>根据正则表达式直接构造得到DFA</li>
+<li>最小化DFA</li>
+<li>生成比二维表更紧凑的转换表的表示方式</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/08/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%80%E3%80%91%E5%BC%95%E8%AE%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/02/08/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%80%E3%80%91%E5%BC%95%E8%AE%BA/" class="post-title-link" itemprop="url">【编译原理一】引论</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-02-08 19:37:57" itemprop="dateCreated datePublished" datetime="2025-02-08T19:37:57+08:00">2025-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-27 13:15:03" itemprop="dateModified" datetime="2025-02-27T13:15:03+08:00">2025-02-27</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>编译器</strong>是一个软件翻译系统，其负责将程序设计语言翻译成计算机能执行的语言形式。</p>
+<h1 id="语言处理器"><a href="#语言处理器" class="headerlink" title="语言处理器"></a>语言处理器</h1><p>一个编译器可以被看作是一个程序，其作用为将某语言编写的程序翻译成等价的、另一种目标语言编写的程序，并在翻译过程中报告其在源程序中发现的错误。</p>
+<p><strong>解释器</strong>是另一种语言处理器，其目的和编译器一致，但是工作方式不同。两者相比：</p>
+<ol>
+<li>编译器将整个源代码一次性翻译成目标机器码（通常是中间代码或直接是机器码），然后将生成的代码存储在一个独立的文件中，程序的运行时不需要源代码。编译器运行速度更快。</li>
+<li>解释器逐行读取源代码，并将其即时翻译成机器指令进行执行，不会生成独立的目标代码。解释器错误诊断效果更好。</li>
+</ol>
+<p>我们以Java语言处理器为例，其结合了编译和解释的过程。</p>
+<ol>
+<li>一个Java源程序被编译成一种被称为<strong>字节码</strong>(bytecode)的形式，好处是方便字节码在不同机器之间迁移使用。</li>
+<li>字节码由一个虚拟机进行解释执行。</li>
+<li>有一些即时编译器还会将字节码再翻译成机器语言，然后执行程序。</li>
+</ol>
+<p>一个完整的语言处理系统包含以下部分：</p>
+<ol>
+<li>预处理器：将源程序聚合到一起，处理一些宏。</li>
+<li>编译器：将源程序翻译成汇编语言程序。</li>
+<li>汇编器：将汇编语言程序翻译成可重定位的机器代码。</li>
+<li>链接器/加载器：生成目标机器代码，将可执行目标文件放到内存中执行。</li>
+</ol>
+<h1 id="编译器的结构"><a href="#编译器的结构" class="headerlink" title="编译器的结构"></a>编译器的结构</h1><p>编译器由两个部分组成：</p>
+<ol>
+<li>分析部分(analysis)：编译器的前端<ol>
+<li>将源程序分解为多个组成要素，并会在这些要素之上增加语法结构，从而创建该源程序的一个中间表示。</li>
+<li>检查源程序语法构成是否正确，并给出相关信息提示。</li>
+<li>收集有关源程序的信息，并把这些信息放在<strong>符号表</strong>中。</li>
+<li>符号表将和中间表示形式一起传送给综合部分。</li>
+</ol>
+</li>
+<li>综合部分(synthesis)：编译器的后端<ol>
+<li>根据中间表示和符号表来构造用户期待的目标程序。</li>
+</ol>
+</li>
+</ol>
+<p>一般一个完整的编译流程分为以下步骤(phase)：</p>
+<ol>
+<li>源程序的字符流进入<strong>词法分析器</strong>，得到符号流和符号表。符号表可能被各个步骤使用。</li>
+<li>符号流进入<strong>语法分析</strong>得到语法树</li>
+<li>语法树经过<strong>语义分析</strong>得到语法树</li>
+<li>语法树经过<strong>中间代码生成器</strong>生成中间表示形式</li>
+<li>中间表示形式经过<strong>机器无关代码优化器</strong>生成中间表示形式</li>
+<li>中间表示形式经过<strong>代码生成器</strong>生成目标机器语言</li>
+<li>目标机器语言经过<strong>机器相关代码优化器</strong>得到目标机器语言</li>
+</ol>
+<p>其中的优化步骤一般是可选的。</p>
+<h2 id="词法分析-lexical-analysis"><a href="#词法分析-lexical-analysis" class="headerlink" title="词法分析(lexical analysis)"></a>词法分析(lexical analysis)</h2><p>词法分析器读取源程序字符流，将其组织称为<strong>词素</strong>(lexeme)序列，对于每个词素，词法分析器产生以下词法单元(token)作为输出</p>
+<script type="math/tex; mode=display"><token-name, attribute-value></script><p>其中第一个分量token-name是语法分析步骤中要使用的抽象符号，而第二个分量attribute-value是符号表中关于这个词法单元的条目。下面会举一个例子。</p>
+<p>例如：position = initial + rate * 60 这个语句，有以下词素：</p>
+<ol>
+<li>position被映射为$<id,1>$</li>
+<li>=被映射为$&lt;=&gt;$</li>
+<li>initial被映射为$<id,2>$</li>
+<li>+被映射为$&lt;+&gt;$</li>
+<li>rate被映射为$<id,3>$</li>
+<li><em>被映射为$&lt;</em>&gt;$</li>
+<li>60被映射为$<number,4>$</li>
+</ol>
+<h2 id="语法分析-syntax-analysis"><a href="#语法分析-syntax-analysis" class="headerlink" title="语法分析(syntax analysis)"></a>语法分析(syntax analysis)</h2><p>语法分析器使用由词法分析器生成的各个词法单元的第一个分量来创建树形的中间表示，用来给出词法单元流的语法结构。常用语法树来表示，每个结点表示一个运算，子节点表示运算的分量。</p>
+<h2 id="语义分析"><a href="#语义分析" class="headerlink" title="语义分析"></a>语义分析</h2><p>语义分析器使用语法树和符号表的信息，来检查源程序是否和语言定义的语义一致，同时收集类型信息，进行类型检查，保证运算符和对应的分量都匹配。当然，在一般情况下，数字的类型可以自动转换。</p>
+<h2 id="中间代码生成"><a href="#中间代码生成" class="headerlink" title="中间代码生成"></a>中间代码生成</h2><p>现在我们考虑将中间表示形式变成一种易于生成且易于翻译为目标语言的形式，即<strong>三地址代码</strong>。</p>
+<h2 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h2><p>改进中间代码，使其更短或者能耗更低。</p>
+<h2 id="代码生成"><a href="#代码生成" class="headerlink" title="代码生成"></a>代码生成</h2><p>将中间代码翻译成机器代码，并选择合适的寄存器和内存的位置。</p>
+<h2 id="符号表管理"><a href="#符号表管理" class="headerlink" title="符号表管理"></a>符号表管理</h2><p>符号表记录了一个变量名以及其各种属性，包括存储分配、类型、作用域等等，并允许编译器快速查找到每个名字对应的记录。</p>
+<h2 id="将多个步骤组合成趟"><a href="#将多个步骤组合成趟" class="headerlink" title="将多个步骤组合成趟"></a>将多个步骤组合成趟</h2><p>在具体的实现中，并不是把以上每个步骤都分得很清楚，而是会把某些步骤合并起来。这样的组合称为<strong>趟</strong>(pass)。</p>
+<ol>
+<li>词法分析与语法分析合并： 在某些简单的编译器实现中，词法分析和语法分析可能会合并成一个步骤。这通常适用于语法相对简单、上下文无关的语言。词法单元（tokens）和语法树的构建可以在一个阶段中完成，节省了时间和空间。</li>
+<li>语法分析与语义分析合并： 语法分析和语义分析可以合并成一个步骤。这种做法通常会在构建语法树的同时进行语义检查（例如类型检查、作用域分析等）。这样可以在语法树生成的同时，立即验证类型的正确性和其他语义规则，避免多次遍历代码。</li>
+<li>中间代码生成与代码优化合并： 在某些编译器中，生成中间代码和优化代码可以在同一个阶段内进行。中间代码的生成是根据源代码构建的初步表达，而优化则可以通过遍历中间代码来减少冗余的操作，消除死代码或执行常数折叠等。这种合并能够加快编译过程，因为中间代码生成和优化通常依赖于对相同信息的多次操作。</li>
+<li>符号表管理与语义分析合并： 符号表管理和语义分析往往可以结合在一起，因为语义分析往往依赖于符号表的信息。例如，在进行类型检查时，编译器需要同时管理符号表中的信息并检查变量是否正确使用。</li>
+<li>多趟优化： 有些复杂的编译器在中间代码生成后，会进行多次优化，以进一步减少代码的冗余或提升执行效率。优化步骤通常会分多趟进行，例如死代码消除、循环优化、常量折叠等，可以在不同的编译阶段中多次执行。</li>
+</ol>
+<h1 id="程序设计语言的发展历程"><a href="#程序设计语言的发展历程" class="headerlink" title="程序设计语言的发展历程"></a>程序设计语言的发展历程</h1><p>程序设计语言有多种分类方式：</p>
+<ol>
+<li>按语言的代：<ol>
+<li>第一代语言：机器语言</li>
+<li>第二代语言：汇编语言</li>
+<li>第三代语言：C、C++等高级程序设计语言</li>
+<li>第四代语言：SQL等为特定应用设计的语言</li>
+<li>第五代语言：Prolog等基于逻辑和约束的语言</li>
+</ol>
+</li>
+<li>按语言执行状态：<ol>
+<li>强制式语言：指明如何完成一个计算任务</li>
+<li>声明式语言：指明要进行哪些计算</li>
+</ol>
+</li>
+<li>冯诺依曼语言：以冯诺依曼计算机体系结构为计算模型的程序设计语言</li>
+<li>面向对象语言：支持面向对象编程的语言</li>
+<li>脚本语言：具有高层次运算符的解释型语言</li>
+</ol>
+<h1 id="构建一个编译器"><a href="#构建一个编译器" class="headerlink" title="构建一个编译器"></a>构建一个编译器</h1><p>设计编译器要考虑简单性和有效性之间的平衡。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/04/%E3%80%900-7%E3%80%91OpenGL%E6%91%84%E5%83%8F%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -573,409 +1060,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/02/%E3%80%900-2%E3%80%91OpenGL%E4%B8%89%E8%A7%92%E5%BD%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/02/02/%E3%80%900-2%E3%80%91OpenGL%E4%B8%89%E8%A7%92%E5%BD%A2/" class="post-title-link" itemprop="url">【0.2】OpenGL三角形</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-02-02 14:44:23" itemprop="dateCreated datePublished" datetime="2025-02-02T14:44:23+08:00">2025-02-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-03 17:28:51" itemprop="dateModified" datetime="2025-02-03T17:28:51+08:00">2025-02-03</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="OpenGL的渲染管线"><a href="#OpenGL的渲染管线" class="headerlink" title="OpenGL的渲染管线"></a>OpenGL的渲染管线</h1><p>直观上理解，OpenGL是将3D空间下的事物渲染到窗口屏幕的2D像素数组中。3D坐标转为2D坐标的处理过程是由OpenGL的图形渲染管线（Graphics Pipeline，大多译为管线，实际上指的是一堆原始图形数据途经一个输送管道，期间经过各种变化处理最终出现在屏幕的过程）管理的。图形渲染管线可以被划分为两个主要部分：第一部分把你的3D坐标转换为2D坐标，第二部分是把2D坐标转变为实际的有颜色的像素。</p>
-<p>图形渲染管线可以被划分为几个阶段，每个阶段将会把前一个阶段的输出作为输入。所有这些阶段都是高度专门化的（它们都有一个特定的函数），并且很容易并行执行。正是由于它们具有并行执行的特性，当今大多数显卡都有成千上万的小处理核心，它们在GPU上为每一个（渲染管线）阶段运行各自的小程序，从而在图形渲染管线中快速处理你的数据。这些小程序叫做着色器(Shader)。</p>
-<p>一个图形渲染管线分为六个阶段：</p>
-<ol>
-<li>顶点着色器（可自定义）</li>
-<li>几何着色器（可自定义）</li>
-<li>形状（图元）装配</li>
-<li>光栅化</li>
-<li>片段着色器（可自定义）</li>
-<li>测试与混合</li>
-</ol>
-<p>下面会对这些进行详细说明。在现代OpenGL中，我们必须定义至少一个顶点着色器和一个片段着色器（因为GPU中没有默认的顶点/片段着色器）。</p>
-<h2 id="顶点着色器"><a href="#顶点着色器" class="headerlink" title="顶点着色器"></a>顶点着色器</h2><p>顶点着色器是渲染管线中第一个可编程阶段，它对每个输入的顶点单独进行处理，主要任务是将顶点从局部坐标（模型坐标）转换到裁剪空间，并计算与光照、纹理等相关的属性。</p>
-<h2 id="几何着色器"><a href="#几何着色器" class="headerlink" title="几何着色器"></a>几何着色器</h2><p>几何着色器是一个可选的可编程阶段，位于顶点着色器之后。它接受一个完整的图元（如点、线、三角形）作为输入，并可以对这个图元进行操作，比如生成新顶点或改变图元的形状。</p>
-<h2 id="形状（图元）装配"><a href="#形状（图元）装配" class="headerlink" title="形状（图元）装配"></a>形状（图元）装配</h2><p>形状装配阶段是固定功能（不可编程）的，它负责将经过顶点着色器（或几何着色器）的顶点按照指定的图元类型（如点、线、三角形等）进行组合，构成完整的图元。</p>
-<p>该阶段不涉及任何自定义代码，而是由图形 API（如 OpenGL）自动完成。</p>
-<h2 id="光栅化"><a href="#光栅化" class="headerlink" title="光栅化"></a>光栅化</h2><p>光栅化阶段将组装好的几何图元转换为屏幕上的片段（Fragments），这些片段对应最终要绘制的像素区域。</p>
-<h2 id="片段着色器"><a href="#片段着色器" class="headerlink" title="片段着色器"></a>片段着色器</h2><p>片段着色器是最后一个可编程阶段，它对每个由光栅化阶段生成的片段进行处理，决定最终写入帧缓冲区的颜色及其它属性（如深度、透明度等）。结合光照、材质、纹理等信息计算出片段的最终颜色。</p>
-<h2 id="测试与混合"><a href="#测试与混合" class="headerlink" title="测试与混合"></a>测试与混合</h2><p>这是渲染管线的最后阶段，主要负责对片段进行各种测试，并决定哪些片段最终写入到帧缓冲区，从而构成最终的图像。</p>
-<hr>
-<h1 id="顶点输入"><a href="#顶点输入" class="headerlink" title="顶点输入"></a>顶点输入</h1><p>首先，我们需要输入一些顶点数据，值得注意的是，我们需要坐标在<strong>标准化设备坐标</strong>范围内，即-1.0到1.0。不在该坐标范围内的坐标都会被丢弃。</p>
-<p>我们先关注如何输入顶点信息。定义顶点数据以后，我们会把它作为输入发送给图形渲染管线的第一个处理阶段：顶点着色器。它会在GPU上创建内存用于储存我们的顶点数据，还要配置OpenGL如何解释这些内存，并且指定其如何发送给显卡。顶点着色器接着会处理我们在内存中指定数量的顶点。</p>
-<p>我们通过顶点缓冲对象(Vertex Buffer Objects, VBO)管理这个内存，它会在GPU内存（通常被称为显存）中储存大量顶点。使用这些缓冲对象的好处是我们可以一次性的发送一大批数据到显卡上，而不是每个顶点发送一次。从CPU把数据发送到显卡相对较慢，所以只要可能我们都要尝试尽量一次性发送尽可能多的数据。</p>
-<p>所以我们可以使用glGenBuffers函数生成一个带有缓冲ID的VBO对象。</p>
-<hr>
-<h1 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h1><h2 id="顶点缓冲对象-VBO"><a href="#顶点缓冲对象-VBO" class="headerlink" title="顶点缓冲对象(VBO)"></a>顶点缓冲对象(VBO)</h2><p>顶点缓冲对象（Vertex Buffer Object，VBO）是一个 OpenGL 对象，专门用来存储顶点数据（如顶点位置、颜色、纹理坐标等）。<br>VBO 的创建与使用：</p>
-<ol>
-<li>使用 glGenBuffers() 创建一个 VBO。</li>
-<li>使用 glBindBuffer() 绑定该 VBO。</li>
-<li>使用 glBufferData() 将数据传输到 GPU。</li>
-<li>使用 glVertexAttribPointer() 设置顶点属性指针，告诉 OpenGL 如何解析 VBO 中的数据。</li>
-</ol>
-<h2 id="顶点数组对象-VAO"><a href="#顶点数组对象-VAO" class="headerlink" title="顶点数组对象(VAO)"></a>顶点数组对象(VAO)</h2><p>顶点数组对象（Vertex Array Object，VAO）是一个 OpenGL 对象，用于记录与顶点数据相关的状态。它保存了绑定的顶点缓冲对象（VBO）、顶点属性指针和其他状态。VAO 保存了对顶点缓冲区对象的引用和顶点属性的配置，这样在执行渲染时，不需要每次都重新绑定顶点缓冲区，只需要绑定 VAO 即可。</p>
-<h2 id="元素缓冲对象-EBO-索引缓冲对象-IBO"><a href="#元素缓冲对象-EBO-索引缓冲对象-IBO" class="headerlink" title="元素缓冲对象(EBO)/索引缓冲对象(IBO)"></a>元素缓冲对象(EBO)/索引缓冲对象(IBO)</h2><p>如果有顶点被重复使用，我们可以通过记录编号来避免额外开销。</p>
-<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p><a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/LearnOpenGL/blob/main/HelloTriangle.cpp">传送门</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/01/%E3%80%900-1%E3%80%91OpenGL%E5%88%9B%E5%BB%BA%E7%AA%97%E5%8F%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/02/01/%E3%80%900-1%E3%80%91OpenGL%E5%88%9B%E5%BB%BA%E7%AA%97%E5%8F%A3/" class="post-title-link" itemprop="url">【0.1】OpenGL创建窗口</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-02-01 22:25:43" itemprop="dateCreated datePublished" datetime="2025-02-01T22:25:43+08:00">2025-02-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-03 15:43:08" itemprop="dateModified" datetime="2025-02-03T15:43:08+08:00">2025-02-03</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="配置OpenGL"><a href="#配置OpenGL" class="headerlink" title="配置OpenGL"></a>配置OpenGL</h1><p>本节的目标是配置好OpenGL的运行环境。我使用CLION进行配置。</p>
-<h2 id="下载GLAD"><a href="#下载GLAD" class="headerlink" title="下载GLAD"></a>下载GLAD</h2><p>因为OpenGL只是一个标准/规范，具体的实现是由驱动开发商针对特定显卡实现的。由于OpenGL驱动版本众多，它大多数函数的位置都无法在编译时确定下来，需要在运行时查询。所以任务就落在了开发者身上，开发者需要在运行时获取函数地址并将其保存在一个函数指针中供以后使用。取得地址的方法因平台而异。幸运的是，有些库能简化此过程，其中GLAD是目前最新，也是最流行的库。</p>
-<p><a target="_blank" rel="noopener" href="https://glad.dav1d.de/">Download GLAD</a>，选择最新版本，点击GENERATE，再下载压缩包解压即可。</p>
-<p>压缩包中应包含：</p>
-<ul>
-<li>\include<ul>
-<li>\glad<ul>
-<li>glad.h</li>
-</ul>
-</li>
-<li>\KHR<ul>
-<li>khrplatform.h</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>\src<ul>
-<li>glad.c</li>
-</ul>
-</li>
-</ul>
-<h2 id="下载GLFW"><a href="#下载GLFW" class="headerlink" title="下载GLFW"></a>下载GLFW</h2><p>GLFW是一个专门针对OpenGL的C语言库，它提供了一些渲染物体所需的最低限度的接口。它允许用户创建OpenGL上下文、定义窗口参数以及处理用户输入。</p>
-<p><a target="_blank" rel="noopener" href="https://www.glfw.org/download.html">Download GLFW</a>，选择预编译好的版本，<strong>根据自己系统以及MinGW</strong>情况选择32位或者64位。最简单的方法可以命令行查询gcc -v来查看。</p>
-<p>下载解压之后里面应该要包含以下需要使用的内容：</p>
-<ul>
-<li>\include<ul>
-<li>\GLFW<ul>
-<li>glfw3.h</li>
-<li>glfw3native.h</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>\lib-mingw-w64<ul>
-<li>glfw.dll</li>
-</ul>
-</li>
-</ul>
-<h2 id="配置Clion"><a href="#配置Clion" class="headerlink" title="配置Clion"></a>配置Clion</h2><p>打开Clion，新建一个项目，建立文件夹:</p>
-<ul>
-<li>\include</li>
-<li>\lib</li>
-<li>\src</li>
-<li>\bin</li>
-</ul>
-<p>将刚才下载的文件复制到相应位置。使新建项目目录为：</p>
-<ul>
-<li>\bin<ul>
-<li>glfw3.dll</li>
-</ul>
-</li>
-<li>\include<ul>
-<li>\glad</li>
-<li>\GLFW</li>
-<li>\KHR</li>
-</ul>
-</li>
-<li>\lib<ul>
-<li>glfw3.dll</li>
-</ul>
-</li>
-<li>\src<ul>
-<li>glad.c</li>
-</ul>
-</li>
-</ul>
-<p>最后修改CMakeList.txt：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $&#123;PROJECT_SOURCE_DIR&#125;/bin)</span><br><span class="line"></span><br><span class="line">add_executable(OpenGL main.cpp src/glad.c)</span><br><span class="line">INCLUDE_DIRECTORIES($&#123;PROJECT_SOURCE_DIR&#125;/include)</span><br><span class="line">link_directories($&#123;PROJECT_SOURCE_DIR&#125;/lib)</span><br><span class="line">target_link_libraries(OpenGL $&#123;PROJECT_SOURCE_DIR&#125;/lib/glfw3.dll)</span><br></pre></td></tr></table></figure></p>
-<p>这样就配置好啦。我们可以通过以下示例程序运行测试：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;glad/glad.h&gt;</span><br><span class="line">#include &lt;GLFW/glfw3.h&gt;</span><br><span class="line"></span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">void framebuffer_size_callback(GLFWwindow* window, int width, int height);</span><br><span class="line">void processInput(GLFWwindow *window);</span><br><span class="line"></span><br><span class="line">// settings</span><br><span class="line">const unsigned int SCR_WIDTH = 800;</span><br><span class="line">const unsigned int SCR_HEIGHT = 600;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // glfw: initialize and configure</span><br><span class="line">    // ------------------------------</span><br><span class="line">    glfwInit();</span><br><span class="line">    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);</span><br><span class="line">    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);</span><br><span class="line">    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);</span><br><span class="line"></span><br><span class="line">#ifdef __APPLE__</span><br><span class="line">    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">    // glfw window creation</span><br><span class="line">    // --------------------</span><br><span class="line">    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, &quot;LearnOpenGL&quot;, NULL, NULL);</span><br><span class="line">    if (window == NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;Failed to create GLFW window&quot; &lt;&lt; std::endl;</span><br><span class="line">        glfwTerminate();</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    glfwMakeContextCurrent(window);</span><br><span class="line">    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);</span><br><span class="line"></span><br><span class="line">    // glad: load all OpenGL function pointers</span><br><span class="line">    // ---------------------------------------</span><br><span class="line">    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;Failed to initialize GLAD&quot; &lt;&lt; std::endl;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line">    // render loop</span><br><span class="line">    // -----------</span><br><span class="line">    while (!glfwWindowShouldClose(window))</span><br><span class="line">    &#123;</span><br><span class="line">        // input</span><br><span class="line">        // -----</span><br><span class="line">        processInput(window);</span><br><span class="line"></span><br><span class="line">        // render</span><br><span class="line">        // ------</span><br><span class="line">        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);</span><br><span class="line">        glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line"></span><br><span class="line">        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)</span><br><span class="line">        // -------------------------------------------------------------------------------</span><br><span class="line">        glfwSwapBuffers(window);</span><br><span class="line">        glfwPollEvents();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // glfw: terminate, clearing all previously allocated GLFW resources.</span><br><span class="line">    // ------------------------------------------------------------------</span><br><span class="line">    glfwTerminate();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly</span><br><span class="line">// ---------------------------------------------------------------------------------------------------------</span><br><span class="line">void processInput(GLFWwindow *window)</span><br><span class="line">&#123;</span><br><span class="line">    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)</span><br><span class="line">        glfwSetWindowShouldClose(window, true);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// glfw: whenever the window size changed (by OS or user resize) this callback function executes</span><br><span class="line">// ---------------------------------------------------------------------------------------------</span><br><span class="line">void framebuffer_size_callback(GLFWwindow* window, int width, int height)</span><br><span class="line">&#123;</span><br><span class="line">    // make sure the viewport matches the new window dimensions; note that width and </span><br><span class="line">    // height will be significantly larger than specified on retina displays.</span><br><span class="line">    glViewport(0, 0, width, height);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>如果能编译运行，那就是配置成功了。会出现一个绿色的窗口。</p>
-<h1 id="创建窗口"><a href="#创建窗口" class="headerlink" title="创建窗口"></a>创建窗口</h1><h2 id="CMakeList"><a href="#CMakeList" class="headerlink" title="CMakeList"></a>CMakeList</h2><p>为了方便增加可执行文件，我做了一些小修改。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">INCLUDE_DIRECTORIES($&#123;PROJECT_SOURCE_DIR&#125;/include)</span><br><span class="line">link_directories($&#123;PROJECT_SOURCE_DIR&#125;/lib)</span><br><span class="line"></span><br><span class="line">function(My_add_executable target_name file_name)</span><br><span class="line">    add_executable($&#123;target_name&#125; $&#123;file_name&#125;.cpp src/glad.c)</span><br><span class="line">    target_link_libraries($&#123;target_name&#125; $&#123;PROJECT_SOURCE_DIR&#125;/lib/glfw3.dll)</span><br><span class="line">endfunction()</span><br><span class="line"></span><br><span class="line">My_add_executable(OpenGL main)</span><br></pre></td></tr></table></figure>
-<p>像这样就可以方便配置了。只需要新建cpp之后加一行代码重新make即可。</p>
-<h2 id="创建一个窗口"><a href="#创建一个窗口" class="headerlink" title="创建一个窗口"></a>创建一个窗口</h2><p>值得注意的部分都在<a target="_blank" rel="noopener" href="https://github.com/Gisyxi7/LearnOpenGL/blob/main/HelloWindow.cpp">代码注释中</a></p>
-<p>流程如下：</p>
-<ol>
-<li>初始化GLFW库</li>
-<li>指定 OpenGL 的版本和上下文属性</li>
-<li>创建窗口对象</li>
-<li>将窗口的上下文设置为当前线程的上下文</li>
-<li>初始化 GLAD，加载 OpenGL 函数指针</li>
-<li>渲染循环</li>
-<li>清理资源，关闭程序</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/01/%E3%80%900%E3%80%91OpenGL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/02/01/%E3%80%900%E3%80%91OpenGL/" class="post-title-link" itemprop="url">【0】OpenGL</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2025-02-01 22:08:00 / 修改时间：22:25:10" itemprop="dateCreated datePublished" datetime="2025-02-01T22:08:00+08:00">2025-02-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本系列参考自<a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/">LearnOpenGL CN</a></p>
-<h1 id="什么是OpenGL"><a href="#什么是OpenGL" class="headerlink" title="什么是OpenGL"></a>什么是OpenGL</h1><p>OpenGL本身是一个由Khronos组织制定并维护的规范(Specification)。其严格规定了每个函数该如何执行，以及它们的输出值。至于内部具体每个函数是如何实现(Implement)的，将由OpenGL库的开发者自行决定。实际的OpenGL库的开发者通常是显卡的生产商。</p>
-<h1 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h1><p>早期的OpenGL使用立即渲染模式，但是灵活性比较差。因此从OpenGL3.2开始，规范文档开始废弃立即渲染模式，并鼓励开发者在OpenGL的核心模式(Core-profile)下进行开发，这个分支的规范完全移除了旧的特性。</p>
-<h1 id="怎么理解OpenGL"><a href="#怎么理解OpenGL" class="headerlink" title="怎么理解OpenGL"></a>怎么理解OpenGL</h1><p>OpenGL自身是一个巨大的状态机(State Machine)：一系列的变量描述OpenGL此刻应当如何运行。OpenGL的状态通常被称为OpenGL上下文(Context)。我们通常使用如下途径去更改OpenGL状态：设置选项，操作缓冲。最后，我们使用当前OpenGL上下文来渲染。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/29/%E6%97%B6%E9%97%B4%E8%87%AA%E5%8A%A8%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/29/%E6%97%B6%E9%97%B4%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">【十】时间自动机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-12-29 17:00:09 / 修改时间：17:41:12" itemprop="dateCreated datePublished" datetime="2024-12-29T17:00:09+08:00">2024-12-29</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>到现在为止，我们接触的很多建模工具都是触发式的，状态变化必须由某个外部事件的产生而触发。但是现实生活中，存在系统会随着时间推移而自动改变状态，即在自动机的基础上加上了时间的维度。</p>
-<h2 id="Peterson算法"><a href="#Peterson算法" class="headerlink" title="Peterson算法"></a>Peterson算法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Process 0:</span><br><span class="line">while (true) &#123;</span><br><span class="line">    &lt;noncritical section&gt;;</span><br><span class="line">    flag[0] = true;</span><br><span class="line">    turn = 1;</span><br><span class="line">    while flag[1] and turn = 1 do &#123; &#125;;</span><br><span class="line">    &lt;critical section&gt;;</span><br><span class="line">    flag[0] = false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Process 1:</span><br><span class="line">while (true) &#123;</span><br><span class="line">    &lt;noncritical section&gt;;</span><br><span class="line">    flag[1] = true;</span><br><span class="line">    turn = 0;</span><br><span class="line">    while flag[0] and turn = 0 do &#123; &#125;;</span><br><span class="line">    &lt;critical section&gt;;</span><br><span class="line">    flag[1] = false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个算法的思路是：如果进程 i 想要进入临界区，则先举起自己的小旗子，然后用 turn 变量讲机会谦让给另一个进程；当另一个进程想要进入临界区，且自己已经谦让机会的时候，就一直等待另一个进程使用临界区结束，否则自己就可以直接进入临界区。</p>
-<p>Peterson 算法的关键在于 turn 变量，哪个进程更快地谦让，则 turn 变量会被另一个进程的谦让行为给覆盖，从而使得更快谦让的进程先获得进入临界区的资格。因此 Peterson 算法制造了一种看似双方争先恐后地谦让机会，但实际上都是自私行为的现象。</p>
-<p>当然，此时该协议的行为还是离散的，我们可以通过一般的自动机进行建模。</p>
-<h2 id="Fischer协议"><a href="#Fischer协议" class="headerlink" title="Fischer协议"></a>Fischer协议</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Process i:</span><br><span class="line">while (true) &#123;</span><br><span class="line">    &lt;noncritical section&gt;</span><br><span class="line">    while id != 0 do &#123;&#125;</span><br><span class="line">    delay K1;</span><br><span class="line">    id = i;</span><br><span class="line">    delay K2;</span><br><span class="line">    if (id = i) &#123;</span><br><span class="line">        &lt;critical section&gt;</span><br><span class="line">        id = 0</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中 id 是一个共享变量，每个进程有自己的时钟用于延迟，上述算法的正确性需要 K2 &gt; K1。</p>
-<p>该算法的思路是，如果一开始有人想要用或者已经用了临界区，我就死等，否则等待 K1 的时间，再宣告自己想要用这个临界区。再等待 K2 的时间，如果没有人提出异议，即 id = i，则进入临界区。</p>
-<p>由于 K2 &gt; K1，所以如果进入了临界区就说嘛没有人提出异议，从而这个并发控制是安全的。</p>
-<p>对这个算法进行建模就需要时间自动机。</p>
-<h2 id="建模实时系统"><a href="#建模实时系统" class="headerlink" title="建模实时系统"></a>建模实时系统</h2><p>我们对于时间有两种模型：</p>
-<ul>
-<li>离散时间域(discrete time domain)</li>
-<li>连续时间域(continuous time domain)</li>
-</ul>
-<h3 id="离散时间域"><a href="#离散时间域" class="headerlink" title="离散时间域"></a>离散时间域</h3><p>时间被分割为固定的间隔。</p>
-<p>本质上来说，这仍然是一个离散系统，只需要将原本的状态加上一个整数参数来表示时间。</p>
-<p>时间间隔的大小选择也很关键，如果时间间隔太小，则状态空间会非常大，而如果时间间隔太大，则无法精细刻画系统的行为。</p>
-<h3 id="连续时间域"><a href="#连续时间域" class="headerlink" title="连续时间域"></a>连续时间域</h3><p>当通过一条边，时钟可以被重置，但是只允许将时钟重置到为$0$。</p>
-<p>状态上也可以加入不变式(invariants)进行约束，从而禁止系统在一个状态停留时间过长。</p>
-<h2 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h2><p>令$X$是一个时钟变量的集合，那么时钟约束(time constraints)的集合$C(X)$由以下文法定义：</p>
-<script type="math/tex; mode=display">\empty=x\leq k\mid k\leq x\mid x<k\mid k<x\mid\empty\wedge \empty</script><p>其中$x\in X,k\in\mathbb{N}$</p>
-<p>定义<strong>时间自动机</strong>(time automata)是一个四元组$(L,X,I_0,E)$：</p>
-<ul>
-<li>$L$是一个有限地点(location)集合</li>
-<li>$X$是一个有限时钟变量集合</li>
-<li>$I_0\in L$是一个初始地点</li>
-<li>$E\subseteq L\times C(X)\times 2^X\times L$是一个边的集合，四元组的含义为(源地点，时钟约束，重置时钟集，目标地点)</li>
-</ul>
-<p>时间自动机的状态是由位置和时钟值组成的二元组，时间自动机的状态转移有两种:</p>
-<ul>
-<li>等待：只有时钟值变化</li>
-<li>行动：位置变化</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1041,14 +1129,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1137,59 +1225,6 @@
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 

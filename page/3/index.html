@@ -162,6 +162,768 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/16/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">【六】哈希函数及其应用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-16 15:37:32" itemprop="dateCreated datePublished" datetime="2024-12-16T15:37:32+08:00">2024-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-17 11:47:18" itemprop="dateModified" datetime="2024-12-17T11:47:18+08:00">2024-12-17</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第六章Hash Functions and Applications</p>
+<p>我们现在关注一个具有广泛应用的加密原语：加密哈希函数。在最基本的层面上，哈希函数 $H$提供了一种确定性的方法，将较长的输入字符串映射为较短的输出字符串，通常称为digest。主要的要求是：找到 H 的碰撞（即两个不同的输入产生相同的digest）应该是不可行的。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>哈希函数是一类将任意长度的输入压缩为固定长度输出的函数。非加密哈希函数的经典用途是在数据结构中，它们可以用来构建哈希表，从而在存储一组元素时实现$O(1)$的查找。具体来说，如果哈希函数$H$的输出范围大小为$N$，那么元素x被存储在表格的第$H(x)$行。</p>
+<p>一个良好的哈希函数要尽可能的减少碰撞(collision)。抗碰撞(Collision-resistant)哈希函数的目标也是避免碰撞，但是在数据结构的应用中，较少碰撞只是优化的要求，但是在密码学背景下，避免碰撞是一个严格的要求，因为攻击者可能会故意构造发生碰撞的值来进行攻击。所以设计抗碰撞哈希函数的难度要高于设计一般的哈希函数。</p>
+<h2 id="Collision-Resistance"><a href="#Collision-Resistance" class="headerlink" title="Collision Resistance"></a>Collision Resistance</h2><p>形式上，$H$是一个双输入函数，接受一个密钥$s$和一个字符串$x$，输出$H_s(x)$。</p>
+<p>这里的密钥和我们过去考虑的密钥有所不同，在过去的密钥我们希望保密，但是这里哈希函数中攻击者可能知道密钥，在这个前提下，我们希望哈希函数还具有抗碰撞性。</p>
+<p><strong>DEFINITION 6.1</strong><br>一个哈希函数由一对概率多项式算法组成。</p>
+<ul>
+<li>$Gen$： 是一个概率算法，输出密钥$s$</li>
+<li>$H$： 是一个确定性算法，接受一个密钥$s$和一个字符串$x$，输出$H_s(x)$，长度为$l(n)$</li>
+</ul>
+<p>如果H只接受固定长度的字符串输入，我们称哈希函数为fixed-length，H为compression function。显然这里输出的长度必须小于输入长度。</p>
+<p>下面介绍攻击实验The collission-finding experiment $Hash-coll_{\mathcal{A},\mathcal{H}}(n)$:</p>
+<ol>
+<li>生成密钥s</li>
+<li>攻击者接受s，输出$x,x’$。</li>
+<li>如果这两个输出产生碰撞，则实验结果为1，反之为0</li>
+</ol>
+<p>$DEFINITON 6.2$<br>一个哈希函数是Collision Resistant当且仅当<br>$Pr[Hash-coll_{\mathcal{A},\mathcal{H}}(n) = 1]\leq negl(n)$</p>
+<p><strong>无密钥的哈希函数</strong><br>实际上使用的哈希函数通常是没有密钥的，当然，这在理论上来看，总存在一个常数事件算法，直接输入碰撞对。</p>
+<p>当然，现实世界里，找到碰撞对在计算上是很困难的。</p>
+<h2 id="弱一些的安全定义"><a href="#弱一些的安全定义" class="headerlink" title="弱一些的安全定义"></a>弱一些的安全定义</h2><ul>
+<li>Second-preimage resistance<br>对于一个哈希函数，如果给定$s$和$x$，找不到另一个能碰撞的字符串。</li>
+<li>Preimage resistance<br>对于一个哈希函数，如果给定$s$和$H_s(x)$，找不到另一个能碰撞的字符串。</li>
+</ul>
+<p>coliision resistant $\Rightarrow$ second-preimage resistance $\Rightarrow$ preimage resistance</p>
+<h1 id="Merkle–Damgard变换"><a href="#Merkle–Damgard变换" class="headerlink" title="Merkle–Damgård变换"></a>Merkle–Damgård变换</h1><p>许多应用需要“完全成熟”的抗碰撞哈希函数，这种哈希函数能够处理非常长的输入，甚至是任意长度的输入。然而，构造固定长度的哈希函数（即压缩函数）更为容易——这些函数只接受“短”的输入。幸运的是，Merkle–Damgård变换使我们可以将后者转换为前者。这种哈希函数域扩展的方法在实践中被频繁使用，例如MD5和SHA系列哈希函数。</p>
+<p>假设已经存在压缩函数$(Gen,h)$，能接受长度大于2n的输入并输出长度为n的输出。那么我们可以通过下面的变换得到一个能处理任意长度输入的哈希函数<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/1.png?raw=true" alt="1"></p>
+<p><strong>THEOREM 6.4</strong><br>如果$(Gen,h)$抗碰撞，那么构造的$(Gen,H)$也抗碰撞</p>
+<p>证明如下：//TODO</p>
+<h1 id="应用哈希函数进行消息认证"><a href="#应用哈希函数进行消息认证" class="headerlink" title="应用哈希函数进行消息认证"></a>应用哈希函数进行消息认证</h1><p>我们之前已经讨论了几种针对任意长度消息的消息认证码（MAC）的构造。在本节中，我们将看到另一种方法，该方法依赖于抗碰撞哈希函数。随后，我们会介绍一种被标准化并广泛使用的方案，称为 HMAC（哈希消息认证码），它可以看作是这种方法的具体实现。</p>
+<h2 id="Hash-and-MAC"><a href="#Hash-and-MAC" class="headerlink" title="Hash-and-MAC"></a>Hash-and-MAC</h2><p>抗碰撞哈希函数可以自然地用于消息认证码（MAC）的域扩展。例如，假设我们有一个固定长度的 MAC，它可以处理长度为 l(n)-比特的消息，并且有一个输出长度为 l(n)-比特的抗碰撞哈希函数。那么我们可以通过对消息 m 进行哈希计算，然后使用 MAC 对哈希值进行认证，从而对任意长度的消息 m 进行认证。（参见构造 6.5。）</p>
+<p>直观上，这种方法是安全的，因为：</p>
+<ul>
+<li>MAC 的安全性 确保攻击者无法认证任何新的哈希值。</li>
+<li>抗碰撞性 确保攻击者无法找到与已使用哈希值相同的哈希的新消息。</li>
+</ul>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/2.png?raw=true" alt="2"></p>
+<p><strong>THEOREM 6.6</strong><br>如果$\prod$是一个secure的MAC，$\mathcal{H}$是一个抗碰撞的哈希函数，那么上述构造是一个secure MAC</p>
+<p>证明如下：//TODO</p>
+<h2 id="HMAC"><a href="#HMAC" class="headerlink" title="HMAC"></a>HMAC</h2><p>在原则上，可以通过将任意抗碰撞哈希函数与第4.5节中的固定长度消息认证码（MAC）相结合，来实现上一节提到的“哈希并认证”（hash-and-MAC）方法。然而，这种方法在实际中有至少两个缺点：</p>
+<ul>
+<li>需要实现两种密码学原语</li>
+<li>哈希函数输出长度与分组密码分组长度之间的不匹配</li>
+</ul>
+<p>HMAC 的设计克服了哈希函数和分组密码之间的不匹配问题，同时通过高效的构造支持任意长度的消息。具体地，HMAC 使用了两次调用哈希函数的过程，同时结合了内置的密钥与填充操作，以确保安全性。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/3.png?raw=true" alt="3"></p>
+<p><strong>THEOREM 6.8</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/hash/4.png?raw=true" alt="4"></p>
+<p>证明如下：//TODO</p>
+<h1 id="对哈希函数的攻击"><a href="#对哈希函数的攻击" class="headerlink" title="对哈希函数的攻击"></a>对哈希函数的攻击</h1><h2 id="Birthday-Attacks"><a href="#Birthday-Attacks" class="headerlink" title="Birthday Attacks"></a>Birthday Attacks</h2><p>最简单的攻击是在输入空间内穷举，但是复杂度高达$2^{n}$。</p>
+<p>现在考虑一个问题，一个房间里有q个人，那么存在两个人生日相同的概率是多少。<br>我们不难发现，当$q\approx 2^{l/2}$时，碰撞的概率接近0.5。</p>
+<p>所以，攻击者只需要尝试$2^{l/2}$次，就能显著提高找到碰撞对的概率。</p>
+<p>所以，要达到相同的安全水平，哈希函数输出的长度应该是2n。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/16/CCA%E5%AE%89%E5%85%A8%E5%92%8C%E8%AE%A4%E8%AF%81%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">【五】CCA安全和认证加密</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-12-16 13:00:28 / 修改时间：16:59:51" itemprop="dateCreated datePublished" datetime="2024-12-16T13:00:28+08:00">2024-12-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第五章CCA-Security and Authenticated Encryption</p>
+<p>我们已经讨论过了两种攻击者，一种是监听信道，一种是纂改通信，对应的我们提出了保密性和完整性的目标。现在我们要讨论存在主动攻击者时的保密性问题，以及如何构建同时实现保密性和完整性的加密方案。</p>
+<h1 id="选择密文攻击和CCA安全"><a href="#选择密文攻击和CCA安全" class="headerlink" title="选择密文攻击和CCA安全"></a>选择密文攻击和CCA安全</h1><p>我们上一章中考虑攻击者可以纂改信道，那么显然，攻击者可以有以下的手段，使通信接收方解密攻击者生成的密文，并且攻击者还能知道解密后的消息。</p>
+<h2 id="Padding-Oracle-Attacks"><a href="#Padding-Oracle-Attacks" class="headerlink" title="Padding-Oracle Attacks"></a>Padding-Oracle Attacks</h2><p>现在考虑一种真实情况，客户端使用CBC模式加密向服务器发送消息，假设攻击者能够冒充客户端，向服务器发送其选择的密文，那么攻击者能获得服务器的相关反应来推断密文的有效性（比如服务器解密失败就会要求重传）。</p>
+<p>在CBC加密模式下，我们要求消息长度为底层分组密码长度的整数倍，如果消息长度不满足，则需要进行填充。而填充也需要遵循一定的方案，服务器会解密并验证是否遵循正确的填充方案。</p>
+<p>这意味着服务器会向攻击者提供一个填充查询机，来判断填充是否正确。并且攻击者是有方法根据这个信息来恢复密文对应的明文的。</p>
+<h2 id="CCA-Security-的定义"><a href="#CCA-Security-的定义" class="headerlink" title="CCA-Security 的定义"></a>CCA-Security 的定义</h2><p>下面来形式化定义一下CCA安全。<br>我们仿照之前的实验方案，给出CCA不可区分实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/1.png?raw=true" alt="1"></p>
+<p>注意这里，加密算法应该是概率性的，否则很容易通过加密查询来获取正确结果。</p>
+<p><strong>DEFINITION 5.1</strong><br>一个加密方案是CCA安全的当且仅当</p>
+<script type="math/tex; mode=display">Pr[PrivK^{cca}_{\mathcal{A},\prod}(n)=1]\leq 1/2+negl(n)</script><p>由此也可以引申出，如果一个方案是CCA安全的，在多密文不可区分实验中仍然是CCA安全的。</p>
+<p>以上实验中给了攻击者很大的能力，比如能知道解密后的明文，但是现实中知道的信息不一定有这么多，我们这里在定义上希望攻击者足够强。</p>
+<p>到目前为止，我们研究的大多数方案都不是CCA安全的。攻击者可以通过比特翻转等攻击方式来打破不可区分性。</p>
+<h1 id="认证加密"><a href="#认证加密" class="headerlink" title="认证加密"></a>认证加密</h1><p>迄今为止，我们分别探讨了如何通过加密实现机密性，以及通过消息认证码实现完整性。下面定义的认证加密（Authenticated Encryption）旨在同时实现这两个目标。在对称密钥环境中，默认同时确保机密性和完整性是最佳实践。事实上，在许多需要机密性的应用中，完整性通常也是至关重要的。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h3 id="不可伪造实验"><a href="#不可伪造实验" class="headerlink" title="不可伪造实验"></a>不可伪造实验</h3><p>考虑以下实验：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/2.png?raw=true" alt="2"><br>简单的说就是要求攻击者不能伪造一个有效的密文。</p>
+<p><strong>DEFINITION 5.2</strong><br>一个方案是不可伪造的(unforgeble)，当且仅当对于任何多项式概率算法攻击者A，都有</p>
+<script type="math/tex; mode=display">Pr[Enc-Forge_{\mathcal{A},\prod}(n)=1]\leq negl(n)</script><h3 id="AE的定义"><a href="#AE的定义" class="headerlink" title="AE的定义"></a>AE的定义</h3><p><strong>DEFINITION 5.3</strong><br>一个方案是AE(authenticated encryption)当且仅当这个方案是CCA安全的并且是不可伪造的。</p>
+<p>我们也可以通过一个单一的实验来定义AE加密方案。<br>假设现在攻击者可以遇到以下两种不同的情况：</p>
+<ol>
+<li>攻击者被提供了一个加密oracle和一个解密oracle的访问权限。</li>
+<li>攻击者获得的是一个加密0字符串的oracle。一个始终返回错误符号$\perp $的解密oracle。</li>
+</ol>
+<p>如果攻击者不能区分这两种场景，这说明攻击者在真实世界中生成的新密文都将无效同时攻击者无法区分真实的加密。</p>
+<p>该实验的定义如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/3.png?raw=true" alt="3"></p>
+<p><strong>DEFINITION 5.4</strong><br>一个方案是AE-secure，当且仅当对于任何多项式概率算法攻击者A，都有<br>$Pr[PrivK^{ae}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)$</p>
+<p><strong>THEROREM 5.5</strong><br>定义5.3和定义5.4是等价的。</p>
+<p>带有关联数据的认证加密：在许多情况下，可能只有部分内容需要加密，部分内容只要保证完整性即可。虽然对整体消息进行AE方案加密可以满足要求，但是效率较低，现实中，支持关联数据的认证加密方案在文献中被称为带有关联数据的认证加密（Authenticated Encryption with Associated Data，简称 AEAD）。</p>
+<h2 id="CCA安全-vs-认证加密"><a href="#CCA安全-vs-认证加密" class="headerlink" title="CCA安全 vs 认证加密"></a>CCA安全 vs 认证加密</h2><p>我们根据定义可以直接得出任何认证加密（AE）方案也都是选择密文攻击安全（CCA-secure）的。然而，反之则不成立。</p>
+<p>在现实世界中，确实存在情景只需要CCA安全而不关注认证加密。尽管如此，在存在活跃攻击者的情况下，大多数对称密钥加密的应用确实需要完整性保护。幸运的是，大多数自然构造的 CCA 安全加密方案通常也满足更强的认证加密定义。从这个角度来看，没有理由使用那些既是 CCA 安全但不是认证加密的方案，因为没有任何此类方案在效率上比认证加密方案更优。</p>
+<h1 id="认证加密方案"><a href="#认证加密方案" class="headerlink" title="认证加密方案"></a>认证加密方案</h1><h2 id="一般构造"><a href="#一般构造" class="headerlink" title="一般构造"></a>一般构造</h2><p>直觉上认为将一个CPA安全的加密方案和一个安全的MAC方案结合就能得到一个AE方案，但是事实上不是这样的。</p>
+<p>假设：</p>
+<ol>
+<li>$\prod_{E}=(Enc,Dec)$是一个CPA安全的加密方案</li>
+<li>$\prod_{M}=(MAC,Verify)$是一个安全的MAC方案</li>
+<li>两种方案使用独立的密钥$k_E$和$k_M$</li>
+</ol>
+<p>下面是常见的三种构造方式。</p>
+<h3 id="Encrypt-and-authenticate"><a href="#Encrypt-and-authenticate" class="headerlink" title="Encrypt-and-authenticate"></a>Encrypt-and-authenticate</h3><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,m)$，密文为$&lt; c , t &gt;$<br>因为它未能将保密性和完整性紧密结合，导致标签可能泄露关于消息的信息，确定性MAC可能使攻击者意识到消息的重复发送等问题。</p>
+<h3 id="Authenticate-then-encrypt"><a href="#Authenticate-then-encrypt" class="headerlink" title="Authenticate-then-encrypt"></a>Authenticate-then-encrypt</h3><p>$t\leftarrow MAC(k_M,m),c\leftarrow Enc(k_E,m||t)$，密文为$c$<br>一般会用CBC模式进行加密，那么填充部分就可以用来实现攻击，因为不同的错误类型会提供有效信息。一个很直接的解决方案是使错误信息都返回同一种。但是这在现实中并不有效，不利于调试等等问题。</p>
+<h3 id="Encrypt-then-authenticate"><a href="#Encrypt-then-authenticate" class="headerlink" title="Encrypt-then-authenticate"></a>Encrypt-then-authenticate</h3><h4 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h4><p>$c\leftarrow Enc(k_E,m),t\leftarrow MAC(k_M,c)$，密文为$&lt; c , t &gt;$<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/4.png?raw=true" alt="4"><br>直观上这样的构造很安全。</p>
+<p>如果攻击者提交的密文$ ⟨ c ,t ⟩ $不来自加密 oracle，认证标签 t 将无法通过验证，解密 oracle 会返回错误。</p>
+<p>如果攻击者提交的密文确实来自加密 oracle，那么攻击者已经知道该密文的解密结果。</p>
+<p>这种设计使解密 oracle 对攻击者无用，从而避免了选择密文攻击（CCA）的潜在威胁。</p>
+<p>在解密之前，首先验证标签 t。如果标签验证失败，解密算法立即返回错误，而不会尝试解密密文 c。</p>
+<p>这种设计避免了与 Authenticate-then-Encrypt 方法类似的填充 Oracle 攻击，因为解密过程不会执行，攻击者无法通过错误信息获知关于明文的任何信息。</p>
+<h4 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h4><p><strong>THEROREM 5.7</strong><br>以上构造是AE安全的。</p>
+<p>我们的目标是证明这个方案不可伪造且CCA安全。令$\mathcal{A}$是一个PPT攻击者</p>
+<p>我们令$VaildQuery$代表事件：攻击者成功向$Dec(\cdot)$提交了一个新的有效密文。我们要证明$Pr[ValidQuery]$是可忽略的。</p>
+<p>如果事件$VaildQuery$发生，那么攻击者成功通过了$Mac-sforge$实验，令$q(\cdot)$代表攻击者向解密查询机查询次数的多项式上界。现在考虑对于$\prod_M$的攻击者$\mathcal{A}_M$:</p>
+<ol>
+<li>$\mathcal{A}<em>M$获得查询权限$Mac</em>{k_M}(\cdot)$</li>
+<li>均匀选取$k_E\in \{0,1\}^n,i\in \{1,\cdots,q(n)\}$</li>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$对消息$m$有加密查询时<ol>
+<li>计算$c\leftarrow Enc_{k_E}(m)$</li>
+<li>查询$t:=Mac_{k_M}(c)$，返回$&lt; c,t &gt;$给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>当$\mathcal{A}$对$&lt; c,t &gt;$有解密查询时，如果这是第$i$次加密查询，输$(c,t)$并停止，否则：<ol>
+<li>如果$&lt; c,t &gt;$，是之前加密查询的结果，则返回对应的$m$</li>
+<li>否则返回$\perp$</li>
+</ol>
+</li>
+</ol>
+<p>本质上，$\mathcal{A}<em>M$是在猜测$\mathcal{A}$的第$i$次加密查询是一次新的有效的查询。所以如果$\mathcal{A}_M$正确猜测了$VaildQuery$的第一个索引$i$，就可以成功通过$Mac-sforge</em>{\mathcal{A}_M,\prod_M}(n)$。这个成功猜测的概率是$\frac{1}{q(n)}$。</p>
+<p>而根据$\prod_M$是一个强安全MAC，我们有：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/5.png?raw=true" alt="5"></p>
+<p>综上我们证明了这是不可伪造的。下面我们继续证明该方案是CCA安全。</p>
+<p>首先我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/6.png?raw=true" alt="6"></p>
+<p>而不等式右边的第一项已经证明是可忽略的，现在我们的目标是证明</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/7.png?raw=true" alt="7"></p>
+<p>现在我们构造$\mathcal{A}<em>E$来攻击$\prod_E$，其中$\mathcal{A}_E$有查询$Enc</em>{k_E}(\cdot)$的权限：</p>
+<ol>
+<li>均匀选取$k_E\in \{0,1\}^n$</li>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$对消息$m$有加密查询时<ol>
+<li>查询$c\leftarrow Enc_{k_E}(m)$</li>
+<li>计算$t\leftarrow Mac_{k_M}(c)$，返回$&lt; c,t &gt;$给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>当$\mathcal{A}$对密文$&lt; c,t &gt;$有解密查询时，如果在之前的加密查询中出现过，则返回对应的$m$，否则返回$\perp$</li>
+<li>当$\mathcal{A}$输出$(m<em>0,m_1)$，将这个结果输出并获得密文$c$，计算$t\leftarrow Mac</em>{k_M}(c)$，并将$&lt; c,t &gt;$返回给$\mathcal{A}$</li>
+<li>输出$\mathcal{A}$的结果$b’$</li>
+</ol>
+<p>根据构造我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/CCA/8.png?raw=true" alt="8"></p>
+<p>根据$\prod_E$是CPA安全的，综上我们可以证明这是CCA安全的。</p>
+<p>到此得证。</p>
+<h2 id="标准化方案"><a href="#标准化方案" class="headerlink" title="标准化方案"></a>标准化方案</h2><p>下面介绍实际中应用较广的三种AE方案。</p>
+<h3 id="GCM-Galois-Counter-Mode"><a href="#GCM-Galois-Counter-Mode" class="headerlink" title="GCM(Galois/Counter Mode)"></a>GCM(Galois/Counter Mode)</h3><p>可以看作是一种encrypt-then-authenticate。使用CTR-mode进行加密，GMAC实现消息认证。</p>
+<h3 id="CCM-Counter-with-CBC-MAC"><a href="#CCM-Counter-with-CBC-MAC" class="headerlink" title="CCM (Counter with CBC-MAC)"></a>CCM (Counter with CBC-MAC)</h3><p>其设计基于 Authenticate-then-Encrypt 范式，结合了 CTR 模式和 CBC-MAC。</p>
+<h3 id="ChaCha20–Poly1305"><a href="#ChaCha20–Poly1305" class="headerlink" title="ChaCha20–Poly1305"></a>ChaCha20–Poly1305</h3><p>是一种基于 Encrypt-then-Authenticate 范式的高效认证加密（AE）方案，设计上适合软件实现，特别是在缺乏 GCM 硬件加速的情况下。</p>
+<h1 id="安全通信会话"><a href="#安全通信会话" class="headerlink" title="安全通信会话"></a>安全通信会话</h1><p>这里简单介绍以下通信双方如何实现兼顾保密性和完整性的通信。<br>一般可能遭受的攻击有消息重排攻击，重放攻击，消息丢弃攻击，反射攻击等等。</p>
+<p>可以使用计数器(counters)来维护双方发送接受信息的数量，使用方向比特(directionality bit)来设定消息的来源和方向。将这些信息加入消息中从而抵御这些攻击。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/16/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/16/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/" class="post-title-link" itemprop="url">【四】消息认证码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-16 12:40:55" itemprop="dateCreated datePublished" datetime="2024-12-16T12:40:55+08:00">2024-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-24 10:51:05" itemprop="dateModified" datetime="2024-12-24T10:51:05+08:00">2024-12-24</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第四章Message Authentication Codes</p>
+<h1 id="消息完整性"><a href="#消息完整性" class="headerlink" title="消息完整性"></a>消息完整性</h1><h2 id="保密性vs完整性"><a href="#保密性vs完整性" class="headerlink" title="保密性vs完整性"></a>保密性vs完整性</h2><p>密码学的基本目标之一是让通信双方<strong>安全通信</strong>。我们已经讲过如何实现保密性，即通过加密明文防止窃听者能在开放信道上获取有关消息的任何信息。</p>
+<p>但是，对于一些能够注入信息或者纂改信息的主动攻击者，实现<strong>消息认证</strong>（完整性）就更加重要。比如发送的消息是否是用户本人发出，消息在传输过程中是否被纂改过。这里要注意的是，常规的错误纠正技术只针对与传输过程中的随机错误，无法防御恶意攻击者对内容的精确修改。</p>
+<p>以下是一个实际的例子。购物网站会将一些信息存储在Cookie中，包含了一些商品的价格折扣等等，而Cookie由用户进行保存。显然商家不希望用户对Cookie进行修改，而显然Cookie的内容对用户来说是明文，因为用户必须知道这些信息，所以这里的问题就是一个完整性问题。</p>
+<p>所以这章的目标是用密码学技术实现消息的完整性(integrity)，以检测伪造的消息或在未受保护的通信信道上发送的被篡改的消息。需要注意的是，我们无法完全防止消息注入或篡改，因为这种攻击只能在物理层面加以防御。相反，我们的目标是确保任何此类行为都能被honest parties检测到。</p>
+<h2 id="加密vs消息认证"><a href="#加密vs消息认证" class="headerlink" title="加密vs消息认证"></a>加密vs消息认证</h2><p>保密性和信息完整性是截然不同的目标。我们需要明确的是：除非加密是专门为完整性设计的，否则不会提供任何完整性保障。</p>
+<p>可能很容易产生一个误解，既然密文完全隐藏了消息的内容，那么攻击者似乎不可能以任何有意义的方式篡改加密的消息。尽管这种推理直观上似乎合理，但它实际上是完全错误的。下面将举例说明这一点。</p>
+<h3 id="流密码加密"><a href="#流密码加密" class="headerlink" title="流密码加密"></a>流密码加密</h3><p>假设一种异或处理的流密码，只需要在密文中任意翻转一位bit，那么解密后的明文就会也翻转一个bit，假如攻击方对加密密文有一定认识，很有可能翻转敏感重要的数字位来造成攻击。</p>
+<h3 id="块密码加密"><a href="#块密码加密" class="headerlink" title="块密码加密"></a>块密码加密</h3><p>块密码一般来说单个位的比特变化会导致后续的变化，从而被发现。但是，如果是使用ECB模式时，翻转密文中第i个块的一个位只会影响明文中的第i个块——其他块保持不变。这样就可以构成有效的攻击。</p>
+<p>最后需要注意的是，我们迄今为止讨论的所有加密方案都有一个共同的特性：任何长度合适的字符串都是有效的密文，因此都对应于某个有效的明文。基于这一特性，即使攻击者完全不知道密文对应的明文内容，也可以通过发送一条长度正确的任意字符串来“伪造”一方的消息。这使得攻击者能够轻松冒充通信方发送消息。</p>
+<p>在消息完整性的语境中，即便是这种简单形式的攻击也应当被彻底排除。</p>
+<h1 id="消息认证码的定义-MACs"><a href="#消息认证码的定义-MACs" class="headerlink" title="消息认证码的定义(MACs)"></a>消息认证码的定义(MACs)</h1><p>现在我们已经了解到，加密通常不能解决消息完整性的问题，所以我们引入<strong>消息认证码</strong>(Message Authentication Code, MAC)来让通信双方有能力判断消息是否被纂改。</p>
+<p>想要实现这一点，通信双方必须要共享某个攻击者不知道的消息。这里我们继续讨论对称密钥的场景，即通信双方共享一个密钥。</p>
+<p>MAC有两个典型应用场景：</p>
+<ul>
+<li>确保双方通信完整性：比如用户和银行之间的通信。</li>
+<li>在时间跨度内保护单个用户的数据完整性，比如之前提到过的Cookie，或者用户硬盘。</li>
+</ul>
+<h2 id="MAC的定义"><a href="#MAC的定义" class="headerlink" title="MAC的定义"></a>MAC的定义</h2><p>首先先明确MAC是什么以及怎么使用。</p>
+<p>首先，通信双方要生成一个共享密钥$key$。当一方想向另一方发送消息$m$时，会根据消息和密钥生成一个认证标签$t$，这个标签由标签生成算法Mac完成。接收方收到密文和标签后，会对其进行验证，验证消息在中途有没有收到纂改，验证由验证算法Vrfy完成。</p>
+<p>形式化定义如下：</p>
+<p><strong>DEFINITION 4.1</strong><br>一个消息验证码由三个概率多项式算法组成(Gen,Mac,Vrfy)。</p>
+<ol>
+<li>$Gen$：接受$1^n$作为输入，输出$k，|k|\ge n$。</li>
+<li>$Mac$：接受$k,m$作为输入，输出$t$。因为这可能是一个概率算法，所以写作$t\leftarrow Mac_k(m)$</li>
+<li>$Vrfy$：接受$k,m,t$作为输入，输出$1$或$0$。这是一个确定性算法，结果代表消息是否有效。</li>
+</ol>
+<p>$Vrfy_k(m,Mac_k(m))=1$</p>
+<p>如果存在一个函数$l$，使得算法$Mac_k$仅对长度位$l(n)$的消息定义，那么该方案为固定长度MAC。</p>
+<p>与对称密钥加密类似，一般Gen算法均匀选取key，所以一般省去对Gen的描述。</p>
+<p><strong>标准认证(Canonical Verification)</strong>：对于确定性消息验证码，即MAC是确定性算法，只需再计算一遍tag比较是否相同即可验证。</p>
+<h2 id="MAC的安全性"><a href="#MAC的安全性" class="headerlink" title="MAC的安全性"></a>MAC的安全性</h2><p>我们现在来定义一个MAC的安全性概念。该定义的核心思想是：任何有效的攻击者都无法为任何“新”消息生成有效的标签，其中“新”消息指的是此前未被通信方发送（并认证）的消息。</p>
+<p>按照惯例，我们只考虑概率多项式时间的攻击者。在消息认证的场景中，攻击者观察通信方之间的交互可能能够看到所有发送的消息及其对应的标签。此外，攻击者可能通过直接或间接方式影响这些消息的内容（例如，攻击者的外部行为影响通信方发送的消息）。</p>
+<p><strong>攻击者能力建模</strong>：我们允许攻击者请求任意合法消息的标签。即为供给者提供一个$Mac_k(\cdot)$的访问权限。</p>
+<p><strong>攻击者的目标</strong>：生成一个新消息和一个对应的正确标签。如果在多项式时间内成功生成，则称破坏了方案的安全性。</p>
+<p>如果消息认证码在以上情形下无法被攻破，那么称其为在自适应选择消息攻击下具有存在性不可伪造性（existentially unforgeable under an adaptive chosen-message attack, EUF-CMA）。该安全性要求确保，即便攻击者能够获取任意消息的标签，也无法伪造出新消息及其有效标签。</p>
+<h3 id="安全性实验"><a href="#安全性实验" class="headerlink" title="安全性实验"></a>安全性实验</h3><ol>
+<li>运行$Gen(1^n)$生成key</li>
+<li>攻击者获得$Mac_k(\cdot)$的访问权限，可以多次查询，最终攻击者输出一对$(m,t)$。</li>
+<li>当且仅当输出的m没有被查询过，且$Vrfy(m,t)=1$时，攻击成功。</li>
+</ol>
+<p><strong>DEFINIEION 4.2</strong><br>一个消息认证码是existentially unforgeable under an adaptive chosen-message attack，当且仅当，对于任意的多项式算法攻击者，都存在一个negl使：<br>$Pr[Mac-forge_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
+<p>这里的对安全性的定义看起来很严格：一方面攻击者可以自由选择信息并获得标签，另一方面只要伪造出任意的消息和标签就能成功攻破。这样的定义是为了保证方案的通用性和实用性。</p>
+<p><strong>重放攻击</strong>：到目前位置没有考虑过以下情形，攻击者简单发送一条已经认证过的消息和其对应的有效标签。</p>
+<p>MAC本身对重放攻击是无法防御的，因为其验证过程是无状态的。因此，会在更高层的应用中处理重放攻击，比如使用序列号和使用时间戳来防御。</p>
+<h3 id="强安全性实验"><a href="#强安全性实验" class="headerlink" title="强安全性实验"></a>强安全性实验</h3><p><strong>强不可伪造性Strong unforgeability</strong>：<br>在标准定义中对安全性的保证是不能对<strong>新</strong>消息生成正确的标签，但是没有限制对已经认证过的消息生成一个新的有效标签。现在我们定义一个强不可伪造性实验Mac-sforge，要求目标是攻击者无法为已认证的消息生成有效的新标签。从而定义了一种更强的安全性。</p>
+<p><strong>DEFINIEION 4.3</strong><br>一个消息认证码是strongly secure，当且仅当对于任意的多项式算法攻击者，都存在一个negl使：<br>$Pr[Mac-sforge_{\mathcal{A},\prod}(n)=1]\leq negl(n)$</p>
+<p><strong>PROPOSITION 4.4</strong><br>如果一个消息认证码方案在标准验证下是安全的，那么这是strongly secure。</p>
+<p><strong>验证查询(Verification queries)</strong>：定义4.2和定义4.3给了攻击者访问MAC的权限，即可以获得消息对应的标签。但是攻击者也可能获得验证的权限，即可以发送$(m,t)$给接收方并得知$Vrfy_k(m,t)$的结果。<br>攻击者引入验证查询后，对于使用标准验证的方案，不影响对安全性的定义，仍然是强安全的。但是对于一般的MAC方案，可能会影响定义的结果。这很好理解，因为如果是标准验证，标签是唯一的。<br>下面讨论的方案大多数都是强安全的，所以我们下面会忽略对验证查询的部分。</p>
+<p><strong>潜在的时间攻击</strong>：<br>在现实生活中，攻击者不仅可以得知自己发送的$(m,t)$是否被接受，还能知道接收方判断所花费的时间，这也可能成为一种攻击的手段。</p>
+<p>最简单的例子：假设接收方验证算法是逐字符比较，就可以知道正确的部分有多长。</p>
+<p>所以验证算法应该使用和时间无关的算法。</p>
+<h1 id="构造安全的消息认证码"><a href="#构造安全的消息认证码" class="headerlink" title="构造安全的消息认证码"></a>构造安全的消息认证码</h1><h2 id="固定长度的MAC"><a href="#固定长度的MAC" class="headerlink" title="固定长度的MAC"></a>固定长度的MAC</h2><p>伪随机函数可以构造一个安全的消息认证码方案。</p>
+<p>直观上讲，如果标签是通过伪随机函数生成的，那么攻击者攻破该方案等价于猜测出为随机函数在一个点上的值，显然这个概率是很低的。</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3><p>以下是一个安全的定长的MAC构造方案：</p>
+<ul>
+<li>令$F$是一个伪随机函数。</li>
+<li>Mac：$t:=F_k(m)$</li>
+<li>Vrfy：标准验证</li>
+</ul>
+<h3 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>以上方案是一个安全的定长的MAC。</p>
+<p>证明如下：<br>总体的证明思路是先将伪随机函数替换成真正的随机函数，证明对攻击者成功的概率的影响很有限，再去分析使用真随机函数的成功概率。</p>
+<p>令$\tilde{\prod}$为原方案把伪随机函数换成真随机函数。下面要先证明<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/1.png?raw=true" alt="1"></p>
+<p>证明如下<br>我们构造一个多项式时间区分器D，D对一个函数具有访问权，目标是区分这个函数是否是伪随机函数。该区分器操作方式如下：</p>
+<ol>
+<li>D模拟消息认证实验中的攻击者A，并观察A是否能输出一个新消息的有效标签。</li>
+<li>每次D运行A，每当A查询消息m对应的标签时，D返回这个函数的运行结果作为t给A。</li>
+<li>A输出$(m,t)$，D返回这个函数输入m之后的运行结果，如果这个结果等于t，那么输出1，否则输出0。</li>
+</ol>
+<p>显然当D的查询函数是$F_k$，那么D模拟的实验和A完全一致。有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/2.png?raw=true" alt="2"><br>同理有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/3.png?raw=true" alt="3"><br>而又因为伪随机函数，有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/4.png?raw=true" alt="4"><br>所以上式得证。</p>
+<p>又因为在真随机函数中，攻击者只能通过猜测的方式，而概率非常低，所以有下式<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/5.png?raw=true" alt="5"></p>
+<p>联立得<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/6.png?raw=true" alt="6"></p>
+<p>我们到这里成功证明了构造出的方案很安全。</p>
+<h2 id="非固定长度的MAC"><a href="#非固定长度的MAC" class="headerlink" title="非固定长度的MAC"></a>非固定长度的MAC</h2><h3 id="方案-1"><a href="#方案-1" class="headerlink" title="方案"></a>方案</h3><p>上节介绍的构造是定长的，实际上限制很大，只能处理定长且较短的消息。<br>现在介绍如何构造出处理任意长度的MAC。</p>
+<p>首先我们讨论一些自然的想法：</p>
+<ol>
+<li>逐块认证：攻击者可以删除块及其对应的标签。</li>
+<li>认证长度：攻击者可以混合不同信息来攻击。</li>
+<li>添加随机消息标识符：引出下列构造。（只对长度小于$2^{n/4}$的消息有效）</li>
+</ol>
+<p>假设我们已经有方案$\prod’=(Mac’,Vrfy’)$能处理定长的消息。构造新MAC如下：</p>
+<ul>
+<li>Mac：将消息m分为d个块$m_1,m_2,…,m_d$，最后一个块补0。随机生成一个消息标识符$r\in \{0,1\}^{n/4}$。计算$t_i\leftarrow Mac’_k(r||l||i||m_i)$。输出新标签$t:=<r,t_1,...,t_d>$。</li>
+<li>Vrfy：标准验证。</li>
+</ul>
+<h3 id="安全性证明-1"><a href="#安全性证明-1" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>上述方案是安全的。</p>
+<p>直觉上看，首先基础的定长MAC是安全的，再加上防御机制已经考虑了截断或者重排序等攻击手段，所以这是安全的。</p>
+<p>证明如下：<br>令$\prod$是构造的新方案，有一个多项式时间算法攻击者$\mathcal{A}$，要证明$Pr[Mac-forge_{\mathcal{A},\prod}(n)=1]$是negl。</p>
+<p>下面对一些事件做定义：</p>
+<ul>
+<li><strong>repeat</strong>：在Mac-forge实验中，MAC查询机使用了相同的随机标识符超过两次。</li>
+<li><strong>NewBlock</strong>：攻击者给出的消息m中有一个块$r||l||i||m_i$没有被MAC’查询机查询过。即A尝试生成一个没有被定长MAC验证过的标签。</li>
+</ul>
+<p>所以有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/7.png?raw=true" alt="7"></p>
+<p>我们将证明前两项是negl的，最后一项是0，从而使整体为negl。</p>
+<p>第一项是个简单的概率问题，显然是negl的。即在有限次查询中出现两个相同的r的概率。</p>
+<p>第三项也很简单，如果成功攻击并且没有重复的r，一定生成了新的有效块的标签。所以概率为0。</p>
+<p>现在证明第二项：<br>首先重申几个定义</p>
+<ul>
+<li>q=q(n)是MAC查询次数</li>
+<li>$r_i$是第i次MAC查询生成的标识符</li>
+<li>r是攻击者输出的标识符</li>
+<li>$m^{(j)}$是攻击者第j次查询的消息，$l_j$是这个消息的长度。</li>
+</ul>
+<p>出现了以下两种情况：</p>
+<ol>
+<li>$l\not =l_j$。那么显然NewBlock发生。</li>
+<li>$l=l_j$，所以$m$和$m^{(j)}$长度相同，所以一定有一个索引i使得$m_i\not = m_i^{(j)}$。所以$r||l||i||m_i$一定没有被认证过。</li>
+</ol>
+<p>现在我们构造一个攻击者A’，目标是先证明<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/8.png?raw=true" alt="8"></p>
+<p>构造如下：<br>A’运行A作为子程序，当A请求消息m的标签时，A’自己选择r并根据自己的查询机查询生成标签。当A输出后，A’很容易检查有没有NewBlock，如果有，则输出NewBlock，否则不输出。<br>由此构造很容易看出上式成立。</p>
+<p>而又因为$\prod’$是安全的，所以第二项是negl。</p>
+<p>到此得证全部。</p>
+<h1 id="CBC-MAC"><a href="#CBC-MAC" class="headerlink" title="CBC-MAC"></a>CBC-MAC</h1><p>上面对于任意长度的MAC实际运行太过复杂，构造效率过低，我们现在来讨论一种更高效的方法。</p>
+<h2 id="基本构造"><a href="#基本构造" class="headerlink" title="基本构造"></a>基本构造</h2><p>CBC-MAC 是最早被标准化的消息认证码之一。以下是一个基础版本构造。</p>
+<p>首先令F是一个伪随机函数，并固定一个函数$l(n)$。</p>
+<ul>
+<li>$Mac$：接受一个key和一个message，其中消息的长度为$l(n)\cdot n$。将消息分为$l$个块，每个块的长度为$n$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/MAC/9.png?raw=true" alt="9"><br>输出$t_l$作为标签。</li>
+<li>$Vrfy$：先验证长度是否为$l(n)\cdot n$，再验证是否$t=Mac_k(m)$，即标准验证。</li>
+</ul>
+<p><strong>THEOREM 4.10</strong><br>上述构造的方案对于长度为$l(n)\cdot n$的消息是安全的。</p>
+<p>关于这个定理的证明比较复杂，会在后面通过证明一个更一般的结论来获得。</p>
+<p>尽管这个构造显然可以通过简单更改来适应不同长度，但该构造仅在认证的消息长度固定且已由发送方和接收方事先约定时是安全的。</p>
+<p>和之前的两个构造相比，这个构造更加高效简洁。</p>
+<h3 id="CBC-MAC-vs-CBA-mode加密"><a href="#CBC-MAC-vs-CBA-mode加密" class="headerlink" title="CBC-MAC vs CBA-mode加密"></a>CBC-MAC vs CBA-mode加密</h3><ol>
+<li>初始化向量的使用<ul>
+<li>CBC-mode 使用一个随机的初始化向量</li>
+<li>CBC-MAC 使用固定的$0^n$，如果改用随机的，将不再安全。</li>
+</ul>
+</li>
+<li>中间值的输出<ul>
+<li>CBC-mode 会将所有中间值作为密文的一部分输出</li>
+<li>CBA-MAC 只会输出最后一个块作为标签。如果全部输出，则不安全。</li>
+</ul>
+</li>
+</ol>
+<h3 id="对任意长度消息的CBC-MAC"><a href="#对任意长度消息的CBC-MAC" class="headerlink" title="对任意长度消息的CBC-MAC"></a>对任意长度消息的CBC-MAC</h3><p>为简单起见，我们假设所有被认证的消息长度均为n的倍数，且Vrfy对长度不是n倍数的消息直接拒绝。<br>下面介绍两个方法。</p>
+<ol>
+<li><p>将m的长度编码成n比特的字符串加到消息的开头，然后对结果使用基本CBC-MAC。</p>
+<p>注意，如果添加到末尾则不再安全。</p>
+</li>
+<li><p>使用两个独立的密钥$k_1,k_2$，用$k_1$计算基本CBC-MAC得到t，再计算新标签$t’=F(k_2,t)$。</p>
+<p>第二种方法因为在实际应用中使用两个密钥的代价过于昂贵，所以不太理想。</p>
+</li>
+</ol>
+<h2 id="安全性证明-2"><a href="#安全性证明-2" class="headerlink" title="安全性证明"></a>安全性证明</h2><p>这里太过复杂，先略过。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/12/13/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/" class="post-title-link" itemprop="url">【三】私钥加密</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-13 16:13:19" itemprop="dateCreated datePublished" datetime="2024-12-13T16:13:19+08:00">2024-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-16 03:20:19" itemprop="dateModified" datetime="2024-12-16T03:20:19+08:00">2024-12-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对应<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~jkatz/imc.html">教材</a>第三章 Private-Key Encryption</p>
+<p>在第二章中我们讨论了完美保密性，这要求密钥空间要大于等于明文空间。但是在现实中，这很难实现，我们需要能够使用较短的密钥来加密较长的信息。所以我们将放宽限制，研究计算保密性。</p>
+<h1 id="计算保密性-Computational-Security"><a href="#计算保密性-Computational-Security" class="headerlink" title="计算保密性(Computational Security)"></a>计算保密性(Computational Security)</h1><p>相对于完美保密要求面对有无限计算能力的攻击者也不能泄露任何信息，计算保密放宽了以下两个限制：</p>
+<ol>
+<li>攻击者的计算能力（计算资源和时间）是有限的</li>
+<li>攻击者被允许以很小的概率攻破，只要概率足够小，也被认为是安全的</li>
+</ol>
+<p>尽管放宽了限制，但是我们仍然要精准定义，所以我们有以下两种方法：</p>
+<ol>
+<li>具体方法(the Concrete Approach)</li>
+<li>渐进方法(the Asymptotic Approach)</li>
+</ol>
+<h2 id="具体方法"><a href="#具体方法" class="headerlink" title="具体方法"></a>具体方法</h2><p>形式化定义为：</p>
+<p>如果任何攻击者在运行时间不超过$t$的情况下，破解方案成功的概率至多为$\epsilon$，则这个方案被称为$(t,\epsilon)$-安全的。</p>
+<p>例如，一个方案可以保证，任何攻击者哪怕使用最强的计算机攻击200年，攻破的概率不超过$2^{-60}$。或者也可以使用计算机周期数来表示时间。</p>
+<p>当然，这种方式的定义提供的信息非常有限。</p>
+<h2 id="渐进方法"><a href="#渐进方法" class="headerlink" title="渐进方法"></a>渐进方法</h2><p>渐进方法以复杂度理论为基础，引入一个整数$n$作为安全参数(security parameter)，该参数用来描述加密方案的相关信息，比如密钥长度。同时，我们将攻击方的运行时间以及攻击成功概率定义为关于$n$的函数。</p>
+<ol>
+<li>我们将高效的攻击者定义为运行时间为多项式时间的随机算法(probabilistic polynomial-time, PPT)</li>
+<li>我们将成功概率小定义为比任何多项式倒数都小的概率，这种概率被称为可忽略的(negligible)</li>
+</ol>
+<p>基于此，我们称一个加密方案是安全的当且仅当任意的PPT攻击者攻破的概率都不超可忽略概率。</p>
+<p>当然，在最终部署一个加密方案的时候，我们也需要使用具体方法给出安全性定义，因为这是必然要挑选一个确定的$n$。</p>
+<h3 id="形式化定义"><a href="#形式化定义" class="headerlink" title="形式化定义"></a>形式化定义</h3><h4 id="Efficient-algorithms"><a href="#Efficient-algorithms" class="headerlink" title="Efficient algorithms"></a>Efficient algorithms</h4><p>一个从自然数到非负实数的函数$f$被称为是<strong>多项式有界</strong>(polynomially bounded)，当且仅当存在一个常数$c$，使得对所有$n$都有$f(n)\leq n^c$。</p>
+<p>如果一个算法$A$的运行时间是多项式时间的，那么存在一个多项式函数$p$，对于任意输入$x\in\{0,1\}^*$，那么算法$A(x)$的计算步数最多为$p(|x|)$。</p>
+<p>我们将高效攻击者(efficient adversaries)定义为运行时间为安全参数$n$的多项式时间。</p>
+<p>默认情况下，我们允许所有算法是<strong>概率的</strong>(probabilistic)，任何这样的算法都假设可以访问一个独立且无偏的随机<br>位序列。</p>
+<h4 id="Negligible-success-probability"><a href="#Negligible-success-probability" class="headerlink" title="Negligible success probability"></a>Negligible success probability</h4><p>一个从自然数到非负实数的函数$f$被称为是<strong>可忽略的</strong>(negligible)，当且仅当对于任何一个多项式$p$，存在一个$N$，使得任何$n&gt;N$，都有$f(n)&lt;\frac{1}{p(n)}$。</p>
+<p>我们用$negl$来表示这样的函数。</p>
+<p>假设$negl_1$和$negl_2$都是可忽略的，那么有以下性质：</p>
+<ol>
+<li>$negl_1+negl_2$是可忽略的</li>
+<li>$p(n)\cdot negl_1(n)$是可忽略的</li>
+</ol>
+<h1 id="定义计算安全加密"><a href="#定义计算安全加密" class="headerlink" title="定义计算安全加密"></a>定义计算安全加密</h1><p>首先我们稍微修改以下对于私钥加密的定义：</p>
+<p>我们使用一个三元组$(Gen,Enc,Dec)$来定义一个私钥加密方案：</p>
+<ul>
+<li>$Gen$： 是一个概率算法，接受$1^n$作为输入，生成一个密钥$k$，其中不失一般性的假设$|k|\ge n$</li>
+<li>$Enc$： 接受一个消息$m$和一个密钥$k$，返回一个密文$c$<ul>
+<li>如果这是一个确定算法，我们写作$c:=Enc_k(m)$</li>
+<li>如果这是一个概率算法，我们写作$c\leftarrow Enc_k(m)$</li>
+</ul>
+</li>
+<li>$Dec$： 接受一个密文$c$和一个密钥$k$，返回一个消息$m$或者错误符号$\perp$</li>
+</ul>
+<h2 id="EVA-Security的定义"><a href="#EVA-Security的定义" class="headerlink" title="EVA-Security的定义"></a>EVA-Security的定义</h2><p>我们现在先只考虑仅密文攻击，也就是说攻击者只能观察到一个密文。</p>
+<h3 id="不可区分性实验"><a href="#不可区分性实验" class="headerlink" title="不可区分性实验"></a>不可区分性实验</h3><p>现在定义这种情况下的不可区分性实验$PrivK^{eva}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，输出两个消息$m_0,m_1$，其中$|m_0|=|m_1|$</li>
+<li>运行$Gen(1^n)$获得$k$，并随机选择$b\in \{0,1\}$，计算$c\leftarrow Enc_k(m_b)$并传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$的输出$b’$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个私钥加密方案是<strong>EVA-Secure</strong>的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：<script type="math/tex">Pr[PrivK^{eva}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script></p>
+<p>我们还可以给出一种等价的表达方式，我们定义$out<em>{\mathcal{A}}(PrivK^{eva}</em>{\mathcal{A},\prod}(n,b))$为在这次试验中$\mathcal{A}$的输出结果，则EVA-Secure等价于：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/1.png?raw=true" alt="1"></p>
+<h3 id="关于明文长度"><a href="#关于明文长度" class="headerlink" title="关于明文长度"></a>关于明文长度</h3><p>正常情况下，我们不会要求机密方案隐藏明文的长度。</p>
+<p>但是在以下的一些特殊情况下，需要隐藏明文长度，因为明文长度就隐含着一些信息：</p>
+<ul>
+<li>工资有几位数</li>
+<li>压缩数据</li>
+</ul>
+<p>如果我们需要避免泄露明文长度，就需要事先把消息填充到某个预定长度。</p>
+<h2 id="语义安全"><a href="#语义安全" class="headerlink" title="语义安全"></a>语义安全</h2><p>我们一开始说明了安全加密的定义意味着对手无法从密文中获取任何部分信息。但是上面的定义貌似没有考虑这一点，现在我们通过引入<strong>语义安全</strong>(dsemantic security)来说明这一点。</p>
+<p>首先，我们可以证明以下理论：</p>
+<p>对于一个固定长度的加密方案，这是EVA-Secure的，当且仅当对于任何PPT攻击者$\mathcal{A}$和$i$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/2.png?raw=true" alt="2"></p>
+<p>这很好证明，只需要归约就行。</p>
+<p>然后我们可以进一步证明以下理论：</p>
+<p>对于一个固定长度的加密方案，这是EVA-Secure的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个PPT算法$\mathcal{A}’$，使得对于任何在$\{0,1\}^l$上的分布$\mathcal{D}$和任意的函数$f:\{0,1\}^l\rightarrow\{0,1\}$，存在一个可忽略函数$negl$，使：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/3.png?raw=true" alt="3"></p>
+<p>其中概率中的明文$m$依据$\mathcal{D}$分布。</p>
+<p>现在，我们可以结合上面两个理论，来定义语义安全。</p>
+<p>对于一个固定长度的加密方案，这是语义安全的，当且仅当对于任何PPT攻击者$\mathcal{A}$，都存在一个PPT算法$\mathcal{A}’$，使得对于任何PPT算法$Samp$和多项式时间可计算的函数$f,h$，都能使下式为可忽略的函数：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/4.png?raw=true" alt="4"></p>
+<p>其中的明文是根据$Samp$分布的，而这里$h$表示任何攻击者可能获得的信息。</p>
+<p>最终，我们给出结论：</p>
+<p>语义安全和EVA安全是等价的。</p>
+<h1 id="构造EVA安全的加密方案"><a href="#构造EVA安全的加密方案" class="headerlink" title="构造EVA安全的加密方案"></a>构造EVA安全的加密方案</h1><h2 id="伪随机数生成器"><a href="#伪随机数生成器" class="headerlink" title="伪随机数生成器"></a>伪随机数生成器</h2><p>伪随机数生成器$G$是一个高效的确定性算法，功能是将一个比较短的均匀字符串转换为一个较长的伪随机字符串。</p>
+<p>有一些简单的统计方法用来判断伪随机数生成器是否良好，比如，测试伪随机数生成的第一个比特是否以$\frac{1}{2}$的概率为1，但是这样是不严谨的。</p>
+<p>我们希望有更严格的测试方式，比如，面对任意的区分器$\mathcal{D}$，我们都希望接收到伪随机数生成器的输出返回1的概率等于一个真实的伪随机数，这意味着伪随机数生成器对于任何高效的观察者看起来都和真的随机生成的均匀的字符串差不多。</p>
+<h3 id="形式化定义-1"><a href="#形式化定义-1" class="headerlink" title="形式化定义"></a>形式化定义</h3><p>令$G$是一个确定性的多项式时间算法，对于任意的$n$和输入$s\in\{0,1\}^n$，$G$返回一个长度为$l(n)$的伪随机字符串。$G$是一个伪随机数生成器当且仅当：</p>
+<ol>
+<li>$l(n)&gt;n$，这里$l(n)$被称为the expansion factor。</li>
+<li>对于任何PPT算法$D$，都存在一个$negl$使：<script type="math/tex; mode=display">|Pr[D(G(s))=1]-Pr[D(r)=1]|\leq negl(n)</script>其中$s$在$\{0,1\}^n$中被均匀选取，$r$在$\{0,1\}^{l(n)}$中被均匀选取。</li>
+</ol>
+<h3 id="伪随机数生成器的相关讨论"><a href="#伪随机数生成器的相关讨论" class="headerlink" title="伪随机数生成器的相关讨论"></a>伪随机数生成器的相关讨论</h3><p>当然，我们不妨设想这样一个例子，当$l(n)=2n$，这使得能落入$G$生成范围的数占总数的$\frac{2^n}{2^{2n}}=\frac{1}{2^n}$。显然暴力攻击能轻松分辨出伪随机数生成器和真实的随机数，但是这并不能算高效的区分器。</p>
+<p>关于伪随机数生成器种子的选取，种子的作用和加密方案的密钥其实是类似的，我们同样需要种子长度足够大来抵抗暴力攻击。</p>
+<p>关于伪随机数生成器的存在性，显然直接想构造是很困难的，但是我们可以相信对于任何多项式扩展因子的伪随机数生成器都是存在的。在一个较弱的假设下，如果单向函数存在，伪随机数生成器是存在的，此外，我们还可以通过流密码等方式来构造伪随机数生成器，目前还没有发现针对性的高效区分器。</p>
+<p>目前我们先假设伪随机数生成器存在。</p>
+<h2 id="归约证明法"><a href="#归约证明法" class="headerlink" title="归约证明法"></a>归约证明法</h2><p>如果我们要证明一个加密方案$\prod$是安全的，通常我们会经过以下步骤：</p>
+<ol>
+<li>假设对于方案$\prod$，存在PPT攻击者$\mathcal{A}$，攻破方案的概率为$\epsilon(n)$</li>
+<li>构造一个攻击者$\mathcal{A}’$，其试图攻破问题$X$并以$\mathcal{A}$为子进程。这里$\mathcal{A}’$并不需要知道$\mathcal{A}$具体怎么攻破。<ol>
+<li>$\mathcal{A}’$要为$\mathcal{A}$模拟一个$\prod$的交互环境</li>
+<li>当$\mathcal{A}$能成功破解$\prod$时，$\mathcal{A}’$要成功破解$X$以至少多项式倒数的概率($\frac{1}{p(n)}$)。</li>
+</ol>
+</li>
+<li>综上分析，$\mathcal{A}’$攻破的成功概率为$\frac{\epsilon(n)}{p(n)}$，当$\epsilon(n)$是不可忽略的时候，整体也是不可忽略的。</li>
+<li>基于我们对问题$X$的假设，$X$是难解的，这也就意味着如果$\mathcal{A}$能有较大概率攻破$\prod$，那么$\mathcal{A}’$也能攻破问题$X$，矛盾，因此该加密方案是安全的。</li>
+</ol>
+<h2 id="伪随机数生成器构造EVA-Security"><a href="#伪随机数生成器构造EVA-Security" class="headerlink" title="伪随机数生成器构造EVA-Security"></a>伪随机数生成器构造EVA-Security</h2><p>我们可以通过更改One-Time Pad的密钥生成方式来构造一个EVA-Secure的加密方案。</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3><p>令$G$是一个扩展因子为$l(n)$的伪随机数生成器。</p>
+<ol>
+<li>$Gen$：均匀选取$k\in \{0,1\}^n$</li>
+<li>$Enc$：$c:=G(k)\oplus m$</li>
+<li>$Dec$：$m:=c\oplus G(k)$</li>
+</ol>
+<p>注意，这个方案是定长的。</p>
+<h3 id="安全性证明"><a href="#安全性证明" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>首先直接给出结论，这个方案是EVA-secure的。</p>
+<p>我们的目标是证明：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/5.png?raw=true" alt="5"></p>
+<p>我们构造以下区分器$\mathcal{D}$，接受$\omega\in \{0,1\}^l$作为输入：</p>
+<ol>
+<li>运行$\mathcal{A}(1^n)$，获得两个输出$m_0,m_1$</li>
+<li>均匀随机挑选$b\in \{0,1\}$，令$c:=\omega\oplus m_b$</li>
+<li>将$c$返回给$\mathcal{A}$，获得输出$b’$，如果$b=b’$，则返回1，否则返回0。</li>
+</ol>
+<p>又因为$G$是一个伪随机数生成器，所以一定有：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/6.png?raw=true" alt="6"></p>
+<p>而考虑$\omega$的来源：</p>
+<ol>
+<li>$\omega$是均匀选取的，则有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/7.png?raw=true" alt="7"></li>
+<li>$\omega$是$G$生成的，则有<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/8.png?raw=true" alt="8"></li>
+</ol>
+<p>结合上式我们可以得到：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/9.png?raw=true" alt="9"></p>
+<p>完成了证明。</p>
+<h1 id="更强的安全性概念"><a href="#更强的安全性概念" class="headerlink" title="更强的安全性概念"></a>更强的安全性概念</h1><p>到目前为止我们只讨论了当攻击者仅被允许窃听单个密文的情况，但是显然实际生活中攻击方可以更加强大。</p>
+<h2 id="多重加密的安全性"><a href="#多重加密的安全性" class="headerlink" title="多重加密的安全性"></a>多重加密的安全性</h2><p>现在考虑攻击者可以监听到多个用同一个密钥加密的密文。</p>
+<p>我们可以定义以下的安全性实验，多消息窃听实验$PrivK^{mult}_{\mathcal{A},\prod}(n)$:</p>
+<ol>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，输出两个消息向量$\vec{M<em>0},\vec{M_1}$，其中$|m</em>{0,i}|=|m_{1,i}|$</li>
+<li>运行$Gen(1^n)$获得$k$，并随机选择$b\in \{0,1\}$，计算$c<em>i \leftarrow Enc_k(m</em>{b,i})$并将$\vec{C}$传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$的输出$b’$，如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个加密方案是多消息不可区分的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：</p>
+<script type="math/tex; mode=display">Pr[PrivK^{mult}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script><p>很显然，对于单密文不可区分的加密方案，多密文下很可能是可区分的，比如当加密算法是确定性算法时，我们就很容易构造输入来进行区分。</p>
+<p>甚至我们有以下定理，当一个加密方案的加密算法是确定性的，这个方案一定不是多消息不可区分的。</p>
+<p>所以在这种情况下，我们必须要设计随机化加密方案，使同样的消息经过同一个密钥加密也可以生成不同的密文。</p>
+<h2 id="选择明文攻击-Chosen-Plaintext-Attacks-和CPA-Security"><a href="#选择明文攻击-Chosen-Plaintext-Attacks-和CPA-Security" class="headerlink" title="选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security"></a>选择明文攻击(Chosen-Plaintext Attacks)和CPA-Security</h2><p>我们现在考虑攻击者可以影响甚至控制明文，使得攻击者可以获取对应的密文。</p>
+<h3 id="CPA不可区分性实验"><a href="#CPA不可区分性实验" class="headerlink" title="CPA不可区分性实验"></a>CPA不可区分性实验</h3><p>现在定义这种情况下的不可区分性实验$PrivK^{cpa}_{\mathcal{A},\prod}(n)$：</p>
+<ol>
+<li>运行$Gen(1^n)$获得$k$</li>
+<li>攻击者$\mathcal{A}$接受输入$1^n$，并获得一个查询$Enc_k(\cdot)$的权限(oracle)，输出两个消息$m_0,m_1$，其中$|m_0|=|m_1|$</li>
+<li>，并随机选择$b\in \{0,1\}$，计算$c\leftarrow Enc_k(m_b)$并传输给$\mathcal{A}$</li>
+<li>$\mathcal{A}$仍然有查询$Enc_k(\cdot)$的权限，最终输出$b’$</li>
+<li>如果$b’=b$，实验结果定义为$1$，写作$Privk^{eva}_{\mathcal{A},\prod}=1$，反之实验结果为$0$</li>
+</ol>
+<p>一个加密方案是<strong>CPA-Secure</strong>的，当且仅当对于任何可能的多项式时间攻击者$\mathcal{A}$，都存在一个可忽略函数$negl$，使对于任意的$n$，有：<script type="math/tex">Pr[PrivK^{cpa}_{\mathcal{A},\prod}(n)=1]\leq \frac{1}{2}+negl(n)</script></p>
+<p>当然，任何CPA安全的私钥加密档案对于多消息加密仍然是CPA安全的。</p>
+<h3 id="固定长度-vs-任意长度"><a href="#固定长度-vs-任意长度" class="headerlink" title="固定长度 vs 任意长度"></a>固定长度 vs 任意长度</h3><p>理论上，只要有固定长度的加密方案，我们就可以把它扩展到任意长度，只需要对消息进行切割或扩充，但是这样的方案会带来较大的开销，效率比较低。</p>
+<h1 id="构造CPA安全的加密方案"><a href="#构造CPA安全的加密方案" class="headerlink" title="构造CPA安全的加密方案"></a>构造CPA安全的加密方案</h1><h2 id="伪随机函数-Pseudorandom-functions-PRFs-和伪随机置换-Permutations"><a href="#伪随机函数-Pseudorandom-functions-PRFs-和伪随机置换-Permutations" class="headerlink" title="伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)"></a>伪随机函数(Pseudorandom functions, PRFs)和伪随机置换(Permutations)</h2><h3 id="伪随机函数"><a href="#伪随机函数" class="headerlink" title="伪随机函数"></a>伪随机函数</h3><p>我们无法说某个固定函数$f:\{0,1\}^<em>\rightarrow\{0,1\}^</em>$是随机的，这里，我们引入一个带密钥函数(keyed functions)。</p>
+<p>带密钥函数(keyed functions)可以被看作有两个输入，即$F:\{0,1\}^<em> \times \{0,1\}^</em> \rightarrow \{0,1\}^*$。其中，第一个输入为密钥，第二个输入为函数的常规输入。我们只考虑能被在多项式时间内计算的函数。同时，我们先不妨假设密钥长度、输入长度和输出长度相等。</p>
+<p>直观上，我们定义$Func_n$是n比特映射到n比特的函数的集合，令$f$是从中任意选取的一个函数，令$F_k(x)=F(k,x)$，我们希望无法区分$f$和$F_k$。</p>
+<p>当然，假设这里有一个区分器来尝试区分，显然如果知道一个函数详细的描述，是很容易区分的，但是这并不高效，也就是不能在多项式时间内完成。所以我们不妨规定区分器不能接受函数的完整描述，但是能够有一个查询接口，可以对任意的输入$x$查询函数对应的值，当然，也只能进行多项式次数的查询。</p>
+<h4 id="形式化定义-2"><a href="#形式化定义-2" class="headerlink" title="形式化定义"></a>形式化定义</h4><p>现在我们可以给出形式化定义，我们定义一个带密钥函数$F$为一个伪随机函数，当且仅当对于任何多项式时间区分器$D$，都存在一个可忽略函数$negl$，使：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/10.png?raw=true" alt="10"></p>
+<h4 id="伪随机函数和伪随机数生成器"><a href="#伪随机函数和伪随机数生成器" class="headerlink" title="伪随机函数和伪随机数生成器"></a>伪随机函数和伪随机数生成器</h4><p>伪随机函数 (PRFs) 和伪随机生成器 (PRGs) 之间具有密切的关系。他们其实可以相互构造。</p>
+<h3 id="伪随机置换"><a href="#伪随机置换" class="headerlink" title="伪随机置换"></a>伪随机置换</h3><p>伪随机置换要求在伪随机函数的基础上还要是双射，同时逆函数也要能在多项式时间内被计算。</p>
+<p>显然，伪随机置换一定是一个伪随机函数。</p>
+<p>形式化定义如下：<br>我们定义一个带密钥函数$F$为一个强伪随机置换(strong pseudorandom permutation)，当且仅当对于任何多项式时间区分器$D$，都存在一个可忽略函数$negl$，使：</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/11.png?raw=true" alt="11"></p>
+<h2 id="构造CPA安全的加密方案-1"><a href="#构造CPA安全的加密方案-1" class="headerlink" title="构造CPA安全的加密方案"></a>构造CPA安全的加密方案</h2><p>这里的目标是构造一个固定长度的CPA安全的加密方案。根据之前的结论，只要有固定长度的，我们可以扩展到任意长度。</p>
+<h3 id="方案-1"><a href="#方案-1" class="headerlink" title="方案"></a>方案</h3><p>令$F$是一个伪随机数函数。</p>
+<ol>
+<li>$Gen$：均匀选取$k\in \{0,1\}^n$</li>
+<li>$Enc$：均匀选取$r\in \{0,1\}^n$，$c:=&lt; r, F_k(r)\oplus m &gt;$</li>
+<li>$Dec$：$m:=F_k(r)\oplus s$</li>
+</ol>
+<h3 id="安全性证明-1"><a href="#安全性证明-1" class="headerlink" title="安全性证明"></a>安全性证明</h3><p>一般来说我们证明加密方案的CPA安全性会采用以下步骤：</p>
+<ol>
+<li>首先考虑用真随机函数来代替伪随机函数，通过归约证明这样修改不会显著提高攻击者的成功概率。</li>
+<li>在假设方案中，通过概率计算来评估攻击成功的概率，这一部分一般不依赖于假设。</li>
+</ol>
+<p>上述方案安全性证明如下：<br>首先我们令方案$\tilde{\prod}$为将伪随机函数替换成真随机函数后的方案，我们将通过归约证明：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/12.png?raw=true" alt="12"></p>
+<p>我们构造一个区分器$D$，其接受输入$1^n$并有一个未知函数的查询机$\mathcal{O}$。</p>
+<ol>
+<li>运行$\mathcal{A}(1^n)$，当$\mathcal{A}$查询时：<ol>
+<li>$D$均匀选取$r\in \{0,1\}^n$</li>
+<li>查询$y=\mathcal{O}(r)$</li>
+<li>将$&lt; r,y \oplus m &gt;$返回给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>$\mathcal{A}$输出消息$m_0,m_1$，随机选取$b\in \{0,1\}$<ol>
+<li>$D$均匀选取$r\in \{0,1\}^n$</li>
+<li>查询$y=\mathcal{O}(r)$</li>
+<li>将$&lt; r,y \oplus m_b &gt;$返回给$\mathcal{A}$</li>
+</ol>
+</li>
+<li>接受$\mathcal{A}$的最终输出$b’$，如果$b’=b$，输出1，否则输出0。</li>
+</ol>
+<p>由构造我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/13.png?raw=true" alt="13"></p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/14.png?raw=true" alt="14"></p>
+<p>在因为$F$是伪随机函数，根据定义我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/15.png?raw=true" alt="15"></p>
+<p>到此我们已经证明了第一步。</p>
+<p>第二部分我们将证明</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/16.png?raw=true" alt="16"></p>
+<p>我们定义事件$repeat$为$r$已经被使用过，所以有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/17.png?raw=true" alt="17"></p>
+<p>最后将两个部分结合，我们有</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/18.png?raw=true" alt="18"></p>
+<p>到此得证。</p>
+<h1 id="加密模式与实践中的加密"><a href="#加密模式与实践中的加密" class="headerlink" title="加密模式与实践中的加密"></a>加密模式与实践中的加密</h1><p>上述的加密方案在实践中都存在一些缺点，比如效率差限制多等。我们接下来要提出一些实际操作上更优的加密方案。</p>
+<p>首先我们会引入其中的核心部分</p>
+<ul>
+<li>使用<strong>流密码</strong>来实现伪随机数生成器</li>
+<li>使用<strong>分组密码</strong>来实现伪随机函数</li>
+</ul>
+<h2 id="流密码-Stream-ciphers"><a href="#流密码-Stream-ciphers" class="headerlink" title="流密码(Stream ciphers)"></a>流密码(Stream ciphers)</h2><p>流密码是一组确定性算法：</p>
+<ol>
+<li><strong>Init</strong>：$st_0:=Init(s,[IV])$</li>
+<li><strong>GetBits</strong>：$(y<em>i,st_i):=GetBits(st</em>{i-1})$</li>
+</ol>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/23.png?raw=true" alt="23"></p>
+<h2 id="分组密码-Block-ciphers"><a href="#分组密码-Block-ciphers" class="headerlink" title="分组密码(Block ciphers)"></a>分组密码(Block ciphers)</h2><h3 id="ECB-mode"><a href="#ECB-mode" class="headerlink" title="ECB mode"></a>ECB mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/19.png?raw=true" alt="19"></p>
+<p>这是确定性算法，所以是不安全的。</p>
+<h3 id="CBC-mode"><a href="#CBC-mode" class="headerlink" title="CBC mode"></a>CBC mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/20.png?raw=true" alt="20"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>缺点是不能并行化处理。</p>
+<h3 id="OFP-mode"><a href="#OFP-mode" class="headerlink" title="OFP mode"></a>OFP mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/21.png?raw=true" alt="21"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>可以进行预计算。</p>
+<h3 id="CTR-mode"><a href="#CTR-mode" class="headerlink" title="CTR mode"></a>CTR mode</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86/22.png?raw=true" alt="22"></p>
+<p>如果$F$是伪随机函数，则方案是CPA安全的。</p>
+<p>加密和解密都可以并行化计算。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/13/%E5%AE%8C%E7%BE%8E%E4%BF%9D%E5%AF%86%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -950,528 +1712,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">【二】正则表达式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-09 13:21:51" itemprop="dateCreated datePublished" datetime="2024-12-09T13:21:51+08:00">2024-12-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>正则表达式(regular expression, RE) 通过代数式的方式来描述语言。</p>
-<p>如果$E$是一个正则表达式，记它定义的语言为$L(E)$。</p>
-<p>首先回顾一下语言的操作：</p>
-<ul>
-<li><strong>并(union)</strong>：就是集合的并操作</li>
-<li><strong>拼接(concatenation)</strong>：LM</li>
-<li><strong>星闭包(Kleene closure)</strong>：L*</li>
-</ul>
-<p><strong>定义</strong>：<br>递归地定义正则表达式如下：<br>基础情况：</p>
-<ol>
-<li>一个符号是正则表达式</li>
-<li>$\epsilon$是正则表达式</li>
-<li>$\emptyset$是正则表达式<br>递归情况：</li>
-<li>两个正则表达式的并是正则表达式，$E_1+E_2$</li>
-<li>两个正则表达式的拼接是正则表达式，$E_1E_2$</li>
-<li>一个正则表达式的星闭包是正则表达式，$E*$</li>
-</ol>
-<h2 id="操作符号优先级"><a href="#操作符号优先级" class="headerlink" title="操作符号优先级"></a>操作符号优先级</h2><p>星闭包&gt;拼接&gt;并 </p>
-<h2 id="正则表达式和有穷自动机的等价性"><a href="#正则表达式和有穷自动机的等价性" class="headerlink" title="正则表达式和有穷自动机的等价性"></a>正则表达式和有穷自动机的等价性</h2><h3 id="将正则表达式转换成-epsilon-NFA"><a href="#将正则表达式转换成-epsilon-NFA" class="headerlink" title="将正则表达式转换成$\epsilon$-NFA"></a>将正则表达式转换成$\epsilon$-NFA</h3><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png?raw=true" alt="1"><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png?raw=true" alt="2"></p>
-<h3 id="将DFA转化为正则表达式"><a href="#将DFA转化为正则表达式" class="headerlink" title="将DFA转化为正则表达式"></a>将DFA转化为正则表达式</h3><p>定义<strong>k-路径</strong>：<br>k-路径指的是DFA状态转换图上的某一条路径，其中，这条路径经过的所有状态的标号不超过k。</p>
-<p>令$R^{k}_{ij}$表示从状态$i$走到状态$j$的k路径。</p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/3.png?raw=true" alt="3"></p>
-<h2 id="正则表达式的代数运算法则"><a href="#正则表达式的代数运算法则" class="headerlink" title="正则表达式的代数运算法则"></a>正则表达式的代数运算法则</h2><ul>
-<li>$R+\emptyset=R$</li>
-<li>$R\emptyset=\emptyset R=\emptyset$</li>
-<li>$\epsilon R=R\epsilon =R$</li>
-<li>$(\epsilon+R)<em>=R</em>$</li>
-<li>$R+SR=(\epsilon+S)R$</li>
-<li>$\epsilon+RR<em>=R</em>$</li>
-<li>$(R+S)<em>=(R</em>S)<em>R</em>$</li>
-</ul>
-<h1 id="正则语言的判定性质"><a href="#正则语言的判定性质" class="headerlink" title="正则语言的判定性质"></a>正则语言的判定性质</h1><p>语言类有两类重要的性质：</p>
-<ul>
-<li>判定性质<br>一类语言的<strong>判定性质(decision property)</strong>对应于一个算法，这个算法以某个语言的形式化描述(比如说一个DFA)为输入，然后告诉我们这个语言是否满足某些性质（比如说这个语言是否为空之类的）。语言的表示可以是形式化(formal)的（比如说RE，FA等等），也可以是非形式化(informal)的（比如说自然语言描述，集合描述等等）。</li>
-<li>闭包性质<br>一类语言的<strong>闭包性质(closure property)</strong>说的是给定这个语言类的一些语言，对于这些语言进行某个操作得到的另一个语言依旧在同一个语言类中。</li>
-</ul>
-<p>下面讨论一些常见的判定性质。</p>
-<h2 id="成员资格问题"><a href="#成员资格问题" class="headerlink" title="成员资格问题"></a>成员资格问题</h2><p>一个给定字符串是否属于一个给定正则语言。</p>
-<p>转换成DFA模拟运行即可。</p>
-<h2 id="空问题"><a href="#空问题" class="headerlink" title="空问题"></a>空问题</h2><p>判断一个给定的正则语言是否为空。</p>
-<p>假设语言的表示为DFA，从初始状态开始，计算所有的可达状态的集合，如果至少有一个终止状态可达，那么这个语言就非空，否则为空。</p>
-<h2 id="无限性问题"><a href="#无限性问题" class="headerlink" title="无限性问题"></a>无限性问题</h2><p>判断一个给定的正则语言的语言集合是否为无限大。</p>
-<p>只要找DFA是否出现环。</p>
-<h2 id="泵引理"><a href="#泵引理" class="headerlink" title="泵引理"></a>泵引理</h2><p>判断某个语言是不是正则语言。</p>
-<p>使用<strong>泵引理</strong>：<br>对于一个正则语言$L$来说，存在一个整数$n$，使得对于$L$中的每一个长度大于等于$n$的字符串$w$，都可以写作$w=wxy$，满足：</p>
-<ol>
-<li>$|xy|\leq n$</li>
-<li>$|y| &gt;0$</li>
-<li>$\forall i \ge 0,xy^iz\in L$</li>
-</ol>
-<p>泵引理被用来判断一个语言不是正则语言。而不是用来判断是正则语言。</p>
-<h2 id="等价性"><a href="#等价性" class="headerlink" title="等价性"></a>等价性</h2><p>判断两个正则语言是否等价。</p>
-<p>构造<strong>乘积DFA</strong>：</p>
-<ul>
-<li>状态集：$Q\times R$</li>
-<li>初始状态：$[q_0,r_0]$</li>
-<li>转移函数：$\delta([q,r],a)=[\delta_L(q,a),\delta_R(r,a)]$</li>
-<li><strong>终止状态</strong>：$[q,r]$，其中只有一个是原来DFA的终止状态。</li>
-</ul>
-<p>如果这个自动机是接受的语言是空集，则说明两个正则语言等价。</p>
-<h2 id="包含关系"><a href="#包含关系" class="headerlink" title="包含关系"></a>包含关系</h2><p>判断两个正则语言是否包含。</p>
-<p>仍然构造乘积DFA，但是终止状态定义为$[q,r]$，其中$q$是原来DFA的终止状态，而$r$不是$M$的终止状态。</p>
-<p>这样乘积DFA是空集等价于$L\subseteq M$</p>
-<h2 id="一个正则语言的最小状态DFA"><a href="#一个正则语言的最小状态DFA" class="headerlink" title="一个正则语言的最小状态DFA"></a>一个正则语言的最小状态DFA</h2><p>现在考虑如何将一个DFA找到其等价的最小状态DFA。下面我们介绍一种高效的 <strong>状态最小化(efficient state minimization)</strong> 操作。</p>
-<p>这是一个递归算法：<br>基础情况：标记所有的只有一个终止状态的对，即区分字符串长度为0。<br>递归情况：如果对于某个输入符号$a$，$[\delta(q,a),\delta(r,a)]$被标记了，那么标记$[q,r]$。在没有更多的对可以被标记的时候，剩下的没有标记的对就是等价的了，并且可以合并成一个状态。</p>
-<h1 id="正则语言的闭包性质"><a href="#正则语言的闭包性质" class="headerlink" title="正则语言的闭包性质"></a>正则语言的闭包性质</h1><h2 id="并操作、拼接操作以及星闭包操作下的闭包"><a href="#并操作、拼接操作以及星闭包操作下的闭包" class="headerlink" title="并操作、拼接操作以及星闭包操作下的闭包"></a>并操作、拼接操作以及星闭包操作下的闭包</h2><p>如果$L$和$M$是正则语言，那么$L\cup M$，$LM$，$L*$都是正则语言。</p>
-<h2 id="交集、差集、补集下的闭包"><a href="#交集、差集、补集下的闭包" class="headerlink" title="交集、差集、补集下的闭包"></a>交集、差集、补集下的闭包</h2><ul>
-<li>交集<br>  在交集下闭包，构造一个乘积DFA，令终止状态是两个共同的终止状态。</li>
-<li>差集<br>  在差集下闭包，构造一个乘积DFA，终止状态是包含A的但不包含B的终止状态的状态对。</li>
-<li>补集<br>  在补集下闭包。</li>
-</ul>
-<h2 id="逆运算下的闭包"><a href="#逆运算下的闭包" class="headerlink" title="逆运算下的闭包"></a>逆运算下的闭包</h2><p>递归的进行逆操作即可。</p>
-<h2 id="同态运算和逆同态运算下的闭包"><a href="#同态运算和逆同态运算下的闭包" class="headerlink" title="同态运算和逆同态运算下的闭包"></a>同态运算和逆同态运算下的闭包</h2><p>对于一个字母表的<strong>同态(homomorphism)</strong>指的是一个函数，这个函数对于字母表中的每一个字符给出了一个字符串。</p>
-<p>正则语言在同态和逆同态下是闭包的。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="post-title-link" itemprop="url">【一】有穷自动机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-09 11:19:04" itemprop="dateCreated datePublished" datetime="2024-12-09T11:19:04+08:00">2024-12-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 18:53:27" itemprop="dateModified" datetime="2024-12-18T18:53:27+08:00">2024-12-18</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><h2 id="什么是有穷自动机"><a href="#什么是有穷自动机" class="headerlink" title="什么是有穷自动机"></a>什么是有穷自动机</h2><p>有穷自动机(finite automa) 是一个形式系统，它只记忆有限量的信息，这些信息通过它的 状态(states) 表示。当有 <strong>输入</strong>(input) 给到有穷自动机的时候，它会相应地改变自己的状态。告诉有穷自动机该如何根据输入改变自身状态的规则称为 <strong>转移</strong>(transition) 。</p>
-<h2 id="状态转换图"><a href="#状态转换图" class="headerlink" title="状态转换图"></a>状态转换图</h2><p>双环表示 <strong>终止状态</strong>(final state) ，给定一系列的输入，称为 <strong>输入字符串</strong>(input string) ，从初始状态开始，根据每个输入符号转移到下一状态。如果读入一个特定的字符串能够让状态从初始状态变为终止状态，我们称这个输入被 <strong>接受</strong>(accepted) 了。</p>
-<h2 id="一个自动机的语言"><a href="#一个自动机的语言" class="headerlink" title="一个自动机的语言"></a>一个自动机的语言</h2><p>称能够被一个自动机 A 接受的字符串的集合为 A 的 <strong>语言</strong>(language) ，记为 L(A) 。</p>
-<h1 id="确定性有穷自动机"><a href="#确定性有穷自动机" class="headerlink" title="确定性有穷自动机"></a>确定性有穷自动机</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p><strong>确定性有穷自动机</strong>(Deterministic Finite Automa, DFA) 是一种定义语言的形式化系统，记为五元组$(Q, \Sigma, \delta, q_0, F)$</p>
-<ul>
-<li>$Q$ 是一个有限状态集合</li>
-<li>$\Sigma$ 是一个输入字母表</li>
-<li>$\delta$ 是一个状态转换函数，它将一个状态和输入符号映射到下一个状态</li>
-<li>$q_0$ 是初始状态，$q_0\in Q$</li>
-<li>$F$ 是一个终止状态集合，$F\subseteq Q$</li>
-</ul>
-<p>注意这里$\delta$是一个全函数，对于一个状态$q$和输入符号$a$，$\delta(q,a)$一定有对应的转移，如果没有，我们额外定义一个<strong>死状态</strong>。</p>
-<h2 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h2><h3 id="图表示"><a href="#图表示" class="headerlink" title="图表示"></a>图表示</h3><p>用状态转移图表示DFA。</p>
-<ul>
-<li>用 结点(node) 表示状态</li>
-<li>用 弧(arc) 表示转移函数</li>
-<li>用标有 Start 的箭头指向起始状态</li>
-<li>用 双圆(double circle) 表示终止状态</li>
-</ul>
-<h3 id="转移表"><a href="#转移表" class="headerlink" title="转移表"></a>转移表</h3><ul>
-<li>行头表示状态，列头表示输入符号</li>
-<li>用箭头指向初始状态，用星号标注终止状态</li>
-<li>每一个表象都是转移函数的结果</li>
-</ul>
-<h2 id="扩展的转移函数"><a href="#扩展的转移函数" class="headerlink" title="扩展的转移函数"></a>扩展的转移函数</h2><p>之前定义的转移函数只对应一个状态面对<strong>单个</strong>字符输入的转移，现在扩展到对一个输入字符串的转移。</p>
-<p>递归定义拓展的转移函数：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2412/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/1.png?raw=true" alt="1"></p>
-<h2 id="DFA的语言"><a href="#DFA的语言" class="headerlink" title="DFA的语言"></a>DFA的语言</h2><p>定义对于一个DFA $A$，定义$A$能接受的语言集合为$L(A)$，记为$L(A)=\{w|\delta(q_0,w)\in F\}$。</p>
-<p>PS: 证明一个语言集合等价于一个DFA定义的语言集合，需要证明两个集合互相包含。</p>
-<h2 id="正则语言"><a href="#正则语言" class="headerlink" title="正则语言"></a>正则语言</h2><p>如果一个语言集合$L$可以被某个DFA<strong>恰好</strong>接受，那么我们称这个语言集合为<strong>正则语言</strong>(regular language)。</p>
-<h1 id="非确定性有穷自动机"><a href="#非确定性有穷自动机" class="headerlink" title="非确定性有穷自动机"></a>非确定性有穷自动机</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>非确定性有穷自动机(Nondeterministic Finite Automaton, NFA) 可以同一时刻处在多个状态中。当有一个输入符号的时候，可以从一个状态转移到任意状态的集合。</p>
-<p>直观上，NFA虽然转移函数给出了多个目标状态，但是一个输入字符串对于一个NFA总能找到自己正确的转移路径到终止状态（如果能被接受的话）。</p>
-<p>定义为五元组，与DFA的区别是转移函数不是返回一个单独的状态，而是一个状态<strong>集合</strong>。</p>
-<h2 id="DFA与NFA的等价性"><a href="#DFA与NFA的等价性" class="headerlink" title="DFA与NFA的等价性"></a>DFA与NFA的等价性</h2><p>DFA和NFA是等价的，现在展示互相构造：</p>
-<h3 id="已知DFA构造NFA"><a href="#已知DFA构造NFA" class="headerlink" title="已知DFA构造NFA"></a>已知DFA构造NFA</h3><p>这是显然的，DFA就是一种特殊的NFA，只不过转移函数的新状态集合大小始终为1.</p>
-<h3 id="已知NFA构造DFA"><a href="#已知NFA构造DFA" class="headerlink" title="已知NFA构造DFA"></a>已知NFA构造DFA</h3><p>使用<strong>子集构造</strong>。</p>
-<h1 id="带空转移的NFA"><a href="#带空转移的NFA" class="headerlink" title="带空转移的NFA"></a>带空转移的NFA</h1><h2 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h2><p>我们可以在NFA的基础上再允许某个状态在没有输入字符的时候就转移到另一个状态，也就是说转移函数可以接受$\epsilon$输入。</p>
-<p>带空转移的NFA被称为$\epsilon-NFA$。</p>
-<p>只需要再多考虑<strong>状态闭包</strong>。</p>
-<h2 id="NFA与带空转移的NFA的等价性"><a href="#NFA与带空转移的NFA的等价性" class="headerlink" title="NFA与带空转移的NFA的等价性"></a>NFA与带空转移的NFA的等价性</h2><h3 id="已知NFA构造带空转移的NFA"><a href="#已知NFA构造带空转移的NFA" class="headerlink" title="已知NFA构造带空转移的NFA"></a>已知NFA构造带空转移的NFA</h3><p>这也是显然的。</p>
-<h3 id="已知带空转移的NFA构造NFA"><a href="#已知带空转移的NFA构造NFA" class="headerlink" title="已知带空转移的NFA构造NFA"></a>已知带空转移的NFA构造NFA</h3><p>取闭包，后转移，再取一次闭包。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/12/02/NJU-FLA%E5%A4%A7%E4%BD%9C%E4%B8%9A2024/" class="post-title-link" itemprop="url">NJU_FLA大作业2024</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-02 23:07:38" itemprop="dateCreated datePublished" datetime="2024-12-02T23:07:38+08:00">2024-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-02 14:00:23" itemprop="dateModified" datetime="2025-02-02T14:00:23+08:00">2025-02-02</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h1><h2 id="调试输出"><a href="#调试输出" class="headerlink" title="调试输出"></a>调试输出</h2><p>为了获取不同阶段的调试信息，定义了不同的输出宏，这样控制方便，输出内容也不会冗杂。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#define DEBUG_PARSE_COMMAND</span><br><span class="line">#define DEBUG_PARSE_FILE</span><br><span class="line">#define DEBUG_RUN</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG_PARSE_COMMAND</span><br><span class="line">#define DEBUG_PRINT_PARSE_COMMAND(fmt, ...) printf(fmt, ##__VA_ARGS__)</span><br><span class="line">#else</span><br><span class="line">#define DEBUG_PRINT_PARSE_COMMAND(fmt, ...)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG_PARSE_FILE</span><br><span class="line">#define DEBUG_PRINT_PARSE_FILE(fmt, ...) printf(fmt, ##__VA_ARGS__)</span><br><span class="line">#else</span><br><span class="line">#define DEBUG_PRINT_PARSE_FILE(fmt, ...)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG_RUN</span><br><span class="line">#define DEBUG_PRINT_RUN(fmt, ...) printf(fmt, ##__VA_ARGS__)</span><br><span class="line">#else</span><br><span class="line">#define DEBUG_PRINT_RUN(fmt, ...)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure></p>
-<h2 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h2><p>关于PDA和TM的类定义，只需要根据其本身定义就行，对于每个机器定义好其即时描述(Instantaneous Description, ID) 来模拟运行。</p>
-<p>通过构造函数来读入verbose选项。</p>
-<p>PDA：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">class PDA &#123;</span><br><span class="line">private:</span><br><span class="line">    struct Transition &#123;</span><br><span class="line">        std::string oldState;</span><br><span class="line">        char inputSymbol;</span><br><span class="line">        char oldStackTopSymbol;</span><br><span class="line">        std::string newState;</span><br><span class="line">        std::string stackTopSequence;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    struct &#123;</span><br><span class="line">        int step = 0;</span><br><span class="line">        std::string state;</span><br><span class="line">        std::string stack;</span><br><span class="line">        std::string input;</span><br><span class="line">    &#125; ID;</span><br><span class="line"></span><br><span class="line">    std::unordered_set&lt;std::string&gt; Q;</span><br><span class="line">    std::unordered_set&lt;char&gt; S;</span><br><span class="line">    std::unordered_set&lt;char&gt; G;</span><br><span class="line">    std::string q0;</span><br><span class="line">    char z0=&#x27;z&#x27;;</span><br><span class="line">    std::unordered_set&lt;std::string&gt; F;</span><br><span class="line">    std::vector&lt;Transition&gt; delta;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    bool verbose = false;</span><br><span class="line"></span><br><span class="line">    bool read_Q(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_S(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_G(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_q0(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_z0(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_F(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_delta(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    void print_ID();</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    explicit PDA(bool verbose_flag) : verbose(verbose_flag) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    bool readPDA(const std::string&amp; filename);</span><br><span class="line"></span><br><span class="line">    bool runPDA(std::string input);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>TM：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">class TM &#123;</span><br><span class="line">private:</span><br><span class="line">    struct Transition &#123;</span><br><span class="line">        std::string oldState;</span><br><span class="line">        std::string oldSymbols;</span><br><span class="line">        std::string newSymbols;</span><br><span class="line">        std::string directions;</span><br><span class="line">        std::string newState;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    struct &#123;</span><br><span class="line">        int step = 0;</span><br><span class="line">        std::string state;</span><br><span class="line">        std::vector&lt;std::string&gt; tape;</span><br><span class="line">        std::vector&lt;std::string&gt; tape_neg;</span><br><span class="line">        std::vector&lt;int&gt; head;</span><br><span class="line">    &#125; ID;</span><br><span class="line"></span><br><span class="line">    std::unordered_set&lt;std::string&gt; Q;</span><br><span class="line">    std::unordered_set&lt;char&gt; S;</span><br><span class="line">    std::unordered_set&lt;char&gt; G;</span><br><span class="line">    std::string q0;</span><br><span class="line">    char B = &#x27;_&#x27;;</span><br><span class="line">    std::unordered_set&lt;std::string&gt; F;</span><br><span class="line">    int N = 0;</span><br><span class="line">    std::vector&lt;Transition&gt; delta;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    bool verbose = false;</span><br><span class="line"></span><br><span class="line">    bool read_Q(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_S(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_G(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_q0(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_B(std::string &amp;line) const;</span><br><span class="line"></span><br><span class="line">    bool read_F(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_N(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    bool read_delta(std::string &amp;line);</span><br><span class="line"></span><br><span class="line">    void print_ID();</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    explicit TM(bool verbose_flag) : verbose(verbose_flag) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    bool readTM(const std::string&amp; filename);</span><br><span class="line"></span><br><span class="line">    bool runTM(std::string input);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h1 id="命令解析"><a href="#命令解析" class="headerlink" title="命令解析"></a>命令解析</h1><h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ul>
-<li><p>依次读入argv[i]：</p>
-<ol>
-<li>先判断是否为-h或-v，更新对应的布尔值。</li>
-<li>如果filename和input仍然是空，则按顺序读入filename和input。</li>
-<li><p>如果filename和input都不为空，则出现了多余参数，报错。</p>
-<p>注意：这里已经处理了参数多余的情况，并非简单判断argc的值，因为-h和-v被允许重复。</p>
-</li>
-</ol>
-</li>
-<li><p>处理读入参数<br>到这一步已经初始化好了help，verbose，filename和input。</p>
-<ol>
-<li>先特判一种情况：只需要输出help，这意味着没有开启verbose模式，输入也没有接收到filename和input。</li>
-<li>再处理其他情况，如果filename或input为空，则缺少参数，报错。</li>
-<li><p>确认都不为空的情况下，再判断filename是否以.pda/.tm结尾并且文件存在，如果不是，则报错。</p>
-<p>注意，这里涉及到的文件操作我使用了_WIN32的宏定义来处理windows和linux不同情况。</p>
-</li>
-</ol>
-</li>
-</ul>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">//Parse the command line</span><br><span class="line">//Parse the command line</span><br><span class="line">    for (size_t i = 1; i &lt; argc; i++) &#123;</span><br><span class="line">        char *argv_ = argv[i];</span><br><span class="line">        if (strcmp(argv_, &quot;-h&quot;) == 0 || strcmp(argv_, &quot;--help&quot;) == 0) &#123;</span><br><span class="line">            help = true;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        if (strcmp(argv_, &quot;-v&quot;) == 0 || strcmp(argv_, &quot;--verbose&quot;) == 0) &#123;</span><br><span class="line">            verbose = true;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        if (filename == nullptr) &#123;</span><br><span class="line">            filename = argv_;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        if (input == nullptr) &#123;</span><br><span class="line">            input = argv_;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        std::cerr &lt;&lt; &quot;error: &quot; &lt;&lt; argv_ &lt;&lt; &quot;: unrecognized command line option\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;usage: fla [-h|--help] &lt;pda&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;       fla [-v|--verbose] [-h|--help] &lt;tm&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DEBUG_PRINT_PARSE_COMMAND(&quot;help: %d\n&quot;, help);</span><br><span class="line">    DEBUG_PRINT_PARSE_COMMAND(&quot;verbose: %d\n&quot;, verbose);</span><br><span class="line">    DEBUG_PRINT_PARSE_COMMAND(&quot;filename: %s\n&quot;, filename);</span><br><span class="line">    DEBUG_PRINT_PARSE_COMMAND(&quot;input: %s\n&quot;, input);</span><br><span class="line"></span><br><span class="line">    if (help &amp;&amp; !verbose &amp;&amp; filename == nullptr &amp;&amp; input == nullptr) &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;usage: fla [-h|--help] &lt;pda&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;       fla [-v|--verbose] [-h|--help] &lt;tm&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if ((filename == nullptr || input == nullptr)) &#123;</span><br><span class="line">        std::cerr &lt;&lt; &quot;error: missing required parameter(s)\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;usage: fla [-h|--help] &lt;pda&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;       fla [-v|--verbose] [-h|--help] &lt;tm&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    assert(!(filename == nullptr &amp;&amp; input == nullptr));</span><br><span class="line"></span><br><span class="line">    if (help) &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;usage: fla [-h|--help] &lt;pda&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;       fla [-v|--verbose] [-h|--help] &lt;tm&gt; &lt;input&gt;\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (!parse_file(pda, tm, filename)) &#123;</span><br><span class="line">        std::cerr &lt;&lt; &quot;error: &quot; &lt;&lt; filename &lt;&lt; &quot;: no such file\n&quot;;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DEBUG_PRINT_PARSE_FILE(&quot;parse file: pda: %d; tm: %d\n&quot;, pda, tm);</span><br><span class="line">    assert(!(pda == 0 &amp;&amp; tm == 0));</span><br></pre></td></tr></table></figure>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 一个参数</span><br><span class="line">./fla -h</span><br><span class="line">./fla --help</span><br><span class="line">./fla -v</span><br><span class="line">./fla --verbose</span><br><span class="line">./fla xxx.pda</span><br><span class="line">./fla xxx</span><br><span class="line"></span><br><span class="line"># 两个参数</span><br><span class="line">./fla -h -h</span><br><span class="line">./fla -h -v</span><br><span class="line">./fla xxx.pda xxx</span><br><span class="line">./fla xxx xxx.pda</span><br><span class="line">./fla -h xxx.pda</span><br><span class="line">./fla -v xxx.pda</span><br><span class="line"></span><br><span class="line"># 三个参数</span><br><span class="line">./fla -h -h -h</span><br><span class="line">./fla -h -h -v</span><br><span class="line">./fla -h xxx.pda xxx</span><br><span class="line">./fla -h -v xxx.pda</span><br><span class="line">./fla -v xxx.pda xxx</span><br><span class="line"></span><br><span class="line"># 四个参数</span><br><span class="line">./fla -h -h -h -h</span><br><span class="line">./fla -h -v xxx.pda xxx</span><br><span class="line">./fla -h -h xxx.pda xxx</span><br><span class="line">./fla -h xxx.pda xxx xxx</span><br></pre></td></tr></table></figure>
-<p>以上均能正确输出。</p>
-<h1 id="文件解析"><a href="#文件解析" class="headerlink" title="文件解析"></a>文件解析</h1><h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><ul>
-<li>首先打开文件，注意windows和linux文件路径表示方法不同。</li>
-<li>读入文件，逐行读取，根据每行开头来判断定义类型，调用不同的读取函数。<ol>
-<li>首先去除分号以及分号后面的部分，以防行尾注释，这样能避免后续处理时出错。</li>
-<li>直接解析字符串然后读入，其实使用正则表达式更好，但是这里没有使用。</li>
-<li>对于不同的解析错误，输出详细的错误信息（在verbose模式下）。</li>
-</ol>
-</li>
-<li>最后判断是不是每个必要的定义都齐全了。</li>
-</ul>
-<h2 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">bool TM::readTM(const std::string &amp;filename) &#123;</span><br><span class="line">    std::string path;</span><br><span class="line">#ifdef _WIN32</span><br><span class="line">    path = &quot;..\\tm\\&quot; + filename;</span><br><span class="line">#else</span><br><span class="line">    path=&quot;../&quot;+std::string(filename);</span><br><span class="line">#endif</span><br><span class="line">    std::ifstream file(path);</span><br><span class="line">    if (!file) &#123;</span><br><span class="line">        if (verbose) std::cerr &lt;&lt; &quot;Error: Could not open the file &#x27;&quot; &lt;&lt; path &lt;&lt; &quot;&#x27;\n&quot;;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    DEBUG_PRINT_PARSE_FILE(&quot;Open file: %s\n&quot;, filename.c_str());</span><br><span class="line">    std::string line;</span><br><span class="line">    while (std::getline(file, line)) &#123;</span><br><span class="line">        DEBUG_PRINT_PARSE_FILE(&quot;\nRead line: %s\n&quot;, line.c_str());</span><br><span class="line">        if (line.empty() || std::all_of(line.begin(), line.end(), [](unsigned char c)&#123; return std::isspace(c); &#125;)) &#123;</span><br><span class="line">            DEBUG_PRINT_PARSE_FILE(&quot;Empty Line %s\n&quot;, line.c_str());</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        if (line[0] == &#x27;;&#x27;) &#123;</span><br><span class="line">            DEBUG_PRINT_PARSE_FILE(&quot;This is a command: %s\n&quot;, line.c_str());</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;Q&#x27;) &#123;</span><br><span class="line">            if (!read_Q(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;S&#x27;) &#123;</span><br><span class="line">            if (!read_S(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;G&#x27;) &#123;</span><br><span class="line">            if (!read_G(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;q&#x27; &amp;&amp; line[2] == &#x27;0&#x27;) &#123;</span><br><span class="line">            if (!read_q0(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;B&#x27;) &#123;</span><br><span class="line">            if (!read_B(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;F&#x27;) &#123;</span><br><span class="line">            if (!read_F(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (line[0] == &#x27;#&#x27; &amp;&amp; line[1] == &#x27;N&#x27;) &#123;</span><br><span class="line">            if (!read_N(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (!read_delta(line)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (Q.empty() || S.empty() || G.empty() || q0.empty() || F.empty() || N == 0 || delta.empty()) &#123;</span><br><span class="line">        std::cerr &lt;&lt; &quot;error: Missing necessary definition(s)\n&quot;;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>PS: 这里一开始跳过空行就是简单的判断line.empty()，但是后来发现如果输入了空格，就不会被跳过，所以需要判断空格和一些不显示的字符。</p>
-<h1 id="模拟运行"><a href="#模拟运行" class="headerlink" title="模拟运行"></a>模拟运行</h1><h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><ul>
-<li>先根据读入的input初始化ID<ol>
-<li>对于TM的纸带，因为要确定index，所以使用两个string来模拟一条纸带，分别对应纸带index0往右和往左的部分。</li>
-<li>对于PDA的栈，直接使用string模拟。</li>
-</ol>
-</li>
-<li>根据当前ID，寻找匹配的转移函数，模拟运行。</li>
-</ul>
-<h2 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">bool TM::runTM(std::string input) &#123;</span><br><span class="line">    //check input</span><br><span class="line">    for (size_t i = 0; i &lt; input.size(); i++) &#123;</span><br><span class="line">        char s = input[i];</span><br><span class="line">        auto it = S.find(s);</span><br><span class="line">        if (it == S.end()) &#123;</span><br><span class="line">            if (!verbose) std::cerr &lt;&lt; &quot;error: &quot; &lt;&lt; s &lt;&lt; &quot;: illegal input\n&quot;;</span><br><span class="line">            else &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Input: &quot; &lt;&lt; input &lt;&lt; &quot;\n&quot;;</span><br><span class="line">                std::cerr &lt;&lt; &quot;==================== ERR ====================\n&quot;;</span><br><span class="line">                std::cerr &lt;&lt; &quot;error: &#x27;&quot; &lt;&lt; s &lt;&lt; &quot;&#x27; was not declared in the set of input symbols\n&quot;;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Input: &quot; &lt;&lt; input &lt;&lt; &quot;\n&quot;;</span><br><span class="line">                for (size_t j = 0; j &lt; 7 + i; j++) std::cerr &lt;&lt; &quot; &quot;;</span><br><span class="line">                std::cerr &lt;&lt; &quot;^\n&quot;;</span><br><span class="line">                std::cerr &lt;&lt; &quot;==================== END ====================&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (verbose) &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;Input: &quot; &lt;&lt; input &lt;&lt; &quot;\n&quot;;</span><br><span class="line">        std::cout &lt;&lt; &quot;==================== RUN ====================\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //run</span><br><span class="line">    ID.step = 0;</span><br><span class="line">    ID.state = q0;</span><br><span class="line">    ID.tape = std::vector&lt;std::string&gt;(N, &quot;_&quot;);</span><br><span class="line">    ID.tape_neg = std::vector&lt;std::string&gt;(N, &quot;__&quot;);</span><br><span class="line">    if (!input.empty()) ID.tape[0] = input;</span><br><span class="line">    ID.head = std::vector&lt;int&gt;(N, 0);</span><br><span class="line"></span><br><span class="line">    if (verbose) print_ID();</span><br><span class="line"></span><br><span class="line">    while (true) &#123;</span><br><span class="line">        //check F</span><br><span class="line">        auto it_F = F.find(ID.state);</span><br><span class="line">        if (it_F != F.end()) &#123;</span><br><span class="line">            DEBUG_PRINT_RUN(&quot;Current state %s is in F.\n&quot;, ID.state.c_str());</span><br><span class="line">            if (!verbose) std::cout &lt;&lt; &quot;true\n&quot;;</span><br><span class="line">            else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Result: true\n&quot;;</span><br><span class="line">                std::cout &lt;&lt; &quot;==================== END ====================\n&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        DEBUG_PRINT_RUN(&quot;Current state %s is not in F.\n&quot;, ID.state.c_str());</span><br><span class="line">        int delta_index = -1;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; delta.size(); i++) &#123;</span><br><span class="line">            if (ID.state != delta[i].oldState) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            bool check = true;</span><br><span class="line">            for (int j = 0; j &lt; N; j++) &#123;</span><br><span class="line">                char cur_symbol;</span><br><span class="line">                if (ID.head[j] &lt; 0) cur_symbol = ID.tape_neg[j][-ID.head[j]];</span><br><span class="line">                else cur_symbol = ID.tape[j][ID.head[j]];</span><br><span class="line">                if (delta[i].oldSymbols[j] != &#x27;*&#x27; &amp;&amp; delta[i].oldSymbols[j] != cur_symbol) &#123;</span><br><span class="line">                    check = false;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (!check) continue;</span><br><span class="line">            delta_index = i;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        DEBUG_PRINT_RUN(&quot;Find delta %d. &lt;%s&gt; &lt;%s&gt; &lt;%s&gt; &lt;%s&gt; &lt;%s&gt;\n&quot;, delta_index, delta[delta_index].oldState.c_str(),</span><br><span class="line">                        delta[delta_index].oldSymbols.c_str(), delta[delta_index].newSymbols.c_str(),</span><br><span class="line">                        delta[delta_index].directions.c_str(), delta[delta_index].newState.c_str());</span><br><span class="line">        if (delta_index == -1) &#123;</span><br><span class="line">            if (!verbose) std::cout &lt;&lt; &quot;false\n&quot;;</span><br><span class="line">            else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Result: false\n&quot;;</span><br><span class="line">                std::cout &lt;&lt; &quot;==================== END ====================\n&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            //write new symbols</span><br><span class="line">            for (int i = 0; i &lt; N; i++) &#123;</span><br><span class="line">                if (delta[delta_index].newSymbols[i] == &#x27;*&#x27;) continue;</span><br><span class="line">                else &#123;</span><br><span class="line">                    if (ID.head[i] &lt; 0) ID.tape_neg[i][-ID.head[i]] = delta[delta_index].newSymbols[i];</span><br><span class="line">                    else ID.tape[i][ID.head[i]] = delta[delta_index].newSymbols[i];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            //move</span><br><span class="line">            for (int i = 0; i &lt; N; i++) &#123;</span><br><span class="line">                if (delta[delta_index].directions[i] == &#x27;*&#x27;) &#123;</span><br><span class="line">                    continue;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    if (delta[delta_index].directions[i] == &#x27;l&#x27;) &#123;</span><br><span class="line">                        ID.head[i]--;</span><br><span class="line">                        if (ID.head[i] &lt; 0 &amp;&amp; ID.head[i] == -(ID.tape_neg[i].size())) &#123;</span><br><span class="line">                            ID.tape_neg[i].push_back(&#x27;_&#x27;);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (delta[delta_index].directions[i] == &#x27;r&#x27;) &#123;</span><br><span class="line">                        ID.head[i]++;</span><br><span class="line">                        if (ID.head[i] &gt; 0 &amp;&amp; ID.head[i] == ID.tape[i].size()) &#123;</span><br><span class="line">                            ID.tape[i].push_back(&#x27;_&#x27;);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            //change state</span><br><span class="line">            ID.state = delta[delta_index].newState;</span><br><span class="line">            //change step</span><br><span class="line">            ID.step++;</span><br><span class="line">            if (verbose) print_ID();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Gisyxi7">
-      <meta itemprop="description" content="nju cs">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Gisyxi7's blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/26/%E5%88%A4%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="post-title-link" itemprop="url">【七】判定性与复杂度</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-26 15:03:06" itemprop="dateCreated datePublished" datetime="2024-11-26T15:03:06+08:00">2024-11-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-29 17:00:52" itemprop="dateModified" datetime="2024-12-29T17:00:52+08:00">2024-12-29</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="判定性-Decidability"><a href="#判定性-Decidability" class="headerlink" title="判定性(Decidability)"></a>判定性(Decidability)</h1><p>到目前为止，我们已经学习了正则语言、上下文无关语言、递归语言（图灵可判定语言）、递归可枚举语言（图灵可识别语言）。</p>
-<p>我们已经知道正则语言是上下文无关语言的子集，上下文无关语言是图灵可判定语言的子集。</p>
-<p>事实上，我们学过的语言符合下图所示的关系。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/1.png?raw=true" alt="1"></p>
-<p>我们这一节的目标是证明<br>$\text{decidable} \varsubsetneqq \text{RE} \varsubsetneqq \text{all languages}$</p>
-<h2 id="可数与可数集"><a href="#可数与可数集" class="headerlink" title="可数与可数集"></a>可数与可数集</h2><p>首先回顾一下<strong>可数</strong>的概念。<br>我们称自然数集$\mathbb{N}=\{1,2,3,\dots\}$中的元素为<strong>可数</strong>。 （这里暂定自然数从1开始，但是没有本质的区别）<br>对于一个集合$S$，如果该集合是有限集，或者存在一个双射$f:N\rightarrow S$我们称$S$为<strong>可数</strong>。</p>
-<hr>
-<p><strong>定理</strong>： 实数集$\mathbb{R}$不可数。</p>
-<p>证明如下：</p>
-<p>假设$\mathbb{R}$是可数，那么存在一个双射$f:N\rightarrow \mathbb{R}$。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/2.png?raw=true" alt="2"></p>
-<p>其中<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/3.png?raw=true" alt="3"><br>将有限小数和整数视为后面有无数个0的无限小数。</p>
-<p>令x=0.b1b2b3…，其中bi≠aii。</p>
-<p>所以x一定不在该表格的双射中。矛盾，所以$\mathbb{R}$不可数。</p>
-<hr>
-<h2 id="非递归可枚举语言"><a href="#非递归可枚举语言" class="headerlink" title="非递归可枚举语言"></a>非递归可枚举语言</h2><p>现在我们证明非递归可枚举语言(Non-RE Languages)的存在。</p>
-<p>所谓非递归可枚举语言，是指不能由图灵机接受并判定的语言。</p>
-<hr>
-<p><strong>定理</strong>：非递归可枚举语言存在。</p>
-<p>证明如下：</p>
-<p>所有图灵机的集合是可数的。<br>显然，我们可以由一个有限长度的字符串确定性的表示一个图灵机（将所有要素全部写下来），而对于有限的字母表$\Sigma$，$\Sigma^*$是可数的，因此图灵机是一个可数集的子集，也是可数的。</p>
-<p>所有语言的集合是不可数的。<br>用康托尔对角法很容易证明，仿照上面实数集不可数的证明思路。</p>
-<p>所以从图灵机的集合到语言的集合的函数时不可逆的。即给定一个语言，不一定有对应的图灵机。</p>
-<p>一个显然的事实是，给定一个图灵机，一定会有一个对应的语言；而上面的证明说明了给定一个语言，不一定会有一个能接收这个语言的图灵机，从而递归可枚举语言就是所有语言的真子集。从而得到非递归可枚举语言存在。</p>
-<hr>
-<p>到目前为止，我们从理论上将递归可枚举语言和所有语言区分开。</p>
-<h2 id="停机问题"><a href="#停机问题" class="headerlink" title="停机问题"></a>停机问题</h2><p>现在我们要寻找一个不可判定的语言，将递归语言和递归可枚举语言彻底区分开来。</p>
-<p><strong>定义</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/4.png?raw=true" alt="4"></p>
-<p>这里实际上HALT也可以看作一个语言，只不过这个语言接收一个二元组的字符表示作为它的输入字符串而已。</p>
-<hr>
-<p><strong>定理</strong><br>停机问题不可判定。</p>
-<p>证明如下：</p>
-<p>假设存在图灵机H能判定HALT问题。</p>
-<ul>
-<li>如果M对于输入x可以停机，那么H会接受$&lt; M, x&gt;$</li>
-<li>如果M对于输入x不会停机，那么H会拒绝$&lt; M, x&gt;$</li>
-</ul>
-<p>现在定义一个新图灵机H’，它接受输入$&lt; M&gt;$, 即图灵机的字符串表示</p>
-<ul>
-<li>如果H接受了$&lt; M, &lt; M&gt;&gt;$，则死循环</li>
-<li>如果H拒绝了$&lt; M, &lt; M&gt;&gt;$，则停机</li>
-</ul>
-<p>现在考虑给H’输入$&lt; H’&gt;$</p>
-<ul>
-<li>如果停机，那么H拒绝了输入，说明H不能停机</li>
-<li>如果死循环，那么H接受输入，说明H可以停机</li>
-</ul>
-<p>显然这是矛盾的，因此H和H’都不存在。</p>
-<hr>
-<p>到目前为止，我们已经找到了一种语言，停机问题，是不可判定的，将递归语言和递归可枚举语言彻底区分了开来。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/5.png?raw=true" alt="5"></p>
-<h2 id="图灵不可识别的语言"><a href="#图灵不可识别的语言" class="headerlink" title="图灵不可识别的语言"></a>图灵不可识别的语言</h2><p>下面给出一个具体的例子。<br><strong>定义</strong>：<br>定义一个递归可枚举(RE)语言的补集co-RE，则有如下关系：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/6.png?raw=true" alt="6"></p>
-<p>这里的补集指的是所有的具体语言关于$\Sigma^*$的补集所形成的新的语言的集合。</p>
-<hr>
-<p><strong>定理</strong>：<br>一个语言$L$可判定，当且仅当它既是RE，也是co-RE。</p>
-<p>充要性证明省略</p>
-<hr>
-<p>由此我们可以得出，HALT的补集不是递归可枚举的。</p>
-<p>到此，我们就彻底搞清了各种语言之间的包含关系了。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/7.png?raw=true" alt="7"></p>
-<h1 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>算法是什么：算法是一个必定会停止的图灵机，也就是一个递归语言/图灵可判定语言的图灵机。</p>
-<p>真实世界中，运行算法会占用<strong>时间空间</strong>资源。</p>
-<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><p>一个图灵机运行时间（步数），被称为<strong>时间复杂度</strong>。用一个函数表示：<br>$f:\mathbb{N}\rightarrow\mathbb{N}$<br>其中$f(n)$是$M$对于任意长度为$n$的输入停机所需要的最大步骤数（移动次数）。这里分析的是最坏情况。</p>
-<p><strong>渐进表示法</strong><br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/8.png?raw=true" alt="8"></p>
-<h2 id="时间复杂度类"><a href="#时间复杂度类" class="headerlink" title="时间复杂度类"></a>时间复杂度类</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/9.png?raw=true" alt="9"></p>
-<p>用多带图灵机来编程通常会比单带的图灵机更方便一些。</p>
-<ul>
-<li>在我们讨论可判定性的时候，它们是等价的；</li>
-<li>不过当我们讨论复杂度的时候，它们就不等价了。</li>
-</ul>
-<p>同时我们有以下定理<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/10.png?raw=true" alt="10"></p>
-<h1 id="P与NP"><a href="#P与NP" class="headerlink" title="P与NP"></a>P与NP</h1><p>我们认为多项式运行时间是高效的，认为指数运行时间是不高效的。</p>
-<h2 id="P"><a href="#P" class="headerlink" title="P"></a>P</h2><p><strong>定义</strong><br>定义 P 或者 多项式时间(polynomial-time) 是一类语言，它们在一个单带、确定性图灵机上是多项式时间可判定的。<br>$P=\cup_{k\ge 1} TIME(n^k)$</p>
-<p>我们关注P是因为计算模型对多项式是不敏感的，换而言之，在一个确定性计算模型上面多项式时间的算法在另一个确定性计算模型上依旧是多项式时间的。</p>
-<h2 id="NP"><a href="#NP" class="headerlink" title="NP"></a>NP</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/11.png?raw=true" alt="11"></p>
-<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/12.png?raw=true" alt="12"><br>意思就是，对于具体的解能在多项式时间能判定。</p>
-<h2 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h2><p>给定一个新问题，如果我们先买个要说明这个问题不可判定，我们通常有两种思路：</p>
-<ol>
-<li>从头开始论证</li>
-<li>将一个已知不可判定的问题转变为新问题，使新问题的解决办法也可以解决旧问题。</li>
-</ol>
-<p><strong>归约(reduction)</strong> 是一种将一个问题转化成另一个问题的方式，使得第二个问题的解决方案也可以用来解决第一个问题。</p>
-<p>首先我们定义什么是可计算的函数<br><strong>定义</strong>：<br>一个函数$f:\sum^<em> \rightarrow \sum^</em>$是<strong>可计算的(computable)</strong>，如果存在一个图灵机$M_f$，使得对于每一个输入$\omega$，$M_f$将$f(\omega)$写到纸带上并停机。</p>
-<p>然后我们来定义归约<br><strong>定义</strong>：<br>A可以被映射归约(mapping reducible)为B，写作$A\leq_m B$，如果存在一个可计算的函数$f$，使得对于所有$\omega$，都有<br>$\omega\in A\Leftrightarrow f(\omega)\in B$<br>等价的<br>$\omega\notin A\Leftrightarrow f(\omega)\notin B$<br>$f$被称为从A到B的一个归约。</p>
-<p>下图是语言$A$到$B$的归约的图示<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/13.png?raw=true" alt="13"></p>
-<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是可判定的，那么$A$也是可判定的。</p>
-<p>注意其逆否命题的方向<br>如果$A\leq_m B$且$A$是不可判定的，那么$B$也是不可判定的。</p>
-<p><strong>定理</strong>：<br>如果$A\leq_m B$且$B$是RE，那么$A$也是RE。</p>
-<h2 id="Rice定理"><a href="#Rice定理" class="headerlink" title="Rice定理"></a>Rice定理</h2><p>我们发现图灵机的以下一些性质是不可判定的。</p>
-<ul>
-<li>接受字符$\omega$</li>
-<li>在输入字符串$\omega$时停机</li>
-<li>接受语言为空</li>
-</ul>
-<p><strong>定理</strong>：<br><strong>Rice定理</strong>： 图灵机的每一个<strong>非平凡</strong>的<strong>性质</strong>都是不可判定的。</p>
-<p><strong>定义</strong><br>一个图灵机的<strong>性质property</strong>指一个语言$P$，满足对于任意两个图灵机$M_1,M_2$，如果$L(M_1)=L(M_2)$，则<br>$&lt; M_1&gt;\in P\Leftrightarrow &lt; M_2&gt; \in P$</p>
-<p>如果存在一个图灵机$M_1$，使得$&lt; M_1&gt;\in P$且存在一个图灵机$M_2$，使得$&lt; M_2&gt;\notin P$，则称$P$是一个<strong>非平凡</strong>的性质。</p>
-<h1 id="NPC"><a href="#NPC" class="headerlink" title="NPC"></a>NPC</h1><h2 id="多项式时间归约"><a href="#多项式时间归约" class="headerlink" title="多项式时间归约"></a>多项式时间归约</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2411/%E5%88%A4%E5%AE%9A%E6%80%A7/14.png?raw=true" alt="14"><br><strong>定理</strong>：<br>如果$A\leq_P B$且$B\in P$，那么$A\in P$。</p>
-<h2 id="NP完全理论"><a href="#NP完全理论" class="headerlink" title="NP完全理论"></a>NP完全理论</h2><p><strong>定义</strong><br>我们称一个语言B是<strong>NP完全的</strong>，当且仅当满足以下条件：</p>
-<ol>
-<li>$B\in NP$</li>
-<li>$\forall A\in NP:A\leq_P B$<br>若只满足第二个条件，则称B是<strong>NP难的</strong>。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1537,14 +1781,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

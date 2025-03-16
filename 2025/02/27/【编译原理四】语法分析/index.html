@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="引论语法分析器的作用语法分析器从词法分析器中获得一个由词法单元组成的串，并且验证这个串可以由源语言的文法生成，同时能报告语法错误。 语法分析器可以被分为三种类型：  通用的：可以对任意文法进行语法分析，效率很低，不适用于编译器产品 自顶向下的：从语法分析树的顶部开始向底部构造语法分析树 自底向上的：从叶子结点向根结点的防线给构造  最高效的自顶向下和自底向上方法虽然只能处理有些文法的子类，但是其中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【编译原理四】语法分析">
+<meta property="og:url" content="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E5%9B%9B%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Gisyxi7&#39;s blogs">
+<meta property="og:description" content="引论语法分析器的作用语法分析器从词法分析器中获得一个由词法单元组成的串，并且验证这个串可以由源语言的文法生成，同时能报告语法错误。 语法分析器可以被分为三种类型：  通用的：可以对任意文法进行语法分析，效率很低，不适用于编译器产品 自顶向下的：从语法分析树的顶部开始向底部构造语法分析树 自底向上的：从叶子结点向根结点的防线给构造  最高效的自顶向下和自底向上方法虽然只能处理有些文法的子类，但是其中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/1.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/2.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/3.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/4.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/5.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/6.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/7.png?raw=true">
+<meta property="article:published_time" content="2025-02-27T11:19:36.000Z">
+<meta property="article:modified_time" content="2025-03-04T06:31:54.520Z">
+<meta property="article:author" content="Gisyxi7">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/1.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E5%9B%9B%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【编译原理四】语法分析 | Gisyxi7's blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gisyxi7's blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">学不动了</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E5%9B%9B%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【编译原理四】语法分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-02-27 19:19:36" itemprop="dateCreated datePublished" datetime="2025-02-27T19:19:36+08:00">2025-02-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-04 14:31:54" itemprop="dateModified" datetime="2025-03-04T14:31:54+08:00">2025-03-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="引论"><a href="#引论" class="headerlink" title="引论"></a>引论</h1><h2 id="语法分析器的作用"><a href="#语法分析器的作用" class="headerlink" title="语法分析器的作用"></a>语法分析器的作用</h2><p>语法分析器从词法分析器中获得一个由词法单元组成的串，并且验证这个串可以由源语言的文法生成，同时能报告语法错误。</p>
+<p>语法分析器可以被分为三种类型：</p>
+<ol>
+<li>通用的：可以对任意文法进行语法分析，效率很低，不适用于编译器产品</li>
+<li>自顶向下的：从语法分析树的顶部开始向底部构造语法分析树</li>
+<li>自底向上的：从叶子结点向根结点的防线给构造</li>
+</ol>
+<p>最高效的自顶向下和自底向上方法虽然只能处理有些文法的子类，但是其中比如LL和LR文法已经足够描述现代程序设计的大部分语言了。程序设计语言构造的语法可使用上下文无关文法 (CFG) 或BNF表示法来描述。</p>
+<h2 id="语法错误的处理"><a href="#语法错误的处理" class="headerlink" title="语法错误的处理"></a>语法错误的处理</h2><p>程序可能由不同层次的错误：</p>
+<ol>
+<li>词法错误：拼写错误或者没有正确添加引号</li>
+<li>语法错误：分号括号放错位置或者多余缺失等等</li>
+<li>语义错误：运算符和运算分量之间类型不匹配</li>
+<li>逻辑错误：程序员的错误推理，但是程序本身可能是良构的</li>
+</ol>
+<p>实现错误处理需要：</p>
+<ol>
+<li>清晰报告错误</li>
+<li>尽快从错误中恢复并继续检测</li>
+<li>减小处理的开销</li>
+</ol>
+<h2 id="错误恢复策略"><a href="#错误恢复策略" class="headerlink" title="错误恢复策略"></a>错误恢复策略</h2><h3 id="恐慌模式的恢复"><a href="#恐慌模式的恢复" class="headerlink" title="恐慌模式的恢复"></a>恐慌模式的恢复</h3><p>一旦发现错误就不断丢弃输入中的符号，直到找到同步词法单元集合中的符号（一般为分号或者大括号）。</p>
+<p>这个模式的问题是可能会跳过大量输入，不检查被跳过层次的错误。</p>
+<h3 id="短语层次的恢复"><a href="#短语层次的恢复" class="headerlink" title="短语层次的恢复"></a>短语层次的恢复</h3><p>将余下的输入的某个前缀更改成另一个串，比如将逗号替换成分号等等。但是要决定具体的替换策略，也有可能进入无限循环。</p>
+<h3 id="错误产生式"><a href="#错误产生式" class="headerlink" title="错误产生式"></a>错误产生式</h3><p>通过预测可能的常见错误，在当前语言的文法中加入错误产生式。</p>
+<h3 id="全局纠正"><a href="#全局纠正" class="headerlink" title="全局纠正"></a>全局纠正</h3><p>在理想状况下找到正确的语法，但是开销太大目前处于理论阶段。</p>
+<h1 id="上下文无关文法"><a href="#上下文无关文法" class="headerlink" title="上下文无关文法"></a>上下文无关文法</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h2 id="符号约定"><a href="#符号约定" class="headerlink" title="符号约定"></a>符号约定</h2><h2 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h2><p>最左推导，最右推导</p>
+<h2 id="语法分析树"><a href="#语法分析树" class="headerlink" title="语法分析树"></a>语法分析树</h2><h2 id="二义性"><a href="#二义性" class="headerlink" title="二义性"></a>二义性</h2><p>大多数语法分析器期望的文法是无二义性的。</p>
+<h2 id="验证文法生成的语言"><a href="#验证文法生成的语言" class="headerlink" title="验证文法生成的语言"></a>验证文法生成的语言</h2><p>如何验证文法G所确定的语言L<br>– 证明G生成的每个串都在L中<br>– 证明L中的每个串都能被G生成</p>
+<h2 id="上下文无关文法和正则表达式"><a href="#上下文无关文法和正则表达式" class="headerlink" title="上下文无关文法和正则表达式"></a>上下文无关文法和正则表达式</h2><p>每个正则语言都是上下文无关语言，反之不成立。</p>
+<h1 id="设计文法"><a href="#设计文法" class="headerlink" title="设计文法"></a>设计文法</h1><h2 id="消除二义性"><a href="#消除二义性" class="headerlink" title="消除二义性"></a>消除二义性</h2><p>二义性的消除方法没有规律可循</p>
+<h2 id="左递归的消除"><a href="#左递归的消除" class="headerlink" title="左递归的消除"></a>左递归的消除</h2><p>如果一个文法中有非终结符号$A$使得$A\Rightarrow A\alpha$，那么这个文法就是左递归的。</p>
+<p>自顶向下的语法分析技术不能处理左递归的情况，因此需要消除左递归，但是自底向上的技术可以处理左递归。</p>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/1.png?raw=true" alt="1"></p>
+<h2 id="提取左公因子"><a href="#提取左公因子" class="headerlink" title="提取左公因子"></a>提取左公因子</h2><p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/2.png?raw=true" alt="2"></p>
+<h1 id="自顶向下的语法分析"><a href="#自顶向下的语法分析" class="headerlink" title="自顶向下的语法分析"></a>自顶向下的语法分析</h1><p>即为输入串构造语法分析树，从根节点开始，深度优先的创建各个结点。也可以看作是寻找输入串的最左推导。</p>
+<h2 id="FIRST和FOLLOW"><a href="#FIRST和FOLLOW" class="headerlink" title="FIRST和FOLLOW"></a>FIRST和FOLLOW</h2><p>$FIRST(\alpha)$被定义为可以从$\alpha$推导得到串的首符号的集合。如果$\alpha\Rightarrow\epsilon$，那么$\epsilon$也在$FIRST(\alpha)$中。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/3.png?raw=true" alt="3"></p>
+<p>对于$FIRST$函数而言，必须保证对于$A\to \alpha |\beta$，$FIRST(\alpha)$和$FIRST(\beta)$不相交，使得选择具有唯一性。</p>
+<p>$FOLLOW(A)$被定义为可能在某些句型中紧跟在$A$右边的终结符的集合。<br>当$A\to\alpha,\alpha\to\epsilon$时，$FOLLOW(A)$可以帮助我们选择恰当的产生式。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/4.png?raw=true" alt="4"></p>
+<h2 id="LL-1-文法"><a href="#LL-1-文法" class="headerlink" title="LL(1)文法"></a>LL(1)文法</h2><p>对于LL(1)文法，我们可以构造出不需要回溯的递归下降语法分析器。LL(1)文法的含义是从左到右扫描输入和产生最左推导，同时每一步只需要向前看一个输入符号就可以决定语法分析动作。</p>
+<p>首先明确，左递归的文法和有二义性的文法都不是LL(1)的。</p>
+<p>一个文法是LL(1)当且仅当对于该文法中任意两个不同的产生式$A\to\alpha |\beta$满足：</p>
+<ol>
+<li>$FIRST(\alpha)$和$FIRST(\beta)$是不相交的集合。</li>
+<li>如果$\epsilon$在$FIRST(\beta)$中，那么$FIRST(\alpha)$和$FOLLOW(A)$是不相交的集合，反之同理。</li>
+</ol>
+<p>对于LL(1)文法，我们只需要构造预测分析表，能保证预测分析表中每个条目都唯一的指定了一个产生式或者表明一个语法错误，就能成功解析。<br>算法如下：<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/5.png?raw=true" alt="5"></p>
+<h2 id="非递归的预测分析"><a href="#非递归的预测分析" class="headerlink" title="非递归的预测分析"></a>非递归的预测分析</h2><p>只需要根据预测分析表展开，并将产生式的右部倒序压入栈即可。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/6.png?raw=true" alt="6"></p>
+<h1 id="自底向上的语法分析"><a href="#自底向上的语法分析" class="headerlink" title="自底向上的语法分析"></a>自底向上的语法分析</h1><h2 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h2><p>自底向上的语法分析过程可以看作是从串归约到文法开始符号S的过程。</p>
+<p>每一次归约，就是把一个和某个产生式体相匹配的字串替换成该产生式头部的非终结符号。也就是说，一次归约就是一次推导的反向操作。</p>
+<p>因此，自底向上的语法分析目标是反向构造一个推导过程，这个推导过程实际上对应了最右推导。</p>
+<h2 id="句柄剪枝"><a href="#句柄剪枝" class="headerlink" title="句柄剪枝"></a>句柄剪枝</h2><p>通过句柄剪枝我们可以得到一个反向的最右推导。</p>
+<p>假设该串可以以以下方式最右推导出来：</p>
+<script type="math/tex; mode=display">S=\gamma_0\Rightarrow\gamma_1\Rightarrow\gamma_2 ...\Rightarrow\gamma_n=\omega</script><p>那么我们可以重复以下步骤：</p>
+<ol>
+<li>在$\gamma<em>n$中寻找句柄$\beta_n$，将$\beta_n$更改为相关产生式$A_n\to\beta_n$的头部，得到最右句型$\gamma</em>{n-1}$</li>
+<li>循环重复直到得到$S$</li>
+</ol>
+<p>这样我们就完成了规约，得到了输入串的最右推导。</p>
+<p>值得注意的是，在上面的描述中，还没有提到什么是句柄以及如何寻找句柄。我们接下来解释什么是句柄，而如何寻找句柄将在下面被介绍。</p>
+<p>句柄的正式定义：如果$S\Rightarrow<em>{rm}\alpha A\omega\Rightarrow</em>{rm}\alpha\beta\omega$，那么紧跟在$\alpha$之后的$\beta$是$A\to\beta$的一个句柄。</p>
+<ul>
+<li>在一个最右句型中，句柄右边只有终结符号</li>
+<li>如果文法是无二义性的，那么每个句型有且只有一个句柄</li>
+</ul>
+<h2 id="移入-归约语法分析技术"><a href="#移入-归约语法分析技术" class="headerlink" title="移入-归约语法分析技术"></a>移入-归约语法分析技术</h2><p>我们使用一个栈来保存归约/扫描移入的文法符号。我们将用一个表格表示完整的过程，在这之前，我们需要明确：</p>
+<ol>
+<li>开始时刻，栈中只包含$，而输入为$\omega$$；结束时刻，栈中只包含$S$$，而输入为$</li>
+<li>分析动作有以下四种：<ol>
+<li>移入：将下一个输入符号移入到栈顶</li>
+<li>归约：将句柄归约为相应的非终结符号</li>
+<li>接受：宣布分析过程成功完成</li>
+<li>报错：发现语法错误，调用错误恢复子程序</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2503/compiler4/7.png?raw=true" alt="7"></p>
+<p>我们发现，句柄总是出现在栈的顶端，这使得我们可以放心的归约，而不需要到栈的中间去寻找，这只需要简单的分类讨论就可以证明。</p>
+<h2 id="移入-归约语法分析中的冲突"><a href="#移入-归约语法分析中的冲突" class="headerlink" title="移入-归约语法分析中的冲突"></a>移入-归约语法分析中的冲突</h2><p>当然，并非所有的文法都可以使用移入-归约语法分析，有些文法会出现以下的问题：</p>
+<ul>
+<li>知道栈的所有内容也不知道该移入还是该归约</li>
+<li>有多个可能的归约方法不知道使用哪个</li>
+</ul>
+<p>从技术上讲，这被称为非LR文法，这将在下面介绍。</p>
+<h1 id="LR语法分析技术"><a href="#LR语法分析技术" class="headerlink" title="LR语法分析技术"></a>LR语法分析技术</h1><p>目前流行的自底向上的语法分析器都基于LR(k)语法分析，其中L表示最左扫描，R表示反向构造出最右推导，k表示最多向前看k个符号。</p>
+<p>只有当k=0或k=1的时候有实践意义，当省略(k)的时候，我们假设k=1。</p>
+<h2 id="为什么使用LR语法分析器"><a href="#为什么使用LR语法分析器" class="headerlink" title="为什么使用LR语法分析器"></a>为什么使用LR语法分析器</h2><ul>
+<li>由表格驱动，可以自动化生成</li>
+<li>对于几乎所有的程序设计语言，只要写出上下文无关文法，就能够构造出识别该语言的LR语法分析器</li>
+<li>最通用的无回溯移入-归约分析技术</li>
+<li>能分析的文法比LL(k)文法更多</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我喝奶茶吗QAQ</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Gisyxi7 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Gisyxi7 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag"># 编译原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%89%E3%80%91%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/" rel="prev" title="【编译原理三】词法分析">
+      <i class="fa fa-chevron-left"></i> 【编译原理三】词法分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/03/16/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%BA%94%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%B6%E5%AF%BC%E7%9A%84%E7%BF%BB%E8%AF%91/" rel="next" title="【编译原理五】语法制导的翻译">
+      【编译原理五】语法制导的翻译 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">引论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">语法分析器的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E9%94%99%E8%AF%AF%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">语法错误的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E6%81%A2%E5%A4%8D%E7%AD%96%E7%95%A5"><span class="nav-number">1.3.</span> <span class="nav-text">错误恢复策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%90%E6%85%8C%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="nav-number">1.3.1.</span> <span class="nav-text">恐慌模式的恢复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%AD%E8%AF%AD%E5%B1%82%E6%AC%A1%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="nav-number">1.3.2.</span> <span class="nav-text">短语层次的恢复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E4%BA%A7%E7%94%9F%E5%BC%8F"><span class="nav-number">1.3.3.</span> <span class="nav-text">错误产生式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E7%BA%A0%E6%AD%A3"><span class="nav-number">1.3.4.</span> <span class="nav-text">全局纠正</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">上下文无关文法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E7%BA%A6%E5%AE%9A"><span class="nav-number">2.2.</span> <span class="nav-text">符号约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E5%AF%BC"><span class="nav-number">2.3.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E6%A0%91"><span class="nav-number">2.4.</span> <span class="nav-text">语法分析树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E4%B9%89%E6%80%A7"><span class="nav-number">2.5.</span> <span class="nav-text">二义性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%96%87%E6%B3%95%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%AD%E8%A8%80"><span class="nav-number">2.6.</span> <span class="nav-text">验证文法生成的语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95%E5%92%8C%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.7.</span> <span class="nav-text">上下文无关文法和正则表达式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%96%87%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">设计文法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E9%99%A4%E4%BA%8C%E4%B9%89%E6%80%A7"><span class="nav-number">3.1.</span> <span class="nav-text">消除二义性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E9%80%92%E5%BD%92%E7%9A%84%E6%B6%88%E9%99%A4"><span class="nav-number">3.2.</span> <span class="nav-text">左递归的消除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E5%B7%A6%E5%85%AC%E5%9B%A0%E5%AD%90"><span class="nav-number">3.3.</span> <span class="nav-text">提取左公因子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E7%9A%84%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">自顶向下的语法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FIRST%E5%92%8CFOLLOW"><span class="nav-number">4.1.</span> <span class="nav-text">FIRST和FOLLOW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LL-1-%E6%96%87%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">LL(1)文法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E9%80%92%E5%BD%92%E7%9A%84%E9%A2%84%E6%B5%8B%E5%88%86%E6%9E%90"><span class="nav-number">4.3.</span> <span class="nav-text">非递归的预测分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%BA%95%E5%90%91%E4%B8%8A%E7%9A%84%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">自底向上的语法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E7%BA%A6"><span class="nav-number">5.1.</span> <span class="nav-text">归约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%A5%E6%9F%84%E5%89%AA%E6%9E%9D"><span class="nav-number">5.2.</span> <span class="nav-text">句柄剪枝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E5%85%A5-%E5%BD%92%E7%BA%A6%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E6%8A%80%E6%9C%AF"><span class="nav-number">5.3.</span> <span class="nav-text">移入-归约语法分析技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E5%85%A5-%E5%BD%92%E7%BA%A6%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%86%B2%E7%AA%81"><span class="nav-number">5.4.</span> <span class="nav-text">移入-归约语法分析中的冲突</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LR%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E6%8A%80%E6%9C%AF"><span class="nav-number">6.</span> <span class="nav-text">LR语法分析技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8LR%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8"><span class="nav-number">6.1.</span> <span class="nav-text">为什么使用LR语法分析器</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Gisyxi7</p>
+  <div class="site-description" itemprop="description">nju cs</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gisyxi7</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

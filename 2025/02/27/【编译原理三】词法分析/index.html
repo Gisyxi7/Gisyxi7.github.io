@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本章主要讨论如何生成一个词法分析器。 词法分析器的作用词法分析使编译的第一个阶段，其读入源程序字符串，组成词素，生成并输出一个词法单元序列。这些词法单元序列会被语法分析器作为下一步的输入。同时，词法分析器还会将词素添加到符号表中。 一般词法分析和语法分析是一趟，语法分析通过调用词法分析来不停获得词素。 词法分析器还能负责除了识别词素以外的任务，比如：  过滤源程序的注释和空白 将编译器生成的错误信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【编译原理三】词法分析">
+<meta property="og:url" content="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%89%E3%80%91%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Gisyxi7&#39;s blogs">
+<meta property="og:description" content="本章主要讨论如何生成一个词法分析器。 词法分析器的作用词法分析使编译的第一个阶段，其读入源程序字符串，组成词素，生成并输出一个词法单元序列。这些词法单元序列会被语法分析器作为下一步的输入。同时，词法分析器还会将词素添加到符号表中。 一般词法分析和语法分析是一趟，语法分析通过调用词法分析来不停获得词素。 词法分析器还能负责除了识别词素以外的任务，比如：  过滤源程序的注释和空白 将编译器生成的错误信">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/1.png?raw=true">
+<meta property="og:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/2.png?raw=true">
+<meta property="article:published_time" content="2025-02-27T04:55:48.000Z">
+<meta property="article:modified_time" content="2025-02-27T07:17:20.269Z">
+<meta property="article:author" content="Gisyxi7">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/1.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%89%E3%80%91%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【编译原理三】词法分析 | Gisyxi7's blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Gisyxi7's blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">学不动了</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%89%E3%80%91%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Gisyxi7">
+      <meta itemprop="description" content="nju cs">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gisyxi7's blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【编译原理三】词法分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-02-27 12:55:48 / 修改时间：15:17:20" itemprop="dateCreated datePublished" datetime="2025-02-27T12:55:48+08:00">2025-02-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章主要讨论如何生成一个词法分析器。</p>
+<h1 id="词法分析器的作用"><a href="#词法分析器的作用" class="headerlink" title="词法分析器的作用"></a>词法分析器的作用</h1><p>词法分析使编译的第一个阶段，其读入源程序字符串，组成词素，生成并输出一个词法单元序列。这些词法单元序列会被语法分析器作为下一步的输入。同时，词法分析器还会将词素添加到符号表中。</p>
+<p>一般词法分析和语法分析是一趟，语法分析通过调用词法分析来不停获得词素。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/1.png?raw=true" alt="1"></p>
+<p>词法分析器还能负责除了识别词素以外的任务，比如：</p>
+<ol>
+<li>过滤源程序的注释和空白</li>
+<li>将编译器生成的错误信息和源程序的位置联系起来</li>
+<li>处理宏的扩展</li>
+</ol>
+<h2 id="词法单元、模式、词素"><a href="#词法单元、模式、词素" class="headerlink" title="词法单元、模式、词素"></a>词法单元、模式、词素</h2><p>下面区别以下这些术语：</p>
+<ol>
+<li>词法单元：由一个词法单元名和一个可选的属性值组成</li>
+<li>模式：描述一个词法单元的词素可能具有的形式</li>
+<li>词素：源程序的一个字符序列，和某个词法单元的模式匹配</li>
+</ol>
+<p>总的来说，词法单元是一个抽象的类型，模式是对其的描述，词素是代码中具体的匹配字符串。</p>
+<h2 id="词法错误"><a href="#词法错误" class="headerlink" title="词法错误"></a>词法错误</h2><p>在遇到词法错误的时候，词法分析器很难发现并改正错误，所以一般交给语法分析器去完成。</p>
+<p>但是如果遇到所有词法单元的模式都无法匹配剩余输入，那么词法分析器就无法继续分析，我们通常采取以下方法：</p>
+<ol>
+<li>删除一个字符</li>
+<li>试图插入一个遗漏的字符</li>
+<li>替代一个字符</li>
+<li>交换相邻的字符<br>直到能继续正确解析。</li>
+</ol>
+<h1 id="输入缓冲"><a href="#输入缓冲" class="headerlink" title="输入缓冲"></a>输入缓冲</h1><p>现在讨论如何加快源程序的读入速度。</p>
+<p>首先，最简单的方法：一个字符一个字符的读入是不合理的，因为这样很难区分-和-&gt;等情况。我们这里介绍缓冲区对和哨兵标记。</p>
+<h2 id="缓冲区对"><a href="#缓冲区对" class="headerlink" title="缓冲区对"></a>缓冲区对</h2><p>这个机制利用两个交替读入的缓冲区，每个缓冲区容量都是N个字符，通常N是一个磁盘块的大小，如果文件剩余不足N，那么会用一个特殊字符(<strong>eof</strong>)来标记文件结束。</p>
+<p>程序维护两个指针：</p>
+<ol>
+<li>lexemeBegin：指向当前词素的开始处</li>
+<li>forward：一直向前扫描直到发现某个模式被匹配，这个决定策略将在下面被讨论</li>
+</ol>
+<p>一旦确定了下一个词素，词法分析器将根据这两个指针将这个词素以及其属性值记录下来。然后使lexemeBegin指针指向下一个开始的字符。</p>
+<p>将forward指针前移的时候要检查是否到达缓冲区的末尾，如果到达末尾，就要将N个新字符读到另一个缓冲区中，并修改forward指针的指向。</p>
+<h2 id="哨兵标记"><a href="#哨兵标记" class="headerlink" title="哨兵标记"></a>哨兵标记</h2><p>我们每次向前移动forward指针都需要做两次测试：</p>
+<ol>
+<li>检查是否到达缓冲区的末尾</li>
+<li>确定读入的字符是什么</li>
+</ol>
+<p>我们只需要在每个缓冲区的末尾加入特殊字符<strong>eof</strong>就可以通过以下的算法进行处理。<br><img src="https://github.com/Gisyxi7/Hexo-Pics/blob/main/2502/compiler3/2.png?raw=true" alt="2"></p>
+<h1 id="词法单元的归约"><a href="#词法单元的归约" class="headerlink" title="词法单元的归约"></a>词法单元的归约</h1><p>正则表达式可以高效描述处理词法单元时要用到的模式类型。</p>
+<p>关于<a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/12/09/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>不再赘述。</p>
+<h1 id="词法单元的识别"><a href="#词法单元的识别" class="headerlink" title="词法单元的识别"></a>词法单元的识别</h1><p>我们使用状态转换图来进行对词素的识别。</p>
+<h1 id="词法分析器生成工具Lex"><a href="#词法分析器生成工具Lex" class="headerlink" title="词法分析器生成工具Lex"></a>词法分析器生成工具Lex</h1><p>Lex工具接受输入的模式，转换成一个状态转换图，并生成相应的代码。</p>
+<h1 id="有穷自动机"><a href="#有穷自动机" class="headerlink" title="有穷自动机"></a>有穷自动机</h1><p><a target="_blank" rel="noopener" href="https://gisyxi7.github.io/2024/12/09/%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA/">有穷自动机</a></p>
+<h2 id="不确定有穷自动机-NFA"><a href="#不确定有穷自动机-NFA" class="headerlink" title="不确定有穷自动机(NFA)"></a>不确定有穷自动机(NFA)</h2><p>以下不再赘述</p>
+<h2 id="转换表"><a href="#转换表" class="headerlink" title="转换表"></a>转换表</h2><p>以下不再赘述</p>
+<h2 id="确定的有穷自动机-DFA"><a href="#确定的有穷自动机-DFA" class="headerlink" title="确定的有穷自动机(DFA)"></a>确定的有穷自动机(DFA)</h2><p>以下不再赘述</p>
+<h1 id="从正则表达式到自动机"><a href="#从正则表达式到自动机" class="headerlink" title="从正则表达式到自动机"></a>从正则表达式到自动机</h1><h2 id="从NFA到DFA"><a href="#从NFA到DFA" class="headerlink" title="从NFA到DFA"></a>从NFA到DFA</h2><p>子集构造法。</p>
+<h2 id="NFA的模拟"><a href="#NFA的模拟" class="headerlink" title="NFA的模拟"></a>NFA的模拟</h2><p>图搜索，算法花费时间和输入串的长度和转换图的大小（结点数加上边数）的乘积成正比。</p>
+<h2 id="从正则表达式构造NFA"><a href="#从正则表达式构造NFA" class="headerlink" title="从正则表达式构造NFA"></a>从正则表达式构造NFA</h2><p>不再赘述</p>
+<h2 id="字符串处理算法的效率"><a href="#字符串处理算法的效率" class="headerlink" title="字符串处理算法的效率"></a>字符串处理算法的效率</h2><p>理论上，最坏情况下DFA的状态个数会是NFA状态个数的指数多个，但对于大部分应用，NFA和相应的DFA的状态数量大致相同。我们通常更倾向使用DFA（当输入串长度接近正则表达式长度的三次方时）。</p>
+<h1 id="词法分析器生成工具的设计"><a href="#词法分析器生成工具的设计" class="headerlink" title="词法分析器生成工具的设计"></a>词法分析器生成工具的设计</h1><h2 id="基于NFA的模式匹配"><a href="#基于NFA的模式匹配" class="headerlink" title="基于NFA的模式匹配"></a>基于NFA的模式匹配</h2><p>将每个模式的NFA合并成为一个新的NFA。</p>
+<p>从lexemeBegin指针开始，往后移动forward指针，根据NFA去匹配，直到达到一个没有后续状态的输入点，这时得到最长前缀，如果这时还有多个匹配，根据Lex中规定的靠前的模式决定接受状态。</p>
+<h2 id="词法分析器使用的DFA"><a href="#词法分析器使用的DFA" class="headerlink" title="词法分析器使用的DFA"></a>词法分析器使用的DFA</h2><p>将NFA转换为DFA，如果DFA的状态包含一个或多个NFA的接受状态，根据优先级决定模式的输出。</p>
+<h1 id="基于DFA的模式匹配器的优化"><a href="#基于DFA的模式匹配器的优化" class="headerlink" title="基于DFA的模式匹配器的优化"></a>基于DFA的模式匹配器的优化</h1><p>有三个算法：</p>
+<ol>
+<li>根据正则表达式直接构造得到DFA</li>
+<li>最小化DFA</li>
+<li>生成比二维表更紧凑的转换表的表示方式</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我喝奶茶吗QAQ</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Gisyxi7 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Gisyxi7 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag"># 编译原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/02/08/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%80%E3%80%91%E5%BC%95%E8%AE%BA/" rel="prev" title="【编译原理一】引论">
+      <i class="fa fa-chevron-left"></i> 【编译原理一】引论
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/02/27/%E3%80%90%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E5%9B%9B%E3%80%91%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/" rel="next" title="【编译原理四】语法分析">
+      【编译原理四】语法分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">词法分析器的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%8D%95%E5%85%83%E3%80%81%E6%A8%A1%E5%BC%8F%E3%80%81%E8%AF%8D%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">词法单元、模式、词素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E9%94%99%E8%AF%AF"><span class="nav-number">1.2.</span> <span class="nav-text">词法错误</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E7%BC%93%E5%86%B2"><span class="nav-number">2.</span> <span class="nav-text">输入缓冲</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E5%8C%BA%E5%AF%B9"><span class="nav-number">2.1.</span> <span class="nav-text">缓冲区对</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A0%87%E8%AE%B0"><span class="nav-number">2.2.</span> <span class="nav-text">哨兵标记</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%8D%95%E5%85%83%E7%9A%84%E5%BD%92%E7%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">词法单元的归约</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%8D%95%E5%85%83%E7%9A%84%E8%AF%86%E5%88%AB"><span class="nav-number">4.</span> <span class="nav-text">词法单元的识别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7Lex"><span class="nav-number">5.</span> <span class="nav-text">词法分析器生成工具Lex</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">6.</span> <span class="nav-text">有穷自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA-NFA"><span class="nav-number">6.1.</span> <span class="nav-text">不确定有穷自动机(NFA)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E8%A1%A8"><span class="nav-number">6.2.</span> <span class="nav-text">转换表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E7%9A%84%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA-DFA"><span class="nav-number">6.3.</span> <span class="nav-text">确定的有穷自动机(DFA)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%88%B0%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">7.</span> <span class="nav-text">从正则表达式到自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8ENFA%E5%88%B0DFA"><span class="nav-number">7.1.</span> <span class="nav-text">从NFA到DFA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFA%E7%9A%84%E6%A8%A1%E6%8B%9F"><span class="nav-number">7.2.</span> <span class="nav-text">NFA的模拟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%9E%84%E9%80%A0NFA"><span class="nav-number">7.3.</span> <span class="nav-text">从正则表达式构造NFA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%84%E7%90%86%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%88%E7%8E%87"><span class="nav-number">7.4.</span> <span class="nav-text">字符串处理算法的效率</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">8.</span> <span class="nav-text">词法分析器生成工具的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ENFA%E7%9A%84%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="nav-number">8.1.</span> <span class="nav-text">基于NFA的模式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8%E4%BD%BF%E7%94%A8%E7%9A%84DFA"><span class="nav-number">8.2.</span> <span class="nav-text">词法分析器使用的DFA</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EDFA%E7%9A%84%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E5%99%A8%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">9.</span> <span class="nav-text">基于DFA的模式匹配器的优化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Gisyxi7</p>
+  <div class="site-description" itemprop="description">nju cs</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gisyxi7</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
